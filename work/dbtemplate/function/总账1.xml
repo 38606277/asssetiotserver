@@ -1,0 +1,476 @@
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!--总账-->
+<mapper namespace="总账1">
+   <select id="科目净额" resultType="BigDecimal" parameterType="Map">
+ 
+    <!--{
+	"db":"system",
+	"desc":"本期科目净额,借方-贷方\n期间：格式2017-1\n公司：公司编码\n科目：科目编码",
+	"in":[
+		{
+			"id":"period",
+			"name":"期间",
+			"datatype":"varchar",
+			"default":"",
+			"lookup":"",
+			"in_formula":"0"
+		},
+		{
+			"id":"segment1",
+			"name":"公司",
+			"datatype":"varchar",
+			"default":"",
+			"lookup":"数据字典/公司信息",
+			"in_formula":"1"
+		},
+		{
+			"id":"segment2",
+			"name":"部门",
+			"datatype":"varchar",
+			"default":"",
+			"lookup":"",
+			"in_formula":"0"
+		},
+		{
+			"id":"segment3",
+			"name":"会计科目",
+			"datatype":"varchar",
+			"default":"",
+			"lookup":"数据字典/会计科目",
+			"in_formula":"1"
+		}
+	],
+	"out":[
+		{
+			"id":"net",
+			"name":"net",
+			"datatype":"BigDecimal"
+		}
+	]
+}-->select nvl(sum(gb.period_net_dr -gb.period_net_cr),0) net 
+from gl_balances gb, gl_code_combinations gcc
+ where gb.code_combination_id = gcc.code_combination_id
+   and gcc.summary_flag = 'N'
+      and gb.set_of_books_id = 2
+   and gb.period_name = #{period}
+   and gcc.segment1 like '${segment1}%'
+    <if test="segment2!=''">
+   and gcc.segment2=#{segment2}
+</if>
+   and gcc.segment3 like '${segment3}%'
+  </select>
+   <select id="贷方发生额" resultType="BigDecimal" parameterType="Map">
+ 
+    <!--{
+	"db":"system",
+	"desc":"贷方发生额",
+	"in":[
+		{
+			"id":"period",
+			"name":"期间",
+			"datatype":"varchar",
+			"default":"",
+			"lookup":"",
+			"in_formula":"0"
+		},
+		{
+			"id":"segment1",
+			"name":"公司",
+			"datatype":"varchar",
+			"default":"",
+			"lookup":"",
+			"in_formula":"1"
+		},
+		{
+			"id":"segment2",
+			"name":"部门",
+			"datatype":"varchar",
+			"default":"",
+			"lookup":"",
+			"in_formula":"0"
+		},
+		{
+			"id":"segment3",
+			"name":"会计科目",
+			"datatype":"varchar",
+			"default":"",
+			"lookup":"",
+			"in_formula":"1"
+		}
+	],
+	"out":[
+		{
+			"id":"period_net_cr",
+			"name":"period_net_cr",
+			"datatype":"BigDecimal"
+		}
+	]
+}-->select nvl(sum(gb.period_net_dr),0)   period_net_dr 
+  from gl_balances gb, gl_code_combinations gcc
+ where gb.code_combination_id = gcc.code_combination_id
+   and gcc.summary_flag = 'N'
+      and gb.set_of_books_id = 2
+   and gb.period_name = #{period}
+   and gcc.segment1 like '${segment1}%'
+    <if test="segment2!=''">
+   and gcc.segment2=#{segment2}
+</if>
+   and gcc.segment3 like '${segment3}%'
+  </select>
+   <select id="借方发生额" resultType="BigDecimal" parameterType="Map">
+ 
+    <!--{
+        "db":"system",
+        "desc":"借方发生",
+        "in":[
+            {
+                "id":"period",
+                "name":"期间",
+                "datatype":"varchar",
+                "default":"",
+                "lookup":"",
+                "in_formula":"0"
+            },
+            {
+                "id":"segment1",
+                "name":"公司",
+                "datatype":"varchar",
+                "default":"",
+                "lookup":"",
+                "in_formula":"0"
+            },
+            {
+                "id":"segment2",
+                "name":"部门",
+                "datatype":"varchar",
+                "default":"",
+                "lookup":"",
+                "in_formula":"0"
+            },
+            {
+                "id":"segment3",
+                "name":"科目",
+                "datatype":"varchar",
+                "default":"",
+                "lookup":"",
+                "in_formula":"0"
+            }
+        ],
+        "out":[
+            {
+                "id":"period_net_dr",
+                "name":"period_net_dr",
+                "datatype":"BigDecimal"
+            }
+        ]
+    }
+-->
+     select nvl(sum(gb.period_net_dr),0)   period_net_dr
+  from gl_balances gb, gl_code_combinations gcc
+ where gb.code_combination_id = gcc.code_combination_id
+   and gcc.summary_flag = 'N'
+      and gb.set_of_books_id = 2
+   and gb.period_name = #{period}
+   and gcc.segment1 like '${segment1}%'
+    <if test="segment2!=''">
+   and gcc.segment2=#{segment2}
+</if>
+   and gcc.segment3 like '${segment3}%'
+  </select>
+   <select id="科目余额" resultType="BigDecimal" parameterType="Map">
+ 
+    <!--{
+	"db":"system",
+	"desc":"科目余额",
+	"in":[
+		{
+			"id":"period",
+			"name":"期间",
+			"datatype":"varchar",
+			"default":"",
+			"lookup":"",
+			"in_formula":"0"
+		},
+		{
+			"id":"segment1",
+			"name":"公司",
+			"datatype":"varchar",
+			"default":"",
+			"lookup":"",
+			"in_formula":"1"
+		},
+		{
+			"id":"segment2",
+			"name":"部门",
+			"datatype":"varchar",
+			"default":"",
+			"lookup":"",
+			"in_formula":"0"
+		},
+		{
+			"id":"segment3",
+			"name":"会计科目",
+			"datatype":"varchar",
+			"default":"",
+			"lookup":"数据字典/会计科目字典",
+			"in_formula":"1"
+		}
+	],
+	"out":[
+		{
+			"id":"bal",
+			"name":"bal",
+			"datatype":"BigDecimal"
+		}
+	]
+}-->select nvl(sum(gb.begin_balance_dr - gb.begin_balance_cr + gb.period_net_dr -
+               gb.period_net_cr),
+           0) bal
+  from gl_balances gb, gl_code_combinations gcc
+ where gb.code_combination_id = gcc.code_combination_id
+   and gcc.summary_flag = 'N'
+      and gb.set_of_books_id = 2
+   and gb.period_name = #{period}
+   and gcc.segment1 like '${segment1}%'
+    <if test="segment2!=''">
+   and gcc.segment2=#{segment2}
+</if>
+   and gcc.segment3 like '${segment3}%'
+  </select>
+   <select id="借方累积" resultType="BigDecimal" parameterType="Map">
+ 
+    <!--{
+	"db":"system",
+	"desc":"会计科目的借方累积发生额",
+	"in":[
+		{
+			"id":"period",
+			"name":"period",
+			"datatype":"varchar",
+			"default":"",
+			"lookup":"",
+			"in_formula":"0"
+		},
+		{
+			"id":"segment1",
+			"name":"segment1",
+			"datatype":"varchar",
+			"default":"",
+			"lookup":"",
+			"in_formula":"0"
+		},
+		{
+			"id":"segment2",
+			"name":"segment2",
+			"datatype":"varchar",
+			"default":"",
+			"lookup":"",
+			"in_formula":"0"
+		},
+		{
+			"id":"segment3",
+			"name":"segment3",
+			"datatype":"varchar",
+			"default":"",
+			"lookup":"",
+			"in_formula":"0"
+		}
+	],
+	"out":[
+		{
+			"id":"period_net",
+			"name":"period_net",
+			"datatype":"BigDecimal"
+		}
+	]
+}
+-->select nvl(sum(gb.period_net_cr),0)-nvl(sum(gb.period_net_cr),0) period_net
+  from gl_balances gb, gl_code_combinations gcc
+ where gb.code_combination_id = gcc.code_combination_id
+   and gcc.summary_flag = 'N'
+      and gb.set_of_books_id = 2
+   and gb.period_name = #{period}
+   and gcc.segment1 like '${segment1}%'
+    <if test="segment2!=''">
+   and gcc.segment2=#{segment2}
+</if>
+   and gcc.segment3 like '${segment3}%'
+  </select>
+   <select id="贷方累积" resultType="BigDecimal" parameterType="Map">
+ 
+    <!--{
+	"db":"system",
+	"desc":"会计科目的贷方累积发生额",
+	"in":[
+		{
+			"id":"period",
+			"name":"period",
+			"datatype":"varchar",
+			"default":"",
+			"lookup":"",
+			"in_formula":"0"
+		},
+		{
+			"id":"segment1",
+			"name":"segment1",
+			"datatype":"varchar",
+			"default":"",
+			"lookup":"",
+			"in_formula":"0"
+		},
+		{
+			"id":"segment2",
+			"name":"segment2",
+			"datatype":"varchar",
+			"default":"",
+			"lookup":"",
+			"in_formula":"0"
+		},
+		{
+			"id":"segment3",
+			"name":"segment3",
+			"datatype":"varchar",
+			"default":"",
+			"lookup":"",
+			"in_formula":"0"
+		}
+	],
+	"out":[
+		{
+			"id":"period_net_cr",
+			"name":"period_net_cr",
+			"datatype":"varchar"
+		}
+	]
+}
+-->select nvl(sum(gb.period_net_cr),0)   period_net_cr 
+  from gl_balances gb, gl_code_combinations gcc
+ where gb.code_combination_id = gcc.code_combination_id
+   and gcc.summary_flag = 'N'
+      and gb.set_of_books_id = 2
+   and gb.period_name = #{period}
+   and gcc.segment1 like '${segment1}%'
+    <if test="segment2!=''">
+   and gcc.segment2=#{segment2}
+</if>
+   and gcc.segment3 like '${segment3}%'
+  </select>
+   <select id="test" resultType="BigDecimal" parameterType="Map">
+ 
+    <!--{
+	"db":"form",
+	"desc":"test",
+	"in":[
+		{
+			"id":"period",
+			"name":"period",
+			"datatype":"varchar",
+			"default":"",
+			"lookup":"",
+			"in_formula":"0"
+		},
+		{
+			"id":"segment1",
+			"name":"segment1",
+			"datatype":"varchar",
+			"default":"",
+			"lookup":"",
+			"in_formula":"1"
+		},
+		{
+			"id":"segment3",
+			"name":"segment3",
+			"datatype":"varchar",
+			"default":"",
+			"lookup":"",
+			"in_formula":"1"
+		}
+	],
+	"out":[
+		{
+			"id":"net_bal",
+			"name":"net_bal",
+			"datatype":"varchar"
+		}
+	]
+}-->select ifnull(sum(gb.BEGIN_BALANCE_DR-gb.BEGIN_BALANCE_CR),0) net_bal
+from gl_bal_${period} gb
+where
+    gb.segment1 like '${segment1}%'
+   and gb.segment3 like '${segment3}%'
+  </select>
+   <select id="a1" resultType="BigDecimal" parameterType="Map">
+    <!--{
+	"type":"sql",
+	"desc":"a1",
+	"db":"jlerp",
+	"in":[
+		{
+			"id":"period_year",
+			"name":"年",
+			"datatype":"varchar",
+			"lookup":"数据字典/公司信息",
+			"default":"",
+			"isformula":"true"
+		},
+		{
+			"id":"period_num",
+			"name":"月",
+			"datatype":"varchar",
+			"lookup":"",
+			"default":"",
+			"isformula":"false"
+		},
+		{
+			"id":"segment1",
+			"name":"公司",
+			"datatype":"varchar",
+			"lookup":"",
+			"default":"",
+			"isformula":"false"
+		},
+		{
+			"id":"segment3",
+			"name":"会计科目",
+			"datatype":"varchar",
+			"lookup":"",
+			"default":"",
+			"isformula":"false"
+		},
+		{
+			"id":"segment5",
+			"name":"项目",
+			"datatype":"varchar",
+			"lookup":"",
+			"default":"",
+			"isformula":"false"
+		}
+	],
+	"out":[
+		{
+			"id":"net_bal",
+			"name":"net_bal",
+			"datatype":"varchar",
+			"link":{}
+		}
+	]
+}
+-->SELECT
+    ifnull(
+        sum(
+            gb.PERIOD_NET_DR-gb.PERIOD_NET_CR
+        ) ,
+        0
+    ) net_bal
+FROM
+    gl_bal_${period_year} gb
+WHERE 1=1
+    <if test="period_num!='' ">
+   and gb.PERIOD_NUM=${period_num}
+</if>
+   AND gb.SEGMENT1 like '${segment1}%'
+   and gb.segment3 LIKE '${segment3}%'
+     <if test="segment5!='' ">
+   and gb.segment5 LIKE '${segment5}%'
+</if>  </select></mapper>

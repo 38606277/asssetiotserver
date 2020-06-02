@@ -1,0 +1,2140 @@
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!--总账-->
+<mapper namespace="总账">
+   <select id="科目净额" resultType="BigDecimal" parameterType="Map">
+ 
+    <!--{
+	"in":[
+		{
+			"default":"",
+			"isformula":"false",
+			"datatype":"varchar",
+			"name":"年",
+			"id":"period_year"
+		},
+		{
+			"lookup":"",
+			"default":"",
+			"isformula":"false",
+			"datatype":"varchar",
+			"name":"月",
+			"id":"period_num"
+		},
+		{
+			"lookup":"数据字典/查询公司信息",
+			"default":"",
+			"isformula":"false",
+			"datatype":"varchar",
+			"name":"公司",
+			"id":"segment1"
+		},
+		{
+			"lookup":"数据字典/会计科目",
+			"default":"",
+			"isformula":"false",
+			"datatype":"varchar",
+			"name":"会计科目",
+			"id":"segment3"
+		},
+		{
+			"lookup":"数据字典/项目字典",
+			"default":"aaaa",
+			"isformula":"false",
+			"datatype":"varchar",
+			"name":"项目",
+			"id":"segment5"
+		}
+	],
+	"type":"sql",
+	"db":"jlerp",
+	"desc":"本期科目净额,借方-贷方\n年：2017\n月：2\n公司：公司编码，可以为表达式如5010+5021\n科目：科目编码，可以为表达式如1001+1002",
+	"out":[
+		{
+			"datatype":"varchar",
+			"name":"net_bal",
+			"link":{
+				"param":[
+					{
+						"match":"年",
+						"paramname":"年"
+					},
+					{
+						"match":"月",
+						"paramname":"月"
+					},
+					{
+						"match":"公司",
+						"paramname":"公司"
+					},
+					{
+						"match":"会计科目",
+						"paramname":"会计科目"
+					}
+				],
+				"className":"总账查询",
+				"selectName":"查询明细账"
+			},
+			"id":"net_bal"
+		}
+	]
+}-->SELECT
+    ifnull(
+        sum(
+            gb.PERIOD_NET_DR-gb.PERIOD_NET_CR
+        ) ,
+        0
+    ) net_bal
+FROM
+    gl_bal_${period_year} gb
+WHERE 1=1
+     <if test="period_num!='' ">
+   and gb.PERIOD_NUM=${period_num}
+</if>
+   AND gb.SEGMENT1 like '${segment1}%'
+   and gb.segment3 LIKE '${segment3}%'
+     <if test="segment5!='' ">
+   and gb.segment5 LIKE '${segment5}%'
+</if>
+  </select>
+   <select id="贷方发生额" resultType="BigDecimal" parameterType="Map">
+ 
+    <!--{
+	"type":"sql",
+	"db":"jlerp",
+	"desc":"贷方发生额",
+	"in":[
+		{
+			"id":"period_year",
+			"name":"period_year",
+			"datatype":"varchar",
+			"default":"",
+			"lookup":"",
+			"in_formula":"0"
+		},
+		{
+			"id":"period_num",
+			"name":"period_num",
+			"datatype":"varchar",
+			"default":"",
+			"lookup":"",
+			"in_formula":"0"
+		},
+		{
+			"id":"segment1",
+			"name":"segment1",
+			"datatype":"varchar",
+			"default":"",
+			"lookup":"",
+			"in_formula":"0"
+		},
+		{
+			"id":"segment3",
+			"name":"segment3",
+			"datatype":"varchar",
+			"default":"",
+			"lookup":"",
+			"in_formula":"0"
+		},
+		{
+			"id":"segment5",
+			"name":"segment5",
+			"datatype":"varchar",
+			"default":"",
+			"lookup":"",
+			"in_formula":"0"
+		}
+	],
+	"out":[
+		{
+			"id":"net_bal",
+			"name":"net_bal",
+			"datatype":"varchar",
+			"link":"总账查询.查询明细账?年=period_year,月=period_num,公司=segment1,会计科目=segment3"
+		}
+	]
+}-->SELECT
+    ifnull(
+        sum(
+        gb.PERIOD_NET_CR
+        ) ,
+        0
+    ) net_bal
+FROM
+    gl_bal_${period_year} gb
+WHERE 1=1
+     <if test="period_num!='' ">
+   and gb.PERIOD_NUM=${period_num}
+</if>
+   AND gb.SEGMENT1 like '${segment1}%'
+   and gb.segment3 LIKE '${segment3}%'
+     <if test="segment5!='' ">
+   and gb.segment5 LIKE '${segment5}%'
+</if>
+  </select>
+   <select id="借方发生额" resultType="BigDecimal" parameterType="Map">
+ 
+    <!--{
+	"in":[
+		{
+			"default":"",
+			"isformula":"false",
+			"datatype":"varchar",
+			"name":"年",
+			"id":"period_year"
+		},
+		{
+			"default":"",
+			"isformula":"false",
+			"datatype":"varchar",
+			"name":"月",
+			"id":"period_num"
+		},
+		{
+			"lookup":"数据字典/查询公司信息",
+			"default":"",
+			"isformula":"false",
+			"datatype":"varchar",
+			"name":"公司",
+			"id":"segment1"
+		},
+		{
+			"lookup":"数据字典/会计科目",
+			"default":"",
+			"isformula":"true",
+			"datatype":"varchar",
+			"name":"会计科目",
+			"id":"segment3"
+		}
+	],
+	"type":"sql",
+	"db":"jlerp",
+	"desc":"借方发生",
+	"out":[
+		{
+			"datatype":"BigDecimal",
+			"name":"net_bal",
+			"link":{
+				"param":[
+					{
+						"match":"年",
+						"paramname":"年"
+					},
+					{
+						"match":"月",
+						"paramname":"月"
+					},
+					{
+						"match":"公司",
+						"paramname":"公司"
+					},
+					{
+						"match":"会计科目",
+						"paramname":"会计科目"
+					}
+				],
+				"className":"总账查询",
+				"selectName":"查询明细账"
+			},
+			"id":"net_bal"
+		}
+	]
+}-->SELECT
+    ifnull(
+        sum(
+            gb.PERIOD_NET_DR
+        ) ,
+        0
+    ) net_bal
+FROM
+    gl_bal_${period_year} gb
+WHERE 1=1
+     <if test="period_num!='' ">
+   and gb.PERIOD_NUM=${period_num}
+</if>
+   AND gb.SEGMENT1 like '${segment1}%'
+   and gb.segment3 LIKE '${segment3}%'
+     <if test="segment5!='' ">
+   and gb.segment5 LIKE '${segment5}%'
+</if>
+  </select>
+   <select id="科目余额" resultType="BigDecimal" parameterType="Map">
+ 
+    <!--{
+	"type":"sql",
+	"in":[
+		{
+			"lookup":"数据字典/查询公司信息",
+			"default":"",
+			"datatype":"varchar",
+			"name":"年",
+			"in_formula":"1",
+			"id":"period_year"
+		},
+		{
+			"lookup":"数据字典/查询值集信息",
+			"default":"",
+			"datatype":"varchar",
+			"name":"月",
+			"in_formula":"0",
+			"id":"period_num"
+		},
+		{
+			"lookup":"数据字典/公司信息",
+			"default":"",
+			"datatype":"varchar",
+			"name":"公司",
+			"in_formula":"1",
+			"id":"segment1"
+		},
+		{
+			"lookup":"数据字典/部门字典",
+			"default":"",
+			"datatype":"varchar",
+			"name":"会计科目",
+			"in_formula":"0",
+			"id":"segment3"
+		},
+		{
+			"lookup":"数据字典/品牌数据字典",
+			"default":"",
+			"datatype":"varchar",
+			"name":"项目",
+			"in_formula":"0",
+			"id":"segment5"
+		}
+	],
+	"db":"jlerp",
+	"desc":"取MySQL备份数据，科目余额",
+	"out":[
+		{
+			"datatype":"varchar",
+			"name":"net_bal",
+			"link":"{\r\n  \"param\": [\r\n    {\r\n      \"name\": \"year\",\r\n      \"match\": \"year\"\r\n    },\r\n    {\r\n      \"name\": \"month\",\r\n      \"match\": \"month\"\r\n    },\r\n    {\r\n      \"name\": \"segment1\",\r\n      \"match\": \"segmemnt\"\r\n    }\r\n  ],\r\n  \"select_Name\": \"\",\r\n  \"class_name\": \"\"\r\n}",
+			"id":"net_bal"
+		}
+	]
+}-->SELECT
+    ifnull(
+        sum(
+            gb.begin_balance_dr - gb.begin_balance_cr + gb.period_net_dr -
+               gb.period_net_cr
+        ) ,
+        0
+    ) net_bal
+FROM
+    gl_bal_${period_year} gb
+WHERE 1=1
+    <if test="period_num!='' ">
+   and gb.PERIOD_NUM=${period_num}
+</if>
+   AND gb.SEGMENT1 LIKE '${segment1}%'
+   AND gb.segment3 LIKE '${segment3}%'
+     <if test="segment5!='' ">
+   and gb.segment5 LIKE '${segment5}%'
+</if>
+  </select>
+   <select id="借方累积" resultType="BigDecimal" parameterType="Map">
+ 
+SELECT
+        ifnull(CONVERT(SUM(gb.period_net_dr), DECIMAL(15, 2)), 0) AS net_bal
+FROM
+	gl_bal_${period_year} gb
+WHERE
+	gb.PERIOD_NUM between 1 and  ${period_num}
+AND gb.SEGMENT1 = #{segment1}
+AND gb.segment3 LIKE '${segment3}%'
+  </select>
+   <select id="贷方累积" resultType="BigDecimal" parameterType="Map">
+ 
+    <!--{
+    "type":"sql",
+	"db":"jlerp",
+	"desc":"会计科目的贷方累积发生额",
+	"in":[
+		{
+			"id":"period_year",
+			"name":"年",
+			"datatype":"varchar",
+			"default":"",
+			"lookup":"",
+			"in_formula":"0"
+		},
+		{
+			"id":"period_num",
+			"name":"月",
+			"datatype":"varchar",
+			"default":"",
+			"lookup":"",
+			"in_formula":"0"
+		},
+		{
+			"id":"segment1",
+			"name":"公司",
+			"datatype":"varchar",
+			"default":"",
+			"lookup":"",
+			"in_formula":"0"
+		},
+		{
+			"id":"segment3",
+			"name":"会计科目",
+			"datatype":"varchar",
+			"default":"",
+			"lookup":"",
+			"in_formula":"0"
+		}
+	],
+	"out":[
+		{
+			"id":"net_bal",
+			"name":"net_bal",
+			"datatype":"varchar"
+		}
+	]
+}-->SELECT 
+        ifnull(CONVERT(SUM(gb.period_net_cr), DECIMAL(15, 2)), 0) AS net_bal
+FROM
+	gl_bal_${period_year} gb
+WHERE
+	gb.PERIOD_NUM between 1 and  ${period_num}
+AND gb.SEGMENT1 = #{segment1}
+AND gb.segment3 LIKE '${segment3}%'
+  </select>
+   <select id="借方累积净额" resultType="BigDecimal" parameterType="Map">
+ 
+    <!--{
+    "type":"sql",
+	"db":"jlerp",
+	"desc":"借方累积净额\n期间格式：YYYYMM如201702",
+	"in":[
+		{
+			"id":"period_year",
+			"name":"年",
+			"datatype":"varchar",
+			"default":"",
+			"lookup":"",
+			"in_formula":"0"
+		},
+		{
+			"id":"period_num",
+			"name":"月",
+			"datatype":"varchar",
+			"default":"",
+			"lookup":"",
+			"in_formula":"0"
+		},
+		{
+			"id":"segment1",
+			"name":"公司",
+			"datatype":"varchar",
+			"default":"",
+			"lookup":"",
+			"in_formula":"0"
+		},
+		{
+			"id":"segment3",
+			"name":"会计科目",
+			"datatype":"varchar",
+			"default":"",
+			"lookup":"",
+			"in_formula":"0"
+		}
+	],
+	"out":[
+		{
+			"id":"net_bal",
+			"name":"net_bal",
+			"datatype":"BigDecimal"
+		}
+	]
+}-->SELECT 
+        ifnull(CONVERT(SUM(gb.period_net_dr-gb.period_net_cr), DECIMAL(15, 2)), 0) AS net_bal
+FROM
+	gl_bal_${period_year} gb
+WHERE
+	gb.PERIOD_NUM between 1 and  ${period_num}
+AND gb.SEGMENT1 = #{segment1}
+AND gb.segment3 LIKE '${segment3}%'
+  </select>
+   <select id="测试" resultType="BigDecimal" parameterType="Map">
+ 
+    <!--{
+	"db":"erp",
+	"desc":"取总账的会计科目净额\n期间：格式YYYYMM 如：201201\n公司：\n部门：\n会计科目",
+	"in":[
+		{
+			"id":"period",
+			"name":"期间",
+			"datatype":"varchar",
+			"default":"",
+			"lookup":"数据字典/会计期间",
+			"in_formula":"0"
+		},
+		{
+			"id":"segment1",
+			"name":"公司",
+			"datatype":"varchar",
+			"default":"",
+			"lookup":"数据字典/公司信息",
+			"in_formula":"1"
+		},
+		{
+			"id":"segment2",
+			"name":"部门",
+			"datatype":"varchar",
+			"default":"",
+			"lookup":"",
+			"in_formula":"0"
+		},
+		{
+			"id":"segment3",
+			"name":"会计科目",
+			"datatype":"varchar",
+			"default":"",
+			"lookup":"数据字典/会计科目",
+			"in_formula":"1"
+		}
+	],
+	"out":[
+		{
+			"id":"net",
+			"name":"net",
+			"datatype":"BigDecimal"
+		}
+	]
+}
+-->select ifnull(sum(gb.period_net_dr -gb.period_net_cr),0) net
+from gl_balances gb, gl_code_combinations gcc
+ where gb.code_combination_id = gcc.code_combination_id
+   and gcc.summary_flag = 'N'
+      and gb.set_of_books_id = 2
+   and gb.period_name = #{period}
+   and gcc.segment1 like '${segment1}%'
+    <if test="segment2!=''">
+   and gcc.segment2=#{segment2}
+</if>
+   and gcc.segment3 like '${segment3}%'
+  </select>
+   <select id="科目金额" resultType="BigDecimal" parameterType="Map">
+ 
+    <!--{
+	"db":"form",
+	"desc":"科目金额",
+	"in":[
+		{
+			"id":"period_year",
+			"name":"period_year",
+			"datatype":"varchar",
+			"default":"",
+			"lookup":"",
+			"in_formula":"0"
+		},
+		{
+			"id":"period_num",
+			"name":"period_num",
+			"datatype":"varchar",
+			"default":"",
+			"lookup":"",
+			"in_formula":"0"
+		},
+		{
+			"id":"segment1",
+			"name":"segment1",
+			"datatype":"varchar",
+			"default":"",
+			"lookup":"",
+			"in_formula":"0"
+		},
+		{
+			"id":"segment3",
+			"name":"segment3",
+			"datatype":"varchar",
+			"default":"",
+			"lookup":"",
+			"in_formula":"0"
+		}
+	],
+	"out":[
+		{
+			"id":"net_bal",
+			"name":"net_bal",
+			"datatype":"BigDecimal"
+		}
+	]
+}
+-->SELECT
+	ifnull(
+		sum(
+			gb.PERIOD_NET_DR-gb.PERIOD_NET_CR
+		) ,
+		0
+	) net_bal
+FROM
+	gl_bal_${period_year} gb
+WHERE
+gb.PERIOD_NUM=${period_num}
+AND gb.SEGMENT1=#{segment1}
+and gb.segment3 LIKE '${segment3}%'
+  </select>
+   <select id="科目余额123" resultType="BigDecimal" parameterType="Map">
+ 
+    <!--{
+	"db":"jlerp",
+	"desc":"科目余额123",
+	"in":[
+		{
+			"id":"period_year",
+			"name":"年",
+			"datatype":"varchar",
+			"default":"",
+			"lookup":"",
+			"in_formula":"0"
+		},
+		{
+			"id":"period_num",
+			"name":"月",
+			"datatype":"varchar",
+			"default":"",
+			"lookup":"",
+			"in_formula":"0"
+		},
+		{
+			"id":"segment1",
+			"name":"公司",
+			"datatype":"varchar",
+			"default":"",
+			"lookup":"数据字典/公司信息",
+			"in_formula":"0"
+		},
+		{
+			"id":"segment3",
+			"name":"会计科目",
+			"datatype":"varchar",
+			"default":"",
+			"lookup":"数据字典/会计科目字典",
+			"in_formula":"1"
+		},
+		{
+			"id":"segment5",
+			"name":"项目",
+			"datatype":"varchar",
+			"default":"",
+			"lookup":"",
+			"in_formula":"0"
+		}
+	],
+	"out":[
+		{
+			"id":"net_bal",
+			"name":"net_bal",
+			"datatype":"BigDecimal"
+		}
+	]
+}
+-->SELECT ifnull(
+        sum(
+            gb.begin_balance_dr - gb.begin_balance_cr + gb.period_net_dr -
+               gb.period_net_cr
+        ) ,
+        0
+    ) net_bal
+FROM
+    gl_bal_${period_year} gb
+WHERE 1=1
+     <if test="period_num!='' ">
+   and gb.PERIOD_NUM=${period_num}
+</if>
+   AND gb.SEGMENT1 LIKE '${segment1}%'
+   AND gb.segment3 LIKE '${segment3}%'
+     <if test="segment5!='' ">
+   and gb.segment5 LIKE '${segment5}%'
+</if>
+  </select>
+   <select id="w5" resultType="BigDecimal" parameterType="Map">
+ 
+    <!--{
+	"db":"jlerp",
+	"desc":"w55511111111",
+	"in":[
+		{
+			"lookup":"",
+			"default":"",
+			"isformula":"false",
+			"datatype":"varchar",
+			"name":"period_year",
+			"id":"period_year"
+		},
+		{
+			"lookup":"",
+			"default":"",
+			"isformula":"false",
+			"datatype":"varchar",
+			"name":"period_num",
+			"id":"period_num"
+		},
+		{
+			"lookup":"",
+			"default":"",
+			"isformula":"false",
+			"datatype":"varchar",
+			"name":"segment1",
+			"id":"segment1"
+		},
+		{
+			"lookup":"",
+			"default":"",
+			"isformula":"false",
+			"datatype":"varchar",
+			"name":"segment3",
+			"id":"segment3"
+		}
+	],
+	"out":[
+		{
+			"datatype":"varchar",
+			"name":"net_bal",
+			"link":{className:"总账",
+			        selectName:"查询明细账",
+			        param:[
+			          {paramname:"year","match":"year"},
+			          {paramname:"month","match":"month"},
+			          {paramname:"segment1","match":"segment1"}
+			           ]},
+			"id":"net_bal"
+		}
+	]
+}-->select ifnull(
+        sum(
+            gb.PERIOD_NET_DR
+        ) ,
+        0
+    ) net_bal
+FROM
+    gl_bal_${period_year} gb
+WHERE 1=1
+    <if test="period_num!='' ">
+   and gb.PERIOD_NUM=${period_num}
+</if>
+   AND gb.SEGMENT1 like '${segment1}%'
+   and gb.segment3 LIKE '${segment3}%'
+  </select>
+   <select id="w6" resultType="BigDecimal" parameterType="Map">
+ 
+    <!--{
+	"db":"jlerp",
+	"desc":"w6",
+	"in":[
+		{
+			"lookup":"",
+			"default":"",
+			"isformula":"false",
+			"datatype":"varchar",
+			"name":"period_year",
+			"id":"period_year"
+		},
+		{
+			"lookup":"",
+			"default":"",
+			"isformula":"false",
+			"datatype":"varchar",
+			"name":"period_num",
+			"id":"period_num"
+		},
+		{
+			"lookup":"",
+			"default":"",
+			"isformula":"false",
+			"datatype":"varchar",
+			"name":"segment1",
+			"id":"segment1"
+		},
+		{
+			"lookup":"",
+			"default":"",
+			"isformula":"false",
+			"datatype":"varchar",
+			"name":"segment3",
+			"id":"segment3"
+		}
+	],
+	"out":[
+		{
+			"datatype":"varchar",
+			"name":"net_bal",
+			"link":{
+				"param":[
+					{
+						"match":"period_year",
+						"paramname":"年"
+					},
+					{
+						"match":"period_num",
+						"paramname":"月"
+					},
+					{
+						"match":"segment1",
+						"paramname":"公司"
+					},
+					{
+						"match":"segment3",
+						"paramname":"会计科目"
+					}
+				],
+				"className":"总账查询",
+				"selectName":"查询明细账"
+			},
+			"id":"net_bal"
+		}
+	]
+}-->select ifnull(
+        sum(
+            gb.PERIOD_NET_DR
+        ) ,
+        0
+    ) net_bal
+FROM
+    gl_bal_${period_year} gb
+WHERE 1=1
+    <if test="period_num!='' ">
+   and gb.PERIOD_NUM=${period_num}
+</if>
+   AND gb.SEGMENT1 like '${segment1}%'
+   and gb.segment3 LIKE '${segment3}%'
+  </select>
+   <select id="w9" resultType="BigDecimal" parameterType="Map">
+ 
+    <!--{
+	"db":"jlerp",
+	"desc":"w9",
+	"in":[
+		{
+			"lookup":"数据字典/会计期间",
+			"default":"",
+			"isformula":"true",
+			"datatype":"varchar",
+			"name":"期间",
+			"id":"period"
+		},
+		{
+			"lookup":"数据字典/查询公司信息",
+			"default":"",
+			"isformula":"true",
+			"datatype":"varchar",
+			"name":"公司",
+			"id":"segment1"
+		},
+		{
+			"lookup":"",
+			"default":"",
+			"isformula":"false",
+			"datatype":"varchar",
+			"name":"部门",
+			"id":"segment2"
+		},
+		{
+			"lookup":"",
+			"default":"",
+			"isformula":"false",
+			"datatype":"varchar",
+			"name":"会计科目",
+			"id":"segment3"
+		}
+	],
+	"out":[
+		{
+			"datatype":"varchar",
+			"name":"net",
+			"link":{
+				"param":[
+					{
+						"match":"期间",
+						"paramname":"年"
+					},
+					{
+						"match":"期间",
+						"paramname":"月"
+					},
+					{
+						"match":"公司",
+						"paramname":"公司"
+					},
+					{
+						"match":"会计科目",
+						"paramname":"会计科目"
+					}
+				],
+				"className":"总账查询",
+				"selectName":"查询明细账"
+			},
+			"id":"net"
+		}
+	]
+}
+-->select ifnull(sum(gb.period_net_dr -gb.period_net_cr),0) net
+from gl_balances gb, gl_code_combinations gcc
+ where gb.code_combination_id = gcc.code_combination_id
+   and gcc.summary_flag = 'N'
+      and gb.set_of_books_id = 2
+   and gb.period_name = #{period}
+   and gcc.segment1 like '${segment1}%'
+    <if test="segment2!=''">
+   and gcc.segment2=#{segment2}
+</if>
+   and gcc.segment3 like '${segment3}%'
+  </select>
+   <select id="w10" resultType="BigDecimal" parameterType="Map">
+ 
+    <!--{
+	"db":"jlerp",
+	"desc":"w10",
+	"in":[
+		{
+			"lookup":"",
+			"default":"",
+			"isformula":"false",
+			"datatype":"varchar",
+			"name":"period_year",
+			"id":"period_year"
+		},
+		{
+			"lookup":"",
+			"default":"",
+			"isformula":"false",
+			"datatype":"varchar",
+			"name":"period_num",
+			"id":"period_num"
+		},
+		{
+			"lookup":"数据字典/查询公司信息",
+			"default":"",
+			"isformula":"false",
+			"datatype":"varchar",
+			"name":"segment1",
+			"id":"segment1"
+		},
+		{
+			"lookup":"数据字典/会计科目",
+			"default":"",
+			"isformula":"true",
+			"datatype":"varchar",
+			"name":"segment3",
+			"id":"segment3"
+		},
+		{
+			"lookup":"数据字典/项目字典",
+			"default":"",
+			"isformula":"false",
+			"datatype":"varchar",
+			"name":"segment5",
+			"id":"segment5"
+		}
+	],
+	"out":[
+		{
+			"datatype":"varchar",
+			"name":"net_bal",
+			"link":{
+				"param":[
+					{
+						"match":"period_year",
+						"paramname":"年"
+					},
+					{
+						"match":"period_num",
+						"paramname":"月"
+					},
+					{
+						"match":"segment1",
+						"paramname":"公司"
+					},
+					{
+						"match":"segment3",
+						"paramname":"会计科目"
+					}
+				],
+				"className":"总账查询",
+				"selectName":"查询明细账"
+			},
+			"id":"net_bal"
+		}
+	]
+}
+-->SELECT
+    ifnull(
+        sum(
+            gb.PERIOD_NET_DR
+        ) ,
+        0
+    ) net_bal
+FROM
+    gl_bal_${period_year} gb
+WHERE 1=1
+     <if test="period_num!='' ">
+   and gb.PERIOD_NUM=${period_num}
+</if>
+   AND gb.SEGMENT1 like '${segment1}%'
+   and gb.segment3 LIKE '${segment3}%'
+     <if test="segment5!='' ">
+   and gb.segment5 LIKE '${segment5}%'
+</if>
+  </select>
+   <select id="w234" resultType="BigDecimal" parameterType="Map">
+ 
+    <!--{
+	"db":"jlerp",
+	"desc":"w1",
+	"in":[
+		{
+			"lookup":"",
+			"default":"",
+			"isformula":"false",
+			"datatype":"varchar",
+			"name":"period_year",
+			"id":"period_year"
+		},
+		{
+			"lookup":"",
+			"default":"",
+			"isformula":"false",
+			"datatype":"varchar",
+			"name":"period_num",
+			"id":"period_num"
+		},
+		{
+			"lookup":"",
+			"default":"",
+			"isformula":"false",
+			"datatype":"varchar",
+			"name":"segment1",
+			"id":"segment1"
+		},
+		{
+			"lookup":"",
+			"default":"",
+			"isformula":"false",
+			"datatype":"varchar",
+			"name":"segment3",
+			"id":"segment3"
+		},
+		{
+			"lookup":"",
+			"default":"",
+			"isformula":"false",
+			"datatype":"varchar",
+			"name":"segment5",
+			"id":"segment5"
+		}
+	],
+	"out":[
+		{
+			"datatype":"varchar",
+			"name":"net_bal",
+			"link":"",
+			"id":"net_bal"
+		}
+	]
+}
+-->SELECT
+    ifnull(
+        sum(
+            gb.begin_balance_dr - gb.begin_balance_cr + gb.period_net_dr -
+               gb.period_net_cr
+        ) ,
+        0
+    ) net_bal
+FROM
+    gl_bal_${period_year} gb
+WHERE 1=1
+    <if test="period_num!='' ">
+   and gb.PERIOD_NUM=${period_num}
+</if>
+   AND gb.SEGMENT1 LIKE '${segment1}%'
+   AND gb.segment3 LIKE '${segment3}%'
+     <if test="segment5!='' ">
+   and gb.segment5 LIKE '${segment5}%'
+</if>
+  </select>
+   <select id="kkkk" resultType="BigDecimal" parameterType="Map">
+ 
+    <!--{
+	"db":"jlerp",
+	"id":"",
+	"desc":"kkkkk",
+	"in":[
+		{
+			"lookup":"",
+			"default":"",
+			"isformula":"false",
+			"datatype":"varchar",
+			"name":"period_year",
+			"id":"period_year"
+		},
+		{
+			"lookup":"",
+			"default":"",
+			"isformula":"false",
+			"datatype":"varchar",
+			"name":"period_num",
+			"id":"period_num"
+		},
+		{
+			"lookup":"",
+			"default":"",
+			"isformula":"false",
+			"datatype":"varchar",
+			"name":"segment1",
+			"id":"segment1"
+		},
+		{
+			"lookup":"",
+			"default":"",
+			"isformula":"false",
+			"datatype":"varchar",
+			"name":"segment3",
+			"id":"segment3"
+		},
+		{
+			"lookup":"",
+			"default":"",
+			"isformula":"false",
+			"datatype":"varchar",
+			"name":"segment5",
+			"id":"segment5"
+		}
+	],
+	"out":[
+		{
+			"datatype":"varchar",
+			"name":"net_bal",
+			"link":"",
+			"id":"net_bal"
+		}
+	]
+}
+-->SELECT
+    ifnull(
+        sum(
+            gb.PERIOD_NET_DR-gb.PERIOD_NET_CR
+        ) ,
+        0
+    ) net_bal
+FROM
+    gl_bal_${period_year} gb
+WHERE 1=1
+     <if test="period_num!='' ">
+   and gb.PERIOD_NUM=${period_num}
+</if>
+   AND gb.SEGMENT1 like '${segment1}%'
+   and gb.segment3 LIKE '${segment3}%'
+     <if test="segment5!='' ">
+   and gb.segment5 LIKE '${segment5}%'
+</if>
+  </select>
+   <select id="mmm" resultType="BigDecimal" parameterType="Map">
+ 
+    <!--{
+	"db":"jlerp",
+	"id":"",
+	"desc":"mmm",
+	"in":[
+		{
+			"lookup":"",
+			"default":"",
+			"isformula":"false",
+			"datatype":"varchar",
+			"name":"period_year",
+			"id":"period_year"
+		},
+		{
+			"lookup":"",
+			"default":"",
+			"isformula":"false",
+			"datatype":"varchar",
+			"name":"period_num",
+			"id":"period_num"
+		},
+		{
+			"lookup":"",
+			"default":"",
+			"isformula":"false",
+			"datatype":"varchar",
+			"name":"segment1",
+			"id":"segment1"
+		},
+		{
+			"lookup":"",
+			"default":"",
+			"isformula":"false",
+			"datatype":"varchar",
+			"name":"segment3",
+			"id":"segment3"
+		},
+		{
+			"lookup":"",
+			"default":"",
+			"isformula":"false",
+			"datatype":"varchar",
+			"name":"segment5",
+			"id":"segment5"
+		}
+	],
+	"out":[
+		{
+			"datatype":"varchar",
+			"name":"net_bal",
+			"link":"",
+			"id":"net_bal"
+		}
+	]
+}
+-->SELECT
+    ifnull(
+        sum(
+            gb.PERIOD_NET_DR-gb.PERIOD_NET_CR
+        ) ,
+        0
+    ) net_bal
+FROM
+    gl_bal_${period_year} gb
+WHERE 1=1
+     <if test="period_num!='' ">
+   and gb.PERIOD_NUM=${period_num}
+</if>
+   AND gb.SEGMENT1 like '${segment1}%'
+   and gb.segment3 LIKE '${segment3}%'
+     <if test="segment5!='' ">
+   and gb.segment5 LIKE '${segment5}%'
+</if>
+  </select>
+   <select id="a1123" resultType="BigDecimal" parameterType="Map">
+ 
+    <!--{
+	"db":"jlerp",
+	"desc":"a123a",
+	"type":"sql",
+	"in":[
+		{
+			"lookup":"",
+			"default":"",
+			"isformula":"false",
+			"datatype":"varchar",
+			"name":"period_year",
+			"id":"period_year"
+		},
+		{
+			"lookup":"",
+			"default":"",
+			"isformula":"false",
+			"datatype":"varchar",
+			"name":"period_num",
+			"id":"period_num"
+		},
+		{
+			"lookup":"",
+			"default":"",
+			"isformula":"false",
+			"datatype":"varchar",
+			"name":"segment1",
+			"id":"segment1"
+		},
+		{
+			"lookup":"",
+			"default":"",
+			"isformula":"false",
+			"datatype":"varchar",
+			"name":"segment3",
+			"id":"segment3"
+		},
+		{
+			"lookup":"",
+			"default":"",
+			"isformula":"false",
+			"datatype":"varchar",
+			"name":"segment5",
+			"id":"segment5"
+		}
+	],
+	"out":[
+		{
+			"datatype":"varchar",
+			"name":"net_bal",
+			"link":"",
+			"id":"net_bal"
+		}
+	]
+}
+-->SELECT
+    ifnull(
+        sum(
+            gb.PERIOD_NET_DR-gb.PERIOD_NET_CR
+        ) ,
+        0
+    ) net_bal
+FROM
+    gl_bal_${period_year} gb
+WHERE 1=1
+    <if test="period_num!='' ">
+   and gb.PERIOD_NUM=${period_num}
+</if>
+   AND gb.SEGMENT1 like '${segment1}%'
+   and gb.segment3 LIKE '${segment3}%'
+     <if test="segment5!='' ">
+   and gb.segment5 LIKE '${segment5}%'
+</if>
+  </select>
+   <select id="q1" resultType="BigDecimal" parameterType="Map">
+ 
+    <!--{
+	"db":"jlerp",
+	"desc":"q1",
+	"type":"sql",
+	"in":[
+		{
+			"lookup":"",
+			"default":"",
+			"isformula":"false",
+			"datatype":"varchar",
+			"name":"period_year",
+			"id":"period_year"
+		},
+		{
+			"lookup":"",
+			"default":"",
+			"isformula":"false",
+			"datatype":"varchar",
+			"name":"period_num",
+			"id":"period_num"
+		},
+		{
+			"lookup":"",
+			"default":"",
+			"isformula":"false",
+			"datatype":"varchar",
+			"name":"segment1",
+			"id":"segment1"
+		},
+		{
+			"lookup":"",
+			"default":"",
+			"isformula":"false",
+			"datatype":"varchar",
+			"name":"segment3",
+			"id":"segment3"
+		},
+		{
+			"lookup":"",
+			"default":"",
+			"isformula":"false",
+			"datatype":"varchar",
+			"name":"segment5",
+			"id":"segment5"
+		}
+	],
+	"out":[
+		{
+			"datatype":"varchar",
+			"name":"net_bal",
+			"link":"",
+			"id":"net_bal"
+		}
+	]
+}
+-->SELECT
+    ifnull(
+        sum(
+            gb.PERIOD_NET_DR-gb.PERIOD_NET_CR
+        ) ,
+        0
+    ) net_bal
+FROM
+    gl_bal_${period_year} gb
+WHERE 1=1
+     <if test="period_num!='' ">
+   and gb.PERIOD_NUM=${period_num}
+</if>
+   AND gb.SEGMENT1 like '${segment1}%'
+   and gb.segment3 LIKE '${segment3}%'
+     <if test="segment5!='' ">
+   and gb.segment5 LIKE '${segment5}%'
+</if>
+  </select>
+   <select id="z1" resultType="BigDecimal" parameterType="Map">
+ 
+    <!--{
+	"db":"jlerp",
+	"desc":"x1",
+	"type":"sql",
+	"in":[
+		{
+			"lookup":"",
+			"default":"",
+			"isformula":"false",
+			"datatype":"varchar",
+			"name":"a",
+			"id":"period_year"
+		},
+		{
+			"lookup":"",
+			"default":"",
+			"isformula":"false",
+			"datatype":"varchar",
+			"name":"b",
+			"id":"period_num"
+		},
+		{
+			"lookup":"数据字典/查询值集信息",
+			"default":"",
+			"isformula":"true",
+			"datatype":"varchar",
+			"name":"c",
+			"id":"segment1"
+		},
+		{
+			"lookup":"",
+			"default":"",
+			"isformula":"true",
+			"datatype":"varchar",
+			"name":"d",
+			"id":"segment3"
+		},
+		{
+			"lookup":"",
+			"default":"",
+			"isformula":"false",
+			"datatype":"varchar",
+			"name":"e",
+			"id":"segment5"
+		}
+	],
+	"out":[
+		{
+			"datatype":"varchar",
+			"name":"net_bal",
+			"link":"",
+			"id":"net_bal"
+		}
+	]
+}-->SELECT
+    ifnull(
+        sum(
+            gb.PERIOD_NET_DR-gb.PERIOD_NET_CR
+        ) ,
+        0
+    ) net_bal
+FROM
+    gl_bal_${period_year} gb
+WHERE 1=1
+     <if test="period_num!='' ">
+   and gb.PERIOD_NUM=${period_num}
+</if>
+   AND gb.SEGMENT1 like '${segment1}%'
+   and gb.segment3 LIKE '${segment3}%'
+     <if test="segment5!='' ">
+   and gb.segment5 LIKE '${segment5}%'
+</if>
+  </select>
+   <select id="科目余额1" resultType="BigDecimal" parameterType="Map">
+ 
+    <!--{
+	"in":[
+		{
+			"lookup":"",
+			"default":"",
+			"isformula":"false",
+			"datatype":"varchar",
+			"name":"年",
+			"id":"period_year"
+		},
+		{
+			"lookup":"",
+			"default":"",
+			"isformula":"false",
+			"datatype":"varchar",
+			"name":"月",
+			"id":"period_num"
+		},
+		{
+			"lookup":"",
+			"default":"",
+			"isformula":"false",
+			"datatype":"varchar",
+			"name":"公司",
+			"id":"segment1"
+		},
+		{
+			"lookup":"",
+			"default":"",
+			"isformula":"false",
+			"datatype":"varchar",
+			"name":"会计科目",
+			"id":"segment3"
+		},
+		{
+			"lookup":"",
+			"default":"",
+			"isformula":"false",
+			"datatype":"varchar",
+			"name":"项目",
+			"id":"segment5"
+		}
+	],
+	"type":"sql",
+	"db":"jlerp",
+	"desc":"科目余额1",
+	"out":[
+		{
+			"datatype":"varchar",
+			"name":"net_bal",
+			"link":{
+				"param":[
+					{
+						"match":"年",
+						"paramname":"年"
+					},
+					{
+						"match":"月",
+						"paramname":"月"
+					},
+					{
+						"match":"公司",
+						"paramname":"公司"
+					},
+					{
+						"match":"会计科目",
+						"paramname":"会计科目"
+					}
+				],
+				"className":"总账查询",
+				"selectName":"查询明细账"
+			},
+			"id":"net_bal"
+		}
+	]
+}-->SELECT
+    ifnull(
+        sum(
+            gb.begin_balance_dr - gb.begin_balance_cr + gb.period_net_dr -
+               gb.period_net_cr
+        ) ,
+        0
+    ) net_bal
+FROM
+    gl_bal_${period_year} gb
+WHERE 1=1
+    <if test="period_num!='' ">
+   and gb.PERIOD_NUM=${period_num}
+</if>
+   AND gb.SEGMENT1 LIKE '${segment1}%'
+   AND gb.segment3 LIKE '${segment3}%'
+     <if test="segment5!='' ">
+   and gb.segment5 LIKE '${segment5}%'
+</if>
+  </select>
+   <select id="aaa" resultType="BigDecimal" parameterType="Map">
+ 
+    <!--{
+	"type":"sql",
+	"desc":"aaa",
+	"db":"jlerp",
+	"in":[
+		{
+			"id":"period_year",
+			"name":"年",
+			"datatype":"varchar",
+			"lookup":"",
+			"default":"",
+			"isformula":"false"
+		},
+		{
+			"id":"period_num",
+			"name":"月",
+			"datatype":"varchar",
+			"lookup":"",
+			"default":"",
+			"isformula":"false"
+		},
+		{
+			"id":"segment1",
+			"name":"公司",
+			"datatype":"varchar",
+			"lookup":"",
+			"default":"",
+			"isformula":"false"
+		},
+		{
+			"id":"segment3",
+			"name":"会计科目",
+			"datatype":"varchar",
+			"lookup":"",
+			"default":"",
+			"isformula":"false"
+		},
+		{
+			"id":"segment5",
+			"name":"segment5",
+			"datatype":"varchar",
+			"lookup":"",
+			"default":"",
+			"isformula":"false"
+		}
+	],
+	"out":[
+		{
+			"id":"net_bal",
+			"name":"net_bal",
+			"datatype":"varchar",
+			"link":{}
+		}
+	]
+}
+-->SELECT
+    ifnull(
+        sum(
+            gb.begin_balance_dr - gb.begin_balance_cr + gb.period_net_dr -
+               gb.period_net_cr
+        ) ,
+        0
+    ) net_bal
+FROM
+    gl_bal_${period_year} gb
+WHERE 1=1
+    <if test="period_num!='' ">
+   and gb.PERIOD_NUM=${period_num}
+</if>
+   AND gb.SEGMENT1 LIKE '${segment1}%'
+   AND gb.segment3 LIKE '${segment3}%'
+     <if test="segment5!='' ">
+   and gb.segment5 LIKE '${segment5}%'
+</if>
+  </select>
+   <select id="abc" resultType="BigDecimal" parameterType="Map">
+ 
+    <!--{
+	"type":"sql",
+	"desc":"abc",
+	"db":"jlerp",
+	"in":[
+		{
+			"id":"period_year",
+			"name":"period_year",
+			"datatype":"varchar",
+			"lookup":"",
+			"default":"",
+			"isformula":"false"
+		},
+		{
+			"id":"period_num",
+			"name":"period_num",
+			"datatype":"varchar",
+			"lookup":"",
+			"default":"",
+			"isformula":"false"
+		},
+		{
+			"id":"segment1",
+			"name":"segment1",
+			"datatype":"varchar",
+			"lookup":"",
+			"default":"",
+			"isformula":"false"
+		},
+		{
+			"id":"segment3",
+			"name":"segment3",
+			"datatype":"varchar",
+			"lookup":"",
+			"default":"",
+			"isformula":"false"
+		},
+		{
+			"id":"segment5",
+			"name":"segment5",
+			"datatype":"varchar",
+			"lookup":"",
+			"default":"",
+			"isformula":"false"
+		}
+	],
+	"out":[
+		{
+			"id":"net_bal",
+			"name":"net_bal",
+			"datatype":"varchar",
+			"link":{}
+		}
+	]
+}
+-->SELECT
+    ifnull(
+        sum(
+            gb.PERIOD_NET_DR
+        ) ,
+        0
+    ) net_bal
+FROM
+    gl_bal_${period_year} gb
+WHERE 1=1
+     <if test="period_num!='' ">
+   and gb.PERIOD_NUM=${period_num}
+</if>
+   AND gb.SEGMENT1 like '${segment1}%'
+   and gb.segment3 LIKE '${segment3}%'
+     <if test="segment5!='' ">
+   and gb.segment5 LIKE '${segment5}%'
+</if>
+  </select>
+   <select id="查询科目净额" resultType="BigDecimal" parameterType="Map">
+ 
+    <!--{
+	"type":"sql",
+	"desc":"",
+	"db":"jlerp",
+	"in":[
+		{
+			"id":"period_year",
+			"name":"年",
+			"datatype":"varchar",
+			"lookup":"",
+			"default":"",
+			"isformula":"false"
+		},
+		{
+			"id":"period_num",
+			"name":"月",
+			"datatype":"varchar",
+			"lookup":"",
+			"default":"",
+			"isformula":"false"
+		},
+		{
+			"id":"segment1",
+			"name":"分公司",
+			"datatype":"varchar",
+			"lookup":"数据字典/公司信息",
+			"default":"",
+			"isformula":"false"
+		},
+		{
+			"id":"segment3",
+			"name":"会计科目",
+			"datatype":"varchar",
+			"lookup":"数据字典/会计科目",
+			"default":"",
+			"isformula":"false"
+		},
+		{
+			"id":"segment5",
+			"name":"项目",
+			"datatype":"varchar",
+			"lookup":"",
+			"default":"",
+			"isformula":"false"
+		}
+	],
+	"out":[
+		{
+			"id":"net_bal",
+			"name":"net_bal",
+			"datatype":"varchar",
+			"link":{}
+		}
+	]
+}
+-->SELECT
+    ifnull(
+        sum(
+            gb.PERIOD_NET_DR-gb.PERIOD_NET_CR
+        ) ,
+        0
+    ) net_bal
+FROM
+    gl_bal_${period_year} gb
+WHERE 1=1
+     <if test="period_num!='' ">
+   and gb.PERIOD_NUM=${period_num}
+</if>
+   AND gb.SEGMENT1 like '${segment1}%'
+   and gb.segment3 LIKE '${segment3}%'
+     <if test="segment5!='' ">
+   and gb.segment5 LIKE '${segment5}%'
+</if>
+  </select>
+   <select id="a123" resultType="BigDecimal" parameterType="Map">
+ 
+    <!--{
+	"type":"sql",
+	"desc":"a123",
+	"db":"jlerp",
+	"in":[
+		{
+			"id":"period_year",
+			"name":"period_year",
+			"datatype":"varchar",
+			"lookup":"",
+			"default":"",
+			"isformula":"false"
+		},
+		{
+			"id":"period_num",
+			"name":"period_num",
+			"datatype":"varchar",
+			"lookup":"",
+			"default":"",
+			"isformula":"false"
+		},
+		{
+			"id":"segment1",
+			"name":"segment1",
+			"datatype":"varchar",
+			"lookup":"",
+			"default":"",
+			"isformula":"false"
+		},
+		{
+			"id":"segment3",
+			"name":"segment3",
+			"datatype":"varchar",
+			"lookup":"",
+			"default":"",
+			"isformula":"false"
+		},
+		{
+			"id":"segment5",
+			"name":"segment5",
+			"datatype":"varchar",
+			"lookup":"",
+			"default":"",
+			"isformula":"false"
+		}
+	],
+	"out":[
+		{
+			"id":"net_bal",
+			"name":"net_bal",
+			"datatype":"varchar",
+			"link":{}
+		}
+	]
+}
+-->SELECT
+    ifnull(
+        sum(
+            gb.begin_balance_dr - gb.begin_balance_cr + gb.period_net_dr -
+               gb.period_net_cr
+        ) ,
+        0
+    ) net_bal
+FROM
+    gl_bal_${period_year} gb
+WHERE 1=1
+    <if test="period_num!='' ">
+   and gb.PERIOD_NUM=${period_num}
+</if>
+   AND gb.SEGMENT1 LIKE '${segment1}%'
+   AND gb.segment3 LIKE '${segment3}%'
+     <if test="segment5!='' ">
+   and gb.segment5 LIKE '${segment5}%'
+</if>
+  </select>
+   <select id="T10" resultType="BigDecimal" parameterType="Map">
+ 
+    <!--{
+	"type":"sql",
+	"desc":"T10",
+	"db":"jlerp",
+	"in":[
+		{
+			"id":"period_year",
+			"name":"a",
+			"datatype":"varchar",
+			"dict":"数据字典/查询公司信息",
+			"default":"",
+			"isformula":"false"
+		},
+		{
+			"id":"period_num",
+			"name":"b",
+			"datatype":"varchar",
+			"dict":"数据字典/会计科目",
+			"default":"",
+			"isformula":"false"
+		},
+		{
+			"id":"segment1",
+			"name":"c",
+			"datatype":"varchar",
+			"dict":"",
+			"default":"",
+			"isformula":"false"
+		},
+		{
+			"id":"segment3",
+			"name":"d",
+			"datatype":"varchar",
+			"dict":"数据字典/会计科目",
+			"default":"",
+			"isformula":"false"
+		},
+		{
+			"id":"segment5",
+			"name":"e",
+			"datatype":"varchar",
+			"dict":"数据字典/部门字典",
+			"default":"",
+			"isformula":"false"
+		}
+	],
+	"out":[
+		{
+			"id":"net_bal",
+			"name":"net_bal",
+			"datatype":"varchar",
+			"link":{}
+		}
+	]
+}
+-->SELECT
+    ifnull(
+        sum(
+            gb.PERIOD_NET_DR-gb.PERIOD_NET_CR
+        ) ,
+        0
+    ) net_bal
+FROM
+    gl_bal_${period_year} gb
+WHERE 1=1
+     <if test="period_num!='' ">
+   and gb.PERIOD_NUM=${period_num}
+</if>
+   AND gb.SEGMENT1 like '${segment1}%'
+   and gb.segment3 LIKE '${segment3}%'
+     <if test="segment5!='' ">
+   and gb.segment5 LIKE '${segment5}%'
+</if>
+  </select>
+   <select id="bbbbbbbb" resultType="BigDecimal" parameterType="Map">
+ 
+    <!--{
+	"type":"sql",
+	"desc":"bbbbbbbbbbbbb",
+	"db":"jlerp",
+	"in":[
+		{
+			"id":"period_year",
+			"name":"period_year",
+			"datatype":"varchar",
+			"dict":"数据字典/查询值集信息",
+			"default":"",
+			"isformula":"true"
+		},
+		{
+			"id":"period_num",
+			"name":"period_num",
+			"datatype":"varchar",
+			"dict":"",
+			"default":"",
+			"isformula":"false"
+		},
+		{
+			"id":"segment1",
+			"name":"segment1",
+			"datatype":"varchar",
+			"dict":"",
+			"default":"",
+			"isformula":"false"
+		},
+		{
+			"id":"segment3",
+			"name":"segment3",
+			"datatype":"varchar",
+			"dict":"",
+			"default":"",
+			"isformula":"false"
+		},
+		{
+			"id":"segment5",
+			"name":"segment5",
+			"datatype":"varchar",
+			"dict":"",
+			"default":"",
+			"isformula":"false"
+		}
+	],
+	"out":[
+		{
+			"id":"net_bal",
+			"name":"net_bal",
+			"datatype":"varchar",
+			"link":{}
+		}
+	]
+}
+-->SELECT
+    ifnull(
+        sum(
+            gb.PERIOD_NET_DR-gb.PERIOD_NET_CR
+        ) ,
+        0
+    ) net_bal
+FROM
+    gl_bal_${period_year} gb
+WHERE 1=1
+     <if test="period_num!='' ">
+   and gb.PERIOD_NUM=${period_num}
+</if>
+   AND gb.SEGMENT1 like '${segment1}%'
+   and gb.segment3 LIKE '${segment3}%'
+     <if test="segment5!='' ">
+   and gb.segment5 LIKE '${segment5}%'
+</if>
+  </select>
+   <select id="tttt" resultType="BigDecimal" parameterType="Map">
+ 
+    <!--{
+	"type":"sql",
+	"desc":"bbbb",
+	"db":"jlerp",
+	"in":[
+		{
+			"id":"period_year",
+			"name":"期间",
+			"datatype":"varchar",
+			"dict":"",
+			"default":"",
+			"isformula":"false"
+		},
+		{
+			"id":"period_num",
+			"name":"period_num",
+			"datatype":"varchar",
+			"dict":"",
+			"default":"",
+			"isformula":"false"
+		},
+		{
+			"id":"segment1",
+			"name":"segment1",
+			"datatype":"varchar",
+			"dict":"",
+			"default":"",
+			"isformula":"false"
+		},
+		{
+			"id":"segment3",
+			"name":"segment3",
+			"datatype":"varchar",
+			"dict":"",
+			"default":"",
+			"isformula":"false"
+		},
+		{
+			"id":"segment5",
+			"name":"segment5",
+			"datatype":"varchar",
+			"dict":"",
+			"default":"",
+			"isformula":"false"
+		}
+	],
+	"out":[
+		{
+			"id":"net_bal",
+			"name":"net_bal",
+			"datatype":"varchar",
+			"link":{}
+		}
+	]
+}
+-->SELECT
+    ifnull(
+        sum(
+            gb.PERIOD_NET_DR-gb.PERIOD_NET_CR
+        ) ,
+        0
+    ) net_bal
+FROM
+    gl_bal_${period_year} gb
+WHERE 1=1
+     <if test="period_num!='' ">
+   and gb.PERIOD_NUM=${period_num}
+</if>
+   AND gb.SEGMENT1 like '${segment1}%'
+   and gb.segment3 LIKE '${segment3}%'
+     <if test="segment5!='' ">
+   and gb.segment5 LIKE '${segment5}%'
+</if>
+  </select>  <select id="a987" resultType="BigDecimal" parameterType="Map">
+    <!--{
+	"type":"sql",
+	"desc":"bbbb",
+	"db":"jlerp",
+	"in":[
+		{
+			"id":"period_year",
+			"name":"期间",
+			"datatype":"varchar",
+			"dict":"",
+			"default":"",
+			"isformula":"false"
+		},
+		{
+			"id":"period_num",
+			"name":"period_num",
+			"datatype":"varchar",
+			"dict":"",
+			"default":"",
+			"isformula":"false"
+		},
+		{
+			"id":"segment1",
+			"name":"segment1",
+			"datatype":"varchar",
+			"dict":"",
+			"default":"",
+			"isformula":"false"
+		},
+		{
+			"id":"segment3",
+			"name":"segment3",
+			"datatype":"varchar",
+			"dict":"",
+			"default":"",
+			"isformula":"false"
+		},
+		{
+			"id":"segment5",
+			"name":"segment5",
+			"datatype":"varchar",
+			"dict":"",
+			"default":"",
+			"isformula":"false"
+		}
+	],
+	"out":[
+		{
+			"id":"net_bal",
+			"name":"net_bal",
+			"datatype":"varchar",
+			"link":{}
+		}
+	]
+}
+-->SELECT
+    ifnull(
+        sum(
+            gb.PERIOD_NET_DR-gb.PERIOD_NET_CR
+        ) ,
+        0
+    ) net_bal
+FROM
+    gl_bal_${period_year} gb
+WHERE 1=1
+    <if test="period_num!='' ">
+   and gb.PERIOD_NUM=${period_num}
+</if>
+   AND gb.SEGMENT1 like '${segment1}%'
+   and gb.segment3 LIKE '${segment3}%'
+     <if test="segment5!='' ">
+   and gb.segment5 LIKE '${segment5}%'
+</if>  </select></mapper>

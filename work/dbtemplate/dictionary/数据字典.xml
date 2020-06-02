@@ -1,0 +1,432 @@
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="数据字典">
+   <cache/>
+   <select id="3">
+		select code,name from test_dict
+</select>
+   <select id="查询公司信息" parameterType="Map" resultType="Map">
+ 
+    <!--{
+            "db":"jlerp",
+            "desc":"公司信息字典",
+            "in":[],
+            "out":[
+                {
+                    "id":"value",
+                    "name":"value",
+                    "datatype":"varchar"
+                },
+                {
+                    "id":"name",
+                    "name":"name",
+                    "datatype":"varchar"
+                }
+            ]
+        }-->select ffv.flex_value value ,
+		ffvt.description name
+		from fnd_id_flex_segments fifs,
+		gl_sets_of_books     gsob,
+		fnd_flex_values      ffv,
+		fnd_flex_values_tl   ffvt
+		where gsob.chart_of_accounts_id = fifs.id_flex_num
+		and id_flex_code = 'GL#'
+		and ffv.flex_value_id = ffvt.flex_value_id
+		and ffvt.language = 'ZHS'
+		and ffv.flex_value_set_id = fifs.flex_value_set_id
+		and ffv.enabled_flag = 'Y'
+		and ffv.end_date_active is null
+		and gsob.set_of_books_id = 2
+		and fifs.application_column_name = 'SEGMENT1'
+		order by ffv.flex_value
+  </select>
+   <select id="查询值集信息" parameterType="Map" resultType="Map">
+ 
+    <!--{
+                 db:"jlerp",
+                 desc:"查询值集信息",
+                   in:[
+                        {id:"value_set_name",name:"值集名称",datatype:"varchar"}
+                      ],
+                   out:[
+                        {id:"code",name:"值集编码",datatype:"varchar"},
+                        {id:"description",name:"值集名称",datatype:"varchar"},
+                        {id:"flag",name:"是否启用",datatype:"varchar"},
+                        {id:"start_date",name:"启用日期",datatype:"varchar"},
+                        {id:"end_date",name:"结束日期",datatype:"varchar"}
+                       ]
+                 }-->
+ <![CDATA[
+	  SELECT ffv.flex_value code,
+       to_char(ffv.flex_value) || ' ' || ffvt.description description,
+       ffv.enabled_flag flag,
+       to_char(ffv.start_date_active, 'yyyy-mm-dd') start_date,
+       to_char(ffv.end_date_active, 'yyyy-mm-dd') end_date
+FROM   apps.fnd_flex_values     ffv,
+       apps.fnd_flex_values_tl  ffvt,
+       apps.fnd_flex_value_sets ffvs
+WHERE  ffv.flex_value_id = ffvt.flex_value_id
+AND    ffvt.LANGUAGE = 'ZHS'
+AND length(ffv.flex_value) = 10
+AND    ffvs.flex_value_set_id = ffv.flex_value_set_id
+AND    ffvs.flex_value_set_name = nvl(#{value_set_name},ffvs.flex_value_set_name)
+ORDER  BY ffv.flex_value
+
+	 ]]>
+  </select>
+   <select id="会计期间" resultType="Map" parameterType="Map">
+ 
+    <!--{
+            "db":"system",
+            "desc":"",
+            "in":[],
+            "out":[
+                {
+                    "id":"value",
+                    "name":"value",
+                    "datatype":"varchar"
+                },
+                {
+                    "id":"name",
+                    "name":"name",
+                    "datatype":"varchar"
+                }
+            ]
+        }
+        --><![CDATA[select gps.period_name value, gps.period_year || '年'||gps.period_num||'月' name
+  from gl_period_statuses gps
+ where gps.set_of_books_id = 2 and gps.application_id=201
+ order by gps.period_year desc, gps.period_num ]]>
+  </select>
+   <select id="会计科目" resultType="Map" parameterType="Map" useCache="true">
+ 
+    <!--{
+            "db":"jlerp",
+            "desc":"",
+            "in":[],
+            "out":[
+                {
+                    "id":"value",
+                    "name":"科目编码",
+                    "datatype":"varchar"
+                },
+                {
+                    "id":"name",
+                    "name":"name",
+                    "datatype":"varchar"
+                }
+            ]
+        }-->select ffv.flex_value value,
+		ffvt.description name
+		from fnd_id_flex_segments fifs,
+		gl_sets_of_books     gsob,
+		fnd_flex_values      ffv,
+		fnd_flex_values_tl   ffvt
+		where gsob.chart_of_accounts_id = fifs.id_flex_num
+		and id_flex_code = 'GL#'
+		and ffv.flex_value_id = ffvt.flex_value_id
+		and ffvt.language = 'ZHS'
+		and ffv.flex_value_set_id = fifs.flex_value_set_id
+		and ffv.enabled_flag = 'Y'
+		and ffv.end_date_active is null
+		and gsob.set_of_books_id = 2
+		and fifs.application_column_name = 'SEGMENT3'
+		order by ffv.flex_value
+  </select>
+   <select id="部门字典" resultType="Map" parameterType="Map">
+ 
+    <!--{
+            "db":"jlerp",
+            "desc":"",
+            "in":[],
+            "out":[
+                {
+                    "id":"value",
+                    "name":"部门编码",
+                    "datatype":"varchar"
+                },
+                {
+                    "id":"name",
+                    "name":"部门名称",
+                    "datatype":"varchar"
+                }
+            ]
+        }
+        -->select ffv.flex_value value ,
+		ffvt.description name
+		from fnd_id_flex_segments fifs,
+		gl_sets_of_books     gsob,
+		fnd_flex_values      ffv,
+		fnd_flex_values_tl   ffvt
+		where gsob.chart_of_accounts_id = fifs.id_flex_num
+		and id_flex_code = 'GL#'
+		and ffv.flex_value_id = ffvt.flex_value_id
+		and ffvt.language = 'ZHS'
+		and ffv.flex_value_set_id = fifs.flex_value_set_id
+		and ffv.enabled_flag = 'Y'
+		and ffv.end_date_active is null
+		and gsob.set_of_books_id = 2
+		and fifs.application_column_name = 'SEGMENT2'
+		order by ffv.flex_value
+  </select>
+   <select id="会计科目字典" resultType="Map" parameterType="Map">
+ 
+    <!--{
+        "db":"form",
+        "desc":"取MIS生产会计科目值",
+        "in":[],
+        "out":[
+            {
+                "id":"value",
+                "name":"科目编码",
+                "datatype":"varchar"
+            },
+            {
+                "id":"name",
+                "name":"name",
+                "datatype":"varchar"
+            }
+        ]
+    }-->select ffv.flex_value value ,
+	ffvt.description name
+	from fnd_id_flex_segments fifs,
+	gl_sets_of_books     gsob,
+	fnd_flex_values      ffv,
+	fnd_flex_values_tl   ffvt
+	where gsob.chart_of_accounts_id = fifs.id_flex_num
+	and id_flex_code = 'GL#'
+	and ffv.flex_value_id = ffvt.flex_value_id
+	and ffvt.language = 'ZHS'
+	and ffv.flex_value_set_id = fifs.flex_value_set_id
+	and ffv.enabled_flag = 'Y'
+	and ffv.end_date_active is null
+	and gsob.set_of_books_id = 2
+	and fifs.application_column_name = 'SEGMENT3'
+    <if test="null!=searchDictionary and ''!=searchDictionary">and ffvt.description like '%${searchDictionary}%'
+</if>
+	order by ffv.flex_value
+  </select>
+   <select id="品牌数据字典" resultType="Map" parameterType="Map">
+ 
+    <!--{
+        "db":"jlerp",
+        "desc":"",
+        "in":[],
+        "out":[
+            {
+                "id":"value",
+                "name":"编码",
+                "datatype":"varchar"
+            },
+            {
+                "id":"name",
+                "name":"名称",
+                "datatype":"varchar"
+            }
+        ]
+    }
+    -->select ffv.flex_value value ,
+	ffvt.description name
+	from fnd_id_flex_segments fifs,
+	gl_sets_of_books     gsob,
+	fnd_flex_values      ffv,
+	fnd_flex_values_tl   ffvt
+	where gsob.chart_of_accounts_id = fifs.id_flex_num
+	and id_flex_code = 'GL#'
+	and ffv.flex_value_id = ffvt.flex_value_id
+	and ffvt.language = 'ZHS'
+	and ffv.flex_value_set_id = fifs.flex_value_set_id
+	and ffv.enabled_flag = 'Y'
+	and ffv.end_date_active is null
+	and gsob.set_of_books_id = 2
+	and fifs.application_column_name = 'SEGMENT4'
+	order by ffv.flex_value
+  </select>
+   <select id="项目字典" resultType="Map" parameterType="Map">
+ 
+    <!--{
+        "db":"jlerp",
+        "desc":"",
+        "in":[],
+        "out":[
+            {
+                "id":"value",
+                "name":"value",
+                "datatype":"varchar"
+            },
+            {
+                "id":"name",
+                "name":"name",
+                "datatype":"varchar"
+            }
+        ]
+    }-->select ffv.flex_value value ,
+	ffvt.description name
+	from fnd_id_flex_segments fifs,
+	gl_sets_of_books     gsob,
+	fnd_flex_values      ffv,
+	fnd_flex_values_tl   ffvt
+	where gsob.chart_of_accounts_id = fifs.id_flex_num
+	and id_flex_code = 'GL#'
+	and ffv.flex_value_id = ffvt.flex_value_id
+	and ffvt.language = 'ZHS'
+	and ffv.flex_value_set_id = fifs.flex_value_set_id
+	and ffv.enabled_flag = 'Y'
+	and ffv.end_date_active is null
+	and gsob.set_of_books_id = 2
+	and fifs.application_column_name = 'SEGMENT5'
+	order by ffv.flex_value
+  </select>
+   <select id="9" resultType="Map" parameterType="Map" useCache="false">null
+</select>
+   <select id="10" resultType="Map" parameterType="Map" useCache="false">null
+</select>
+   <select id="11" resultType="Map" parameterType="Map" useCache="false">select ffv.flex_value value ,
+	ffvt.description name
+
+
+
+
+
+
+
+
+
+
+
+	from fnd_id_flex_segments fifs,
+	gl_sets_of_books     gsob,
+
+
+
+
+
+
+
+
+
+
+
+	fnd_flex_values      ffv,
+	fnd_flex_values_tl   ffvt
+
+
+
+
+
+
+
+
+
+
+
+	where gsob.chart_of_accounts_id = fifs.id_flex_num
+	and id_flex_code = 'GL#'
+
+
+
+
+
+
+
+
+
+
+
+	and ffv.flex_value_id = ffvt.flex_value_id
+	and ffvt.language = 'ZHS'
+
+
+
+
+
+
+
+
+
+
+
+	and ffv.flex_value_set_id = fifs.flex_value_set_id
+	and ffv.enabled_flag = 'Y'
+
+
+
+
+
+
+
+
+
+
+
+	and ffv.end_date_active is null
+	and gsob.set_of_books_id = 2
+
+
+
+
+
+
+
+
+
+
+
+	and fifs.application_column_name = 'SEGMENT4'
+	order by ffv.flex_value
+
+</select>
+   <select id="12" resultType="Map" parameterType="Map" useCache="false">SELECT
+	@rownum :=@rownum + 1 AS rownum ,
+
+
+
+
+
+
+	ppa.PROJECT_TYPE
+
+
+FROM
+
+
+
+
+
+	pa_projects_all ppa ,
+
+	(SELECT @rownum := 0) tmp_row_number
+
+
+
+
+
+GROUP BY
+
+	ppa.PROJECT_TYPE
+
+</select>
+   <select id="13" resultType="Map" parameterType="Map" useCache="false">SELECT
+	@rownum :=@rownum + 1 code ,
+
+
+
+
+	ppa.PROJECT_TYPE  name
+
+
+FROM
+
+
+	pa_projects_all ppa ,
+
+
+	(SELECT @rownum := 0) tmp_row_number
+
+
+GROUP BY
+
+
+	ppa.PROJECT_TYPE
+
+</select></mapper>

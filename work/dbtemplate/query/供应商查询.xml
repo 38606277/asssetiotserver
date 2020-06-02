@@ -1,0 +1,547 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!--供应商查询-->
+<mapper namespace="供应商查询">
+ <select id="test" resultType="Map" parameterType="Map">
+ 
+<!--{
+	"db":"system",
+	"desc":"test",
+	"in":[
+		{
+			"id":"id",
+			"name":"id",
+			"datatype":"varchar",
+			"default":"",
+			"lookup":"",
+			"auth":""
+		}
+	],
+	"out":[
+		{
+			"id":"id",
+			"name":"id",
+			"datatype":"varchar"
+		},
+		{
+			"id":"name",
+			"name":"name",
+			"datatype":"varchar"
+		}
+	]
+}-->with s as as(select 1 id, 2 name from dual)
+select  id,name from s where id=#{id}
+and 1&lt;&gt;0
+<if test="1==1">
+    and 1&lt;&gt;0
+</if>
+</select>
+ <select id="test2" resultType="Map" parameterType="Map">
+ 
+<!--{
+	"db":"system",
+	"desc":"test2",
+	"in":[
+		{
+			"id":"ou_name",
+			"name":"ou_name",
+			"datatype":"varchar",
+			"default":"",
+			"lookup":"",
+			"mut":"",
+			"auth":""
+		}
+	],
+	"out":[
+		{
+			"id":"组织id",
+			"name":"组织id",
+			"datatype":"varchar"
+		},
+		{
+			"id":"组织名称",
+			"name":"组织名称",
+			"datatype":"varchar"
+		},
+		{
+			"id":"子库存代码",
+			"name":"子库存代码",
+			"datatype":"varchar"
+		},
+		{
+			"id":"子库存描述",
+			"name":"子库存描述",
+			"datatype":"varchar"
+		},
+		{
+			"id":"物料id",
+			"name":"物料id",
+			"datatype":"varchar"
+		},
+		{
+			"id":"物料编码",
+			"name":"物料编码",
+			"datatype":"varchar"
+		},
+		{
+			"id":"物料描述",
+			"name":"物料描述",
+			"datatype":"varchar"
+		},
+		{
+			"id":"asset_quantity",
+			"name":"asset_quantity",
+			"datatype":"varchar"
+		},
+		{
+			"id":"other_quantity",
+			"name":"other_quantity",
+			"datatype":"varchar"
+		},
+		{
+			"id":"asset_cost",
+			"name":"asset_cost",
+			"datatype":"varchar"
+		}
+	]
+}
+-->SELECT MOQ.ORGANIZATION_ID 组织id,
+              hou.name 组织名称,
+       inv.secondary_inventory_name 子库存代码,
+              inv.description 子库存描述,
+       MSI.INVENTORY_ITEM_ID 物料ID,
+       MSI.SEGMENT1   物料编码,
+       MSI.DESCRIPTION   物料描述,
+       DECODE(INV.ASSET_INVENTORY, 1, MOQ.TRANSACTION_QUANTITY, 0) ASSET_QUANTITY ,
+       DECODE(INV.ASSET_INVENTORY, 1, 0, MOQ.TRANSACTION_QUANTITY) OTHER_QUANTITY,
+       ROUND(MOQ.TRANSACTION_QUANTITY *
+             DECODE(INV.ASSET_INVENTORY, 1, NVL(MOQ.ITEM_COST, 0), 0),
+             2) ASSET_COST
+  FROM CINV_PROJECT_MOQ2         MOQ,
+       MTL_SYSTEM_ITEMS_B        MSI,
+       MTL_SECONDARY_INVENTORIES INV,
+       MTL_ITEM_CATEGORIES       MIC,
+       MTL_CATEGORY_SETS         MCS,
+       MTL_CATEGORIES            MC,
+       hr_all_organization_units hou
+ WHERE MOQ.INVENTORY_ITEM_ID = MSI.INVENTORY_ITEM_ID
+   AND MOQ.ORGANIZATION_ID = MSI.ORGANIZATION_ID
+   AND MOQ.SUBINVENTORY_CODE = INV.SECONDARY_INVENTORY_NAME
+   AND MOQ.ORGANIZATION_ID = INV.ORGANIZATION_ID
+   AND MSI.INVENTORY_ITEM_ID = MIC.INVENTORY_ITEM_ID
+   AND MSI.ORGANIZATION_ID = MIC.ORGANIZATION_ID
+   and hou.organization_id = MOQ.ORGANIZATION_ID
+   AND MIC.CATEGORY_SET_ID = MCS.CATEGORY_SET_ID
+   AND MIC.CATEGORY_ID = MC.CATEGORY_ID
+   AND MCS.STRUCTURE_ID = MC.STRUCTURE_ID
+   and hou.name like nvl('%'||#{ou_name}||'%',hou.name)
+</select><select id="test3" resultType="Map" parameterType="Map">
+ 
+<!--{
+	"db":"system",
+	"desc":"test3",
+	"in":[
+		{
+			"id":"ou_name",
+			"name":"ou_name",
+			"datatype":"varchar",
+			"default":"",
+			"lookup":"",
+			"mut":"",
+			"auth":""
+		}
+	],
+	"out":[
+		{
+			"id":"组织id",
+			"name":"组织id",
+			"datatype":"varchar"
+		},
+		{
+			"id":"组织名称",
+			"name":"组织名称",
+			"datatype":"varchar"
+		},
+		{
+			"id":"子库存代码",
+			"name":"子库存代码",
+			"datatype":"varchar"
+		},
+		{
+			"id":"子库存描述",
+			"name":"子库存描述",
+			"datatype":"varchar"
+		},
+		{
+			"id":"物料id",
+			"name":"物料id",
+			"datatype":"varchar"
+		},
+		{
+			"id":"物料编码",
+			"name":"物料编码",
+			"datatype":"varchar"
+		},
+		{
+			"id":"物料描述",
+			"name":"物料描述",
+			"datatype":"varchar"
+		},
+		{
+			"id":"asset_quantity",
+			"name":"asset_quantity",
+			"datatype":"varchar"
+		},
+		{
+			"id":"other_quantity",
+			"name":"other_quantity",
+			"datatype":"varchar"
+		},
+		{
+			"id":"asset_cost",
+			"name":"asset_cost",
+			"datatype":"varchar"
+		}
+	]
+}
+-->SELECT MOQ.ORGANIZATION_ID 组织id,
+              hou.name 组织名称,
+       inv.secondary_inventory_name 子库存代码,
+              inv.description 子库存描述,
+       MSI.INVENTORY_ITEM_ID 物料ID,
+       MSI.SEGMENT1   物料编码,
+       MSI.DESCRIPTION   物料描述,
+       DECODE(INV.ASSET_INVENTORY, 1, MOQ.TRANSACTION_QUANTITY, 0) ASSET_QUANTITY ,
+       DECODE(INV.ASSET_INVENTORY, 1, 0, MOQ.TRANSACTION_QUANTITY) OTHER_QUANTITY,
+       ROUND(MOQ.TRANSACTION_QUANTITY *
+             DECODE(INV.ASSET_INVENTORY, 1, NVL(MOQ.ITEM_COST, 0), 0),
+             2) ASSET_COST
+  FROM CINV_PROJECT_MOQ2         MOQ,
+       MTL_SYSTEM_ITEMS_B        MSI,
+       MTL_SECONDARY_INVENTORIES INV,
+       MTL_ITEM_CATEGORIES       MIC,
+       MTL_CATEGORY_SETS         MCS,
+       MTL_CATEGORIES            MC,
+       hr_all_organization_units hou
+ WHERE MOQ.INVENTORY_ITEM_ID = MSI.INVENTORY_ITEM_ID
+   AND MOQ.ORGANIZATION_ID = MSI.ORGANIZATION_ID
+   AND MOQ.SUBINVENTORY_CODE = INV.SECONDARY_INVENTORY_NAME
+   AND MOQ.ORGANIZATION_ID = INV.ORGANIZATION_ID
+   AND MSI.INVENTORY_ITEM_ID = MIC.INVENTORY_ITEM_ID
+   AND MSI.ORGANIZATION_ID = MIC.ORGANIZATION_ID
+   and hou.organization_id = MOQ.ORGANIZATION_ID
+   AND MIC.CATEGORY_SET_ID = MCS.CATEGORY_SET_ID
+   AND MIC.CATEGORY_ID = MC.CATEGORY_ID
+   AND MCS.STRUCTURE_ID = MC.STRUCTURE_ID
+   and hou.name like nvl('%'||#{ou_name}||'%',hou.name)
+</select><select id="h222" resultType="Map" parameterType="Map">
+ 
+<!--{
+	"db":"jlerp",
+	"desc":"h222",
+	"in":[
+		{
+			"lookup":"",
+			"default":"",
+			"datatype":"varchar",
+			"auth":"ou",
+			"name":"period_year",
+			"id":"period_year",
+			"mut":"false"
+		},
+		{
+			"lookup":"",
+			"default":"",
+			"datatype":"varchar",
+			"auth":"",
+			"name":"period_num",
+			"id":"period_num",
+			"mut":"false"
+		},
+		{
+			"lookup":"数据字典/查询公司信息",
+			"default":"",
+			"datatype":"varchar",
+			"auth":"",
+			"name":"segment1",
+			"id":"segment1",
+			"mut":"false"
+		},
+		{
+			"lookup":"数据字典/会计科目",
+			"default":"",
+			"datatype":"varchar",
+			"auth":"",
+			"name":"segment3",
+			"id":"segment3",
+			"mut":"false"
+		}
+	],
+	"out":[
+		{
+			"datatype":"varchar",
+			"name":"creation_date",
+			"link":"",
+			"id":"creation_date"
+		},
+		{
+			"datatype":"varchar",
+			"linkbutton":"修改",
+			"name":"name",
+			"link":"",
+			"id":"name"
+		},
+		{
+			"datatype":"varchar",
+			"linkbutton":"修改",
+			"name":"je_line_num",
+			"link":"",
+			"id":"je_line_num"
+		},
+		{
+			"datatype":"varchar",
+			"linkbutton":"修改",
+			"name":"description",
+			"link":"",
+			"id":"description"
+		},
+		{
+			"datatype":"varchar",
+			"linkbutton":"修改",
+			"name":"accounted_dr",
+			"link":"",
+			"id":"accounted_dr"
+		},
+		{
+			"datatype":"varchar",
+			"linkbutton":"修改",
+			"name":"segment3",
+			"link":"",
+			"id":"segment3"
+		},
+		{
+			"datatype":"varchar",
+			"linkbutton":"修改",
+			"name":"segment2",
+			"link":"",
+			"id":"segment2"
+		}
+	]
+}-->SELECT
+    jh.CREATION_DATE ,
+    jh.NAME,
+    jl.JE_LINE_NUM ,
+    jl.DESCRIPTION,
+    jl.ACCOUNTED_DR ,
+    gcc.SEGMENT3,
+    gcc.SEGMENT2
+FROM
+    gl_je_headers_2014 jh ,
+    gl_je_lines_2014 jl ,
+    gl_code_combinations gcc ,
+    gl_periods gp
+WHERE
+    jh.JE_HEADER_ID = jl.JE_HEADER_ID
+ AND jl.CODE_COMBINATION_ID = gcc.CODE_COMBINATION_ID
+ AND jh.PERIOD_NAME = gp.PERIOD_NAME
+ AND gp.PERIOD_YEAR = '${period_year}'
+ AND gp.PERIOD_NUM = '${period_num}'
+ AND gcc.SEGMENT1 = '${segment1}'
+ AND gcc.SEGMENT3 like '${segment3}%'
+</select><select id="f1" resultType="Map" parameterType="Map">
+ 
+<!--{
+	"db":"jlerp",
+	"desc":"f1",
+	"in":[
+		{
+			"lookup":"",
+			"default":"",
+			"datatype":"varchar",
+			"auth":"",
+			"name":"period_year",
+			"id":"period_year",
+			"mut":"false"
+		},
+		{
+			"lookup":"",
+			"default":"",
+			"datatype":"varchar",
+			"auth":"",
+			"name":"period_num",
+			"id":"period_num",
+			"mut":"false"
+		},
+		{
+			"lookup":"",
+			"default":"",
+			"datatype":"varchar",
+			"auth":"",
+			"name":"segment1",
+			"id":"segment1",
+			"mut":"false"
+		},
+		{
+			"lookup":"",
+			"default":"",
+			"datatype":"varchar",
+			"auth":"",
+			"name":"segment3",
+			"id":"segment3",
+			"mut":"false"
+		}
+	],
+	"out":[
+		{
+			"datatype":"varchar",
+			"name":"creation_date",
+			"link":{},
+			"id":"creation_date"
+		},
+		{
+			"datatype":"varchar",
+			"name":"name",
+			"link":{},
+			"id":"name"
+		},
+		{
+			"datatype":"varchar",
+			"name":"je_line_num",
+			"link":{},
+			"id":"je_line_num"
+		},
+		{
+			"datatype":"varchar",
+			"name":"description",
+			"link":{},
+			"id":"description"
+		},
+		{
+			"datatype":"varchar",
+			"name":"accounted_dr",
+			"link":{},
+			"id":"accounted_dr"
+		},
+		{
+			"datatype":"varchar",
+			"name":"segment3",
+			"link":{},
+			"id":"segment3"
+		},
+		{
+			"datatype":"varchar",
+			"name":"segment2",
+			"link":{},
+			"id":"segment2"
+		}
+	]
+}
+-->SELECT
+    jh.CREATION_DATE ,
+    jh.NAME,
+    jl.JE_LINE_NUM ,
+    jl.DESCRIPTION,
+    jl.ACCOUNTED_DR ,
+    gcc.SEGMENT3,
+    gcc.SEGMENT2
+FROM
+    gl_je_headers_2014 jh ,
+    gl_je_lines_2014 jl ,
+    gl_code_combinations gcc ,
+    gl_periods gp
+WHERE
+    jh.JE_HEADER_ID = jl.JE_HEADER_ID
+ AND jl.CODE_COMBINATION_ID = gcc.CODE_COMBINATION_ID
+ AND jh.PERIOD_NAME = gp.PERIOD_NAME
+ AND gp.PERIOD_YEAR = '${period_year}'
+ AND gp.PERIOD_NUM = '${period_num}'
+ AND gcc.SEGMENT1 = '${segment1}'
+ AND gcc.SEGMENT3 like '${segment3}%'
+</select><select id="kkk" resultType="Map" parameterType="Map">
+ 
+<!--{
+	"db":"jlerp",
+	"desc":"kkk",
+	"in":[
+		{
+			"lookup":"",
+			"default":"",
+			"datatype":"varchar",
+			"auth":"",
+			"name":"开始",
+			"id":"begin_value",
+			"mut":"false"
+		},
+		{
+			"lookup":"",
+			"default":"",
+			"datatype":"varchar",
+			"auth":"",
+			"name":"结束",
+			"id":"end_value",
+			"mut":"false"
+		},
+		{
+			"lookup":"",
+			"default":"",
+			"datatype":"varchar",
+			"auth":"",
+			"name":"科目名称",
+			"id":"name",
+			"mut":"false"
+		},
+		{
+			"lookup":"",
+			"default":"",
+			"datatype":"varchar",
+			"auth":"",
+			"name":"代码长度",
+			"id":"code_length",
+			"mut":"false"
+		}
+	],
+	"out":[
+		{
+			"datatype":"varchar",
+			"name":"编 码",
+			"link":{},
+			"id":"flex_value"
+		},
+		{
+			"datatype":"varchar",
+			"name":"名称",
+			"link":{},
+			"id":"description"
+		}
+	]
+}
+-->select ffv.flex_value,
+       ffvt.description
+ from fnd_id_flex_segments fifs,
+       gl_sets_of_books     gsob,
+       fnd_flex_values      ffv,
+       fnd_flex_values_tl   ffvt
+ where gsob.chart_of_accounts_id = fifs.id_flex_num
+   and id_flex_code = 'GL#'
+   and ffv.flex_value_id = ffvt.flex_value_id
+   and ffvt.language = 'ZHS'
+   and ffv.flex_value_set_id = fifs.flex_value_set_id
+   and ffv.enabled_flag = 'Y'
+   and ffv.end_date_active is null
+   and gsob.set_of_books_id = 2
+   and fifs.application_column_name = 'SEGMENT3'
+<if test="begin_value!=''">
+ and ffv.flex_value&gt;=#{begin_value}
+</if>
+ <if test="end_value!=''">
+and ffv.flex_value&lt;=#{end_value}
+</if>
+ <if test="name!=''">
+   and ffvt.description like '${name}%'
+</if>
+ <if test="code_length!=''">
+ and length(ffv.flex_value)=${code_length}
+ </if>
+ order by ffv.flex_value
+</select></mapper>

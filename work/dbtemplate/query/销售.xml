@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="销售"> 
+  <select id="查询销售信息" resultType="map" parameterType="map"> 
+    <!--{
+      	"db": "form",
+         id:"查询销售信息",
+         name:"查询销售信息",
+         desc:"查询销售信息",
+         in:[
+	           {id:"areaname",name:"地区",datatype:"varchar",lookup:'数据字典/查询地区'}
+	          ],
+         out:[
+		        {id:"id",name:"编号",datatype:"varchar"},
+                {id:"areaname",name:"地区",datatype:"varchar"},
+                {id:"countryname",name:"国家",datatype:"varchar"},
+                {id:"salesman",name:"销售人员",datatype:"varchar"},
+                {id:"salesproduct",name:"销售产品",datatype:"varchar"},
+                {id:"salesmoney",name:"销售金额",datatype:"int"}
+         ]
+        }
+     --> select ID, COUNTRYNAME,AREANAME,SALESMAN,SALESPRODUCT,SALESMONEY from sales where 1=1 
+    <if test="null!=areaname and ''!=areaname">and areaname in (${areaname})</if> 
+  </select>  
+  <select id="查询销售信息1" resultType="map" parameterType="map"> 
+    <!--{
+      	"db": "form",
+         id:"查询销售信息",
+         name:"查询销售信息",
+         desc:"查询销售信息",
+         in:[
+	           {id:"areaname",name:"地区",datatype:"varchar",lookup:'数据字典/查询地区'}
+			   {id:"countryname",name:"国家",datatype:"varchar",lookup:'数据字典/查询城市'}
+	          ],
+         out:[
+				{id:"id",name:"编号",datatype:"varchar"},
+                {id:"areaname",name:"地区",datatype:"varchar"},
+                {id:"countryname",name:"国家",datatype:"varchar"},
+                {id:"salesman",name:"销售人员",datatype:"varchar"},
+                {id:"salesproduct",name:"销售产品",datatype:"varchar"},
+                {id:"salesmoney",name:"销售金额",datatype:"int"}
+         ]
+        }
+     --> select ID, COUNTRYNAME,AREANAME,SALESMAN,SALESPRODUCT,SALESMONEY from sales where 1=1 
+    <if test="null!=areaname and ''!=areaname">and areaname in (${areaname})</if>  
+    <if test="null!=countryname and ''!=countryname">and countryname in (${countryname})</if> 
+  </select>
+</mapper>

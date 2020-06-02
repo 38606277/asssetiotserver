@@ -1,0 +1,71 @@
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="qry_11">
+   <cache eviction="LRU" flushInterval="100000" size="1024" readOnly="true"/>
+   <select id="71" resultType="Map" parameterType="Map" useCache="false">SELECT
+	fu.USER_ID ,
+	fu.USER_NAME ,
+	fu.CREATION_DATE ,
+	fu.ISADMIN
+FROM
+	fnd_user fu
+WHERE
+	 1=1
+    <if test="user_name!='' and  user_name!=null">
+	  and fu.USER_NAME  like '%${user_name}%'
+</if>
+  </select>
+   <select id="72" resultType="Map" parameterType="Map" useCache="false">SELECT
+	ppa.PROJECT_ID ,
+	ppa. NAME ,
+	ppa.SEGMENT1 ,
+	ppa.PROJECT_TYPE ,
+	ppa.START_DATE ,
+	ppa.COMPLETION_DATE,
+        ppa.CLOSED_DATE,
+	ppa.PROJECT_STATUS_CODE
+FROM
+	pa_projects_all ppa
+WHERE
+1=1
+    <if test="project_code!='' and  project_code!=null">
+and	ppa.SEGMENT1 = #{project_code}
+</if>
+     <if test="project_type!='' and  project_type!=null">
+AND ppa.PROJECT_TYPE = #{project_type}
+</if>
+     <if test="project_state!='' and  project_state!=null">
+AND ppa.PROJECT_STATUS_CODE
+&gt;
+
+
+
+
+
+= #{project_state}
+</if>
+  </select>
+   <select id="78" resultType="Map" parameterType="Map" useCache="false">
+	   SELECT
+	ppa.PROJECT_ID ,
+	ppa. NAME ,
+	ppa.SEGMENT1 ,
+	ppa.PROJECT_TYPE ,
+	ppa.START_DATE ,
+	ppa.COMPLETION_DATE,
+        ppa.CLOSED_DATE,
+	ppa.PROJECT_STATUS_CODE
+FROM
+	pa_projects_all ppa
+WHERE
+1=1
+     <if test="project_code!='' and  project_code!=null">
+and	ppa.SEGMENT1 = #{project_code}
+</if>
+     <if test="project_type!='' and  project_type!=null">
+AND ppa.PROJECT_TYPE = #{project_type}
+</if>
+     <if test="project_state!='' and  project_state!=null">
+AND ppa.PROJECT_STATUS_CODE&gt;= #{project_state}
+</if>
+  </select></mapper>

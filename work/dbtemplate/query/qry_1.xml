@@ -1,0 +1,205 @@
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="qry_1">
+   <select id="36" resultType="Map" parameterType="Map">       select ffv.flex_value,
+        ffvt.description
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        from fnd_id_flex_segments fifs,
+        gl_sets_of_books     gsob,
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        fnd_flex_values      ffv,
+        fnd_flex_values_tl   ffvt
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        where gsob.chart_of_accounts_id = fifs.id_flex_num
+        and id_flex_code = 'GL#'
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        and ffv.flex_value_id = ffvt.flex_value_id
+        and ffvt.language = 'ZHS'
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        and ffv.flex_value_set_id = fifs.flex_value_set_id
+        and ffv.enabled_flag = 'Y'
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        and ffv.end_date_active is null
+        and gsob.set_of_books_id = 2
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        and fifs.application_column_name = 'SEGMENT3'
+            and ffvt.description like '${name}%'
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+            and length(ffv.flex_value)=${code_length}
+        order by ffv.flex_value
+
+</select>
+   <select id="80" resultType="Map" parameterType="Map" useCache="false">SELECT
+	ppa.PROJECT_ID ,
+	ppa. NAME ,
+	ppa.SEGMENT1 ,
+	ppa.PROJECT_TYPE ,
+	ppa.START_DATE ,
+	ppa.COMPLETION_DATE,
+        ppa.CLOSED_DATE,
+	ppa.PROJECT_STATUS_CODE
+FROM
+	pa_projects_all ppa
+WHERE
+1=1
+    <if test="project_code!='' and  project_code!=null">
+and	ppa.SEGMENT1 = #{project_code}
+</if>
+     <if test="project_type!='' and  project_type!=null">
+AND ppa.PROJECT_TYPE = #{project_type}
+</if>
+     <if test="project_state!='' and  project_state!=null">
+AND ppa.PROJECT_STATUS_CODE= #{project_state}
+</if>
+  </select>
+   <select id="81" resultType="Map" parameterType="Map" useCache="false">SELECT
+	ppa.PROJECT_ID ,
+	ppa. NAME ,
+	ppa.SEGMENT1 ,
+	ppa.PROJECT_TYPE ,
+	ppa.START_DATE ,
+	ppa.COMPLETION_DATE,
+    ppa.CLOSED_DATE,
+	ppa.PROJECT_STATUS_CODE
+FROM
+	pa_projects_all ppa
+WHERE
+1=1
+     <if test="project_code!='' and  project_code!=null">
+and	ppa.SEGMENT1 = #{project_code}
+</if>
+     <if test="project_type!='' and  project_type!=null">
+AND ppa.PROJECT_TYPE = #{project_type}
+</if>
+     <if test="project_state!='' and  project_state!=null">
+AND ppa.PROJECT_STATUS_CODE= #{project_state}
+</if>
+  </select></mapper>
