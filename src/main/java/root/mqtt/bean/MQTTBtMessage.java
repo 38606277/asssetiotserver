@@ -3,8 +3,8 @@ package root.mqtt.bean;
 public class MQTTBtMessage {
 
 	private String code; //编号
-	private String signalIntensity;//信号强度
-	private String electricity;//电量
+	private float signalIntensity;//信号强度
+	private float electricity;//电量
 
 	public String getCode() {
 		return code;
@@ -12,25 +12,29 @@ public class MQTTBtMessage {
 	public void setCode(String code) {
 		this.code = code;
 	}
-	
-	public String getSignalIntensity() {
+
+	public float getSignalIntensity() {
 		return signalIntensity;
 	}
-	public void setSignalIntensity(String signalIntensity) {
+
+	public void setSignalIntensity(float signalIntensity) {
 		this.signalIntensity = signalIntensity;
 	}
-	public String getElectricity() {
+
+	public float getElectricity() {
 		return electricity;
 	}
-	public void setElectricity(String electricity) {
+
+	public void setElectricity(float electricity) {
 		this.electricity = electricity;
 	}
+
 	@Override
 	public String toString() {
-		return "MQTTBtMessage [code=" + code + ", signalIntensity=" + signalIntensity + ", electricity=" + electricity
-				+ "]";
+		return "MQTTBtMessage{" +
+				"code='" + code + '\'' +
+				", signalIntensity=" + signalIntensity +
+				", electricity=" + electricity +
+				'}';
 	}
-	
-	
-	
 }

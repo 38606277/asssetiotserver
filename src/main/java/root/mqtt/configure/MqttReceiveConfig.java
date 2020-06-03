@@ -108,11 +108,12 @@ public class MqttReceiveConfig {
 		return new MessageHandler() {
 			@Override
 			public void handleMessage(Message<?> message) throws MessagingException {
-				
+
 				String topic = message.getHeaders().get("mqtt_receivedTopic").toString();
+				long timestamp = message.getHeaders().getTimestamp();
 				if(topic!=null && 0 < topic.trim().length() ) {
 					byte[] payload = (byte[])message.getPayload();
-					mqttReceiveService.handlerMqttMessage(topic,  payload);
+					mqttReceiveService.handlerMqttMessage(topic,  payload,timestamp);
 				}else {
 					System.out.println("topic：" + topic);
 				}	

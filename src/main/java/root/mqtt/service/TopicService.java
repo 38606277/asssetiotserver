@@ -1,9 +1,10 @@
 package root.mqtt.service;
 
+import javax.annotation.Resource;
+
 import org.springframework.stereotype.Service;
 import root.mqtt.configure.MyMqttPahoMessageDrivenChannelAdapter;
 
-import javax.annotation.Resource;
 
 @Service
 public class TopicService {

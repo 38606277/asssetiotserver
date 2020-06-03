@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="eam_asset_status">
+	<insert id="addEamAssetStatus" parameterType="Map">
+		insert into eam_asset_status(gateway_id, tag_id,receive_time,electricity,signalIntensity) values(#{gateway_id}, #{tag_id}, #{receive_time}, #{electricity}, #{signalIntensity})
+	</insert>
+
+	<select id="queryCountByTagId" resultType="int" parameterType="Map">
+		select count(tag_id) from eam_asset_status where tag_id = #{tag_id}
+	</select>
+
+	<update id="updateEamAssetStatus" parameterType="Map">
+		update eam_asset_status set gateway_id=#{gateway_id} ,tag_id=#{tag_id},receive_time=#{receive_time} , electricity=#{electricity}, signalIntensity=#{signalIntensity} where tag_id=#{tag_id}
+	</update>
+</mapper>

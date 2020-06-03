@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="eam_gateway">
+
+	<insert id="addEamGateway" parameterType="Map">
+		insert into eam_gateway(gateway_id, address,lng,rng,address_id,states) values(#{gateway_id}, #{address}, #{lng}, #{rng}, #{address_id}, #{states})
+	</insert>
+
+
+	<select id="queryCountByGatewayId" resultType="int" parameterType="int">
+		select count(gateway_id) from eam_gateway where gateway_id = #{gatewayId}
+	</select>
+
+	<delete id="rmEamGateway" parameterType="int">
+		delete from eam_gateway where gateway_id=#{gatewayId}
+	</delete>
+
+</mapper>

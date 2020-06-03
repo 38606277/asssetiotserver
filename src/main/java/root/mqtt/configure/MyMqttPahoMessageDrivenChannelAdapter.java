@@ -2,6 +2,7 @@ package root.mqtt.configure;
 
 import org.springframework.integration.mqtt.core.MqttPahoClientFactory;
 import org.springframework.integration.mqtt.inbound.MqttPahoMessageDrivenChannelAdapter;
+import org.springframework.stereotype.Component;
 
 public class MyMqttPahoMessageDrivenChannelAdapter extends MqttPahoMessageDrivenChannelAdapter{
 
@@ -12,25 +13,25 @@ public class MyMqttPahoMessageDrivenChannelAdapter extends MqttPahoMessageDriven
 
 	/**
 	 * 添加订阅
-	 * @param number
+	 * @param gateway
 	 */
 	public void addTopicByGateway(String gateway) {
 		System.out.println("addTopicByGateway ：" + gateway);
 		String[] topicArr = getTopic(gateway);
 		for(String topic:topicArr) {
 			this.addTopic(topic,1);
-		} 
+		}
 	}
 
 	/**
 	 * 删除订阅
-	 * @param number
+	 * @param gateway
 	 */
 	public void removeTopicByGateway(String gateway) {
 		System.out.println("removeTopicByGateway ：" + gateway);
 		this.removeTopic(getTopic(gateway));
 	}
-	
+
 	private String[] getTopic(String number) {
 		return  new String[] {
 				"/001/"+number+"/register",
@@ -40,5 +41,5 @@ public class MyMqttPahoMessageDrivenChannelAdapter extends MqttPahoMessageDriven
 				"/001/"+number+"/alarm"
 		};
 	}
-	
+
 }

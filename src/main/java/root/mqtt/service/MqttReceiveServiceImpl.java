@@ -4,11 +4,11 @@ import com.alibaba.fastjson.JSON;
 import org.springframework.stereotype.Service;
 import root.mqtt.bean.*;
 import root.mqtt.util.HexUtils;
+import root.report.db.DbFactory;
 
 import javax.xml.bind.DatatypeConverter;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 /**
  * 消息接收
@@ -19,7 +19,7 @@ import java.util.Map;
 public class MqttReceiveServiceImpl implements MqttReceiveService{
 
 	@Override
-	public void handlerMqttMessage(String topic, byte[] payload) {
+	public void handlerMqttMessage(String topic, byte[] payload,long timestamp) {
 		// TODO Auto-generated method stub
 	
 		System.out.println("topic：" + topic);
@@ -30,25 +30,39 @@ public class MqttReceiveServiceImpl implements MqttReceiveService{
 			System.out.println("非物联网订阅信息：" + topic);
 			return ;
 		}
-		
-		
+
 		String prefix = data[0];//固定前缀
 		long gatewayId = Long.parseLong(data[1]);//网关编号
 		String type = data[2];//订阅类型
-		
-		
+
+		SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");//设置日期格式
+		String receiveTime = df.format(new Date(timestamp));
 		if("bt".equals(type)){
 			List<MQTTBtMessage> labelList = decodeLableList(payload);
 			
-			for(MQTTBtMessage label :labelList) {
-				
+			for(MQTTBtMessage mqttBtMessage :labelList) {
+				Map<String,Object> map = new HashMap<>();
+				map.put("gateway_id",gatewayId);
+				map.put("tag_id",mqttBtMessage.getCode());
+				map.put("receive_time",receiveTime);
+				map.put("electricity",mqttBtMessage.getElectricity());
+				map.put("signalIntensity",mqttBtMessage.getSignalIntensity());
+
+				int count = DbFactory.Open(DbFactory.FORM).selectOne("eam_asset_status.queryCountByTagId",map);
+				if(0 < count){
+					//更新
+					DbFactory.Open(DbFactory.FORM).update("eam_asset_status.updateEamAssetStatus",map);
+				}else{
+					//添加
+					DbFactory.Open(DbFactory.FORM).insert("eam_asset_status.addEamAssetStatus",map);
+				}
 			}
 		
 			System.out.println(labelList.toString());
 		}else if("update".equals(type)){
 			Map<String, Object> mapObj = JSON.parseObject(new String (payload));
-			MQTTUpdateMessage mqqtUpdateMessage = new MQTTUpdateMessage(mapObj);
-			System.out.println(mqqtUpdateMessage.toString());
+			MQTTUpdateMessage mqttUpdateMessage = new MQTTUpdateMessage(mapObj);
+			System.out.println(mqttUpdateMessage.toString());
 		}else if("register".equals(type)) {
 			MQTTRegisterMessage mqttRegisterMessageBean  = JSON.parseObject(payload, MQTTRegisterMessage.class);
 			System.out.println(mqttRegisterMessageBean.toString());
@@ -102,14 +116,14 @@ public class MqttReceiveServiceImpl implements MqttReceiveService{
 		int number  = Integer.parseInt(bitStr.substring(4,32),2);
 		//信号强度
 		int signalBit = Integer.parseInt(bitStr.substring(32),2);
-		String signalStr =  ((byte)signalBit) + "dp";
+		String signalStr =  ((byte)signalBit) + "db";
 
 		//decode(bitStr.substring(32));
 
 		MQTTBtMessage label = new  MQTTBtMessage();
 		label.setCode(String.valueOf(number));
-		label.setElectricity(electricityStr);
-		label.setSignalIntensity(signalStr);
+		label.setElectricity(electricityBit);
+		label.setSignalIntensity(signalBit);
 
 		return label;
 	}
