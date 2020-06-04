@@ -39,14 +39,14 @@ public class GatewayController extends RO {
 	 */
     @RequestMapping(value="/addGateway",produces = "text/plain;charset=UTF-8")
     public String addGateway(@RequestBody JSONObject pJson) throws UnsupportedEncodingException{
-    	int gatewayId = pJson.getIntValue("gatewayId");
+    	int gatewayId = pJson.getIntValue("gateway_id");
 		int count = DbFactory.Open(DbFactory.FORM).selectOne("eam_gateway.queryCountByGatewayId",gatewayId);
 		if(0 < count){
+			return ExceptionMsg("网关已添加,请勿重复添加");
+		}else{
 			DbFactory.Open(DbFactory.FORM).insert("eam_gateway.addEamGateway",pJson);
 			topicService.addTopicByGateway(pJson.getString("gatewayNumber"));
-			return SuccessMsg("添加成功", "");
-		}else{
-			return ErrorMsg("添加失败", "网关已添加,请勿重复添加");
+			return SuccessMsg("保存成功", "");
 		}
     }
     
@@ -56,7 +56,7 @@ public class GatewayController extends RO {
 	 */
     @RequestMapping(value="/deleteGateway",produces = "text/plain;charset=UTF-8")
     public String deleteGateway(@RequestBody JSONObject pJson) throws UnsupportedEncodingException{
-		int gatewayId = pJson.getIntValue("gatewayId");
+		int gatewayId = pJson.getIntValue("gateway_id");
 		int count = DbFactory.Open(DbFactory.FORM).selectOne("eam_gateway.queryCountByGatewayId",gatewayId);
 		if(0 < count){
 			DbFactory.Open(DbFactory.FORM).insert("eam_gateway.rmEamGateway",gatewayId);
@@ -71,7 +71,7 @@ public class GatewayController extends RO {
 	 */
     @RequestMapping(value="/updateGatewayConfig",produces = "text/plain;charset=UTF-8")
     public String updateGatewayConfig(@RequestBody JSONObject pJson) throws UnsupportedEncodingException{
-    	String gatewayNumber = pJson.getString("gatewayNumber");
+    	String gatewayNumber = pJson.getString("gateway_id");
     	String topic = "/001/"+ gatewayNumber + "/set";
     	pJson.remove("gatewayNumber");
     	mqttSendMessage.sendMessage(pJson.toJSONString(), topic);

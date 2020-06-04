@@ -15,8 +15,11 @@ import org.springframework.messaging.MessageChannel;
 import org.springframework.messaging.MessageHandler;
 import org.springframework.messaging.MessagingException;
 import root.mqtt.service.MqttReceiveService;
+import root.report.db.DbFactory;
 
 import javax.annotation.Resource;
+import java.util.List;
+import java.util.Map;
 
 /**
  * 接收者配置
@@ -80,7 +83,7 @@ public class MqttReceiveConfig {
 	public MyMqttPahoMessageDrivenChannelAdapter inbound() {
 		MyMqttPahoMessageDrivenChannelAdapter adapter = new MyMqttPahoMessageDrivenChannelAdapter(clientId+"_inbound", mqttClientFactory(),
 				defaultTopic);
-		adapter.addTopic(getTopic("1319100003"));
+		//adapter.addTopic(getTopic("1319100003"));
 		adapter.setCompletionTimeout(completionTimeout);
 		DefaultPahoMessageConverter converter = new DefaultPahoMessageConverter();
 		converter.setPayloadAsBytes(true);
@@ -90,16 +93,6 @@ public class MqttReceiveConfig {
 		System.err.println("mqtt 适配器设置成功");
 		return adapter;
 	}
-	private String[] getTopic(String number) {
-		return  new String[] {
-				"/001/"+number+"/register",
-				"/001/"+number+"/update",
-				"/001/"+number+"/bt",
-				"/001/"+number+"/set_res",
-				"/001/"+number+"/alarm"
-		};
-	}
-
 
 	//通过通道获取数据
 	@Bean

@@ -28,8 +28,18 @@ public class AreaController extends RO {
     @RequestMapping(value="/getArea",produces = "text/plain;charset=UTF-8")
     public String getArea(@RequestBody JSONObject pJson) throws UnsupportedEncodingException {
         String parentCode = pJson.getString("parentCode");
-        List<Map<String,Object>> allTable = DbFactory.Open(DbFactory.FORM).selectList("sys_area.getTaskIdByParentCode",parentCode);
-        return JSON.toJSONString(allTable);
+        String maxLevel = pJson.getString("maxLevel");
+        List<Map<String,Object>> areaList = DbFactory.Open(DbFactory.FORM).selectList("sys_area.getTaskIdByParentCode",parentCode);
+
+        List<Map<String,Object>> dataList = new ArrayList<>();
+        for (Map areaData : areaList) {
+            Map data = new HashMap();
+            data.put("label", areaData.get("name").toString());
+            data.put("value", areaData.get("code").toString());
+            data.put("isLeaf", areaData.get("level_type").toString().equals(maxLevel));
+            dataList.add(data);
+        }
+        return JSON.toJSONString(dataList);
     }
 
 }

@@ -6,8 +6,6 @@
 	<insert id="addEamGateway" parameterType="Map">
 		insert into eam_gateway(gateway_id, address,lng,rng,address_id,states) values(#{gateway_id}, #{address}, #{lng}, #{rng}, #{address_id}, #{states})
 	</insert>
-
-
 	<select id="queryCountByGatewayId" resultType="int" parameterType="int">
 		select count(gateway_id) from eam_gateway where gateway_id = #{gatewayId}
 	</select>
@@ -15,5 +13,9 @@
 	<delete id="rmEamGateway" parameterType="int">
 		delete from eam_gateway where gateway_id=#{gatewayId}
 	</delete>
+
+	<select id="listEamGateway" resultType="map" >
+		select * from eam_gateway
+	</select>
 
 </mapper>
