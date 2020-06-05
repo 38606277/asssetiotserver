@@ -9,13 +9,24 @@
 	<select id="queryCountByGatewayId" resultType="int" parameterType="int">
 		select count(gateway_id) from eam_gateway where gateway_id = #{gatewayId}
 	</select>
-
+	<select id="countEamGateway" resultType="int">
+		select count(gateway_id) from eam_gateway
+	</select>
 	<delete id="rmEamGateway" parameterType="int">
 		delete from eam_gateway where gateway_id=#{gatewayId}
 	</delete>
 
-	<select id="listEamGateway" resultType="map" >
-		select * from eam_gateway
+	<select id="listEamGateway" resultType="Map">
+		select * from eam_gateway e
+	</select>
+
+
+	<select id="listEamGatewayByPage" resultType="Map" parameterType="Map">
+		select * from eam_gateway e
+		where 1=1
+		<if test="gateway_id != null and gateway_id!=''">  and e.gateway_id like '%${gateway_id}%' </if>
+		limit #{startIndex},#{perPage}
+
 	</select>
 
 </mapper>

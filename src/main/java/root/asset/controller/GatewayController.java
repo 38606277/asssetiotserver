@@ -64,7 +64,36 @@ public class GatewayController extends RO {
 		}
         return SuccessMsg("删除成功", "");
     }
-    
+
+	/**
+	 * 获取网关列表
+	 * @return
+	 */
+	@RequestMapping(value="/listEamGateway",produces = "text/plain;charset=UTF-8")
+	public String listEamGateway(@RequestBody JSONObject pJson) throws UnsupportedEncodingException{
+		int currentPage=Integer.valueOf(pJson.getString("pageNum"));
+		int perPage=Integer.valueOf(pJson.getString("perPage"));
+		if(1==currentPage|| 0==currentPage){
+			currentPage=0;
+		}else{
+			currentPage=(currentPage-1)*perPage;
+		}
+		Map<String,Object> map = new HashMap<String,Object>();
+		map.put("startIndex", currentPage);
+		map.put("perPage",perPage);
+		List<Map<String,Object>> areaList = DbFactory.Open(DbFactory.FORM).selectList("eam_gateway.listEamGatewayByPage",map);
+		int total=DbFactory.Open(DbFactory.FORM).selectOne("eam_gateway.countEamGateway", map);
+		Map<String,Object> map2 =new HashMap<String,Object>();
+		Map<String,Object> map3 =new HashMap<String,Object>();
+		map3.put("list",areaList);
+		map3.put("total",total);
+		map2.put("msg","查询成功");
+		map2.put("data",map3);
+		map2.put("status",0);
+		return JSON.toJSONString(map2);
+	}
+
+
     /**
 	 * 修改网关配置
 	 * @return
