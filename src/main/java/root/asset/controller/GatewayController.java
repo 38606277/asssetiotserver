@@ -81,11 +81,11 @@ public class GatewayController extends RO {
 		Map<String,Object> map = new HashMap<String,Object>();
 		map.put("startIndex", currentPage);
 		map.put("perPage",perPage);
-		List<Map<String,Object>> areaList = DbFactory.Open(DbFactory.FORM).selectList("eam_gateway.listEamGatewayByPage",map);
+		List<Map<String,Object>> gatewayList = DbFactory.Open(DbFactory.FORM).selectList("eam_gateway.listEamGatewayByPage",map);
 		int total=DbFactory.Open(DbFactory.FORM).selectOne("eam_gateway.countEamGateway", map);
 		Map<String,Object> map2 =new HashMap<String,Object>();
 		Map<String,Object> map3 =new HashMap<String,Object>();
-		map3.put("list",areaList);
+		map3.put("list",gatewayList);
 		map3.put("total",total);
 		map2.put("msg","查询成功");
 		map2.put("data",map3);
@@ -93,6 +93,11 @@ public class GatewayController extends RO {
 		return JSON.toJSONString(map2);
 	}
 
+	@RequestMapping(value="/listEamGatewayAll",produces = "text/plain;charset=UTF-8")
+	public String listEamGatewayAll(@RequestBody JSONObject pJson) throws UnsupportedEncodingException{
+		List<Map<String,Object>> gatewayList = DbFactory.Open(DbFactory.FORM).selectList("eam_gateway.listEamGateway",pJson);
+		return SuccessMsg("查询成功",gatewayList);
+	}
 
     /**
 	 * 修改网关配置

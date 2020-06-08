@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="eam_asset">
+
+	<insert id="addEamAsset" parameterType="Map">
+		insert into eam_asset(asset_id, asset_num,asset_name,user,responsible) values(#{asset_id}, #{asset_num}, #{asset_name}, #{user}, #{responsible})
+	</insert>
+
+	<select id="queryCountByAssetId" resultType="int" parameterType="int">
+		select count(asset_id) from eam_asset where asset_id = #{assetId}
+	</select>
+
+	<select id="countEamAsset" resultType="int">
+		select count(asset_id) from eam_asset
+	</select>
+
+	<delete id="rmEamAsset" parameterType="int">
+		delete from eam_asset where asset_id=#{assetId}
+	</delete>
+
+
+	<update id="bindEamTag" parameterType="Map">
+		update eam_asset set asset_num = #{asset_num} where asset_id=#{asset_id}
+	</update>
+
+
+	<select id="listEamAssetByPage" resultType="Map" parameterType="Map">
+		select * from eam_asset e
+		where 1=1
+		<if test="asset_id != null and asset_id!=''">  and e.asset_id like '%${asset_id}%' </if>
+		limit #{startIndex},#{perPage}
+	</select>
+
+
+
+
+</mapper>
