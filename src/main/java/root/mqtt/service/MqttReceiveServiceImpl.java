@@ -38,7 +38,7 @@ public class MqttReceiveServiceImpl implements MqttReceiveService{
 		SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");//设置日期格式
 		String receiveTime = df.format(new Date(timestamp));
 		if("bt".equals(type)){
-			List<MQTTBtMessage> labelList = decodeLableList(payload);
+			List<MQTTBtMessage> labelList = decodeLabelList(payload);
 			
 			for(MQTTBtMessage mqttBtMessage :labelList) {
 				Map<String,Object> map = new HashMap<>();
@@ -82,7 +82,7 @@ public class MqttReceiveServiceImpl implements MqttReceiveService{
 	 * @param payload
 	 * @return
 	 */
-	private List<MQTTBtMessage> decodeLableList(byte[] payload) {
+	private List<MQTTBtMessage> decodeLabelList(byte[] payload) {
 		List<MQTTBtMessage> labelList = new ArrayList<MQTTBtMessage>();
 		int span = 5;
 		int count = payload.length/span;

@@ -7,6 +7,7 @@ import java.util.Map;
 
 import javax.annotation.Resource;
 
+import org.apache.ibatis.session.SqlSession;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -111,5 +112,22 @@ public class GatewayController extends RO {
     	mqttSendMessage.sendMessage(pJson.toJSONString(), topic);
         return SuccessMsg("修改成功", "");
     }
-    
+
+	/**
+	 * 网关关联资产
+	 * @return
+	 */
+	@RequestMapping(value="/bindAssetList",produces = "text/plain;charset=UTF-8")
+	public String bindAssetList(@RequestBody JSONObject pJson) throws UnsupportedEncodingException{
+		JSONArray array = pJson.getJSONArray("data");
+		String gatewayId = pJson.getString("gateway_id");
+		SqlSession session = DbFactory.Open(false,DbFactory.FORM);
+		array.forEach((c)->{
+			JSONObject child = (JSONObject)c;
+			child.put("gateway_id",gatewayId);
+			session.insert("eam_gateway_asset.bingAssetByGateway", child);
+		});
+		return SuccessMsg("关联成功", "");
+	}
+
 }

@@ -32,7 +32,18 @@
 		limit #{startIndex},#{perPage}
 	</select>
 
-
+	<select id="listBindingEamAssetByPage" resultType="Map" parameterType="Map">
+		SELECT
+		e.asset_id,
+		e.asset_name,
+		e.asset_num,
+		e.`user`,
+		e.responsible,
+		g.gateway_id
+		FROM
+		eam_asset e
+		LEFT JOIN eam_gateway_asset g ON g.asset_id = e.asset_id
+	</select>
 
 
 </mapper>

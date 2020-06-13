@@ -15,4 +15,23 @@
 	</select>
 
 
+	<!-- 批量更新第一种方法，通过接收传进来的参数list进行循环着组装sql -->
+	<insert id="bingAssetByGateway" parameterType="Map" >
+		<selectKey keyProperty="count" resultType="int" order="BEFORE">
+			select count(*) from eam_gateway_asset where asset_id = #{asset_id}
+		</selectKey>
+		<if test="count > 0">
+			update eam_gateway_asset
+			set asset_id = #{asset_id}
+			where gateway_id = #{gateway_id}
+		</if>
+		<if test="count==0">
+			insert into eam_gateway_asset(gateway_id,asset_id) values(#{gateway_id},#{asset_id})
+		</if>
+	</insert>
+
+
+
+
+
 </mapper>
