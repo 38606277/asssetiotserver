@@ -45,8 +45,8 @@ public class DbFactory {
             dataSource.setPassword(erpUtil.decode(dbJson.getString("password")));
             dataSource.setDriverClassName(dbJson.getString("driver"));
             if ("Mysql".equals(dbtype)) {
-                //dataSource.setUrl(dbJson.getString("url") + "?serverTimezone=Asia/Shanghai&useSSL=true&useUnicode=true&characterEncoding=UTF-8&autoReconnect=true&rewriteBatchedStatements=true");
-                dataSource.setUrl(dbJson.getString("url"));
+                dataSource.setUrl(dbJson.getString("url") + "?serverTimezone=Asia/Shanghai&useSSL=true&useUnicode=true&characterEncoding=UTF-8&autoReconnect=true&rewriteBatchedStatements=true");
+                //dataSource.setUrl(dbJson.getString("url"));
             } else {
                 dataSource.setUrl(dbJson.getString("url"));
             }
