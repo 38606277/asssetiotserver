@@ -3,9 +3,28 @@
 "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="eam_asset">
 
-	<insert id="addEamAsset" parameterType="Map">
-		insert into eam_asset(asset_id, asset_num,asset_name,user,responsible) values(#{asset_id}, #{asset_num}, #{asset_name}, #{user}, #{responsible})
+	<insert id="addAsset"   useGeneratedKeys="true" keyProperty="id" parameterType="Map">
+		insert into eam_asset
+		 (asset_num,asset_name,iot_num)
+		values
+		 (#{asset_num}, #{asset_name},  #{iot_num})
 	</insert>
+	<update id="updateAsset" parameterType="Map">
+		update eam_asset set
+			asset_num='${asset_num}',
+			asset_name='${asset_name}',
+			iot_num='${iot_num}'
+		where
+		    asset_id=${asset_id}
+	</update>
+
+	<delete id="deleteAsset" parameterType="map">
+		delete from eam_asset where asset_id in (${asset_ids})
+	</delete>
+
+	<select id="getAssetById" resultType="map" parameterType="int">
+		select asset_id,asset_num,asset_name,iot_num from eam_asset where asset_id = #{assetId}
+	</select>
 
 	<select id="queryCountByAssetId" resultType="int" parameterType="int">
 		select count(asset_id) from eam_asset where asset_id = #{assetId}
