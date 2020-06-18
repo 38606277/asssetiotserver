@@ -3,6 +3,38 @@
 "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="eam_gateway">
 
+	<select id="getGatewayById" resultType="map" parameterType="int">
+		select gateway_id,address,lng,rng,address_id from eam_gateway where gateway_id = #{gateway_id}
+	</select>
+
+	<select id="getGatewayAssetById" resultType="map" parameterType="int">
+		SELECT
+			eg.gateway_id,
+			eg.address,
+			eg.lng,
+			eg.rng,
+			eg.address_id,
+			ea.asset_name,
+			ea.asset_num,
+			ea.iot_num
+		FROM
+			eam_gateway eg,
+			eam_gateway_asset ega,
+			eam_asset ea
+		WHERE
+			eg.gateway_id = ega.gateway_id
+			AND ea.asset_id = ega.asset_id
+			AND  eg.gateway_id = #{gateway_id}
+	</select>
+
+	<insert id="createGatewayHeader" parameterType="Map">
+		insert into eam_gateway(gateway_id, address,lng,rng,address_id,states) values(#{gateway_id}, #{address}, #{lng}, #{rng}, #{address_id}, #{states})
+	</insert>
+	<insert id="createGatewayLines" parameterType="Map">
+		insert into eam_gateway_asset(gateway_id,address_id) values(#{gateway_id}, #{address_id})
+	</insert>
+
+
 	<insert id="addEamGateway" parameterType="Map">
 		insert into eam_gateway(gateway_id, address,lng,rng,address_id,states) values(#{gateway_id}, #{address}, #{lng}, #{rng}, #{address_id}, #{states})
 	</insert>
