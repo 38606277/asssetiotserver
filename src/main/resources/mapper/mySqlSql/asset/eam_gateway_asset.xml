@@ -12,7 +12,7 @@
 		FROM
 		eam_gateway_asset a
 		LEFT JOIN eam_asset b ON a.asset_id = b.asset_id
-		LEFT JOIN eam_asset_status c ON b.asset_id = c.tag_id
+		LEFT JOIN eam_asset_status c ON b.iot_num = c.tag_id
 		WHERE
 		a.gateway_id = #{gateway_id}
 	</select>
@@ -32,9 +32,5 @@
 			insert into eam_gateway_asset(gateway_id,asset_id) values(#{gateway_id},#{asset_id})
 		</if>
 	</insert>
-
-
-
-
 
 </mapper>
