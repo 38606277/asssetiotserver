@@ -42,19 +42,26 @@ public class GatewayController extends RO {
     public String CreateGateway(@RequestBody JSONObject pJson) throws UnsupportedEncodingException {
 
         try {
+            JSONObject  gatewayHeader =  pJson.getJSONObject("gatewayHeader");
+            //获取网关id
+            String gatewayId = gatewayHeader.getString("gateway_id");
+            //检查网关是否已添加
+            if(checkGateway(gatewayId)){
+                return ErrorMsg("保存失败，网关已存在",null);
+            }
+
             //插入头
             DbFactory.Open(DbFactory.FORM)
-                    .insert("eam_gateway.createGatewayHeader", pJson.getJSONObject("gatewayHeader"));
+                    .insert("eam_gateway.createGatewayHeader", gatewayHeader);
             //插入行，先删除再增加
             JSONArray jsonArray = pJson.getJSONArray("gatewayLines");
             for (int i = 0; i < jsonArray.size(); i++) {
                 JSONObject jsonObject = jsonArray.getJSONObject(i);
+                jsonObject.put("gateway_id",gatewayId);
                 DbFactory.Open(DbFactory.FORM)
-                        .insert("eam_gateway.createGatewayLines", pJson.getJSONObject("gatewayLines"));
+                        .insert("eam_gateway.createGatewayLines", jsonObject);
             }
-
-
-            return SuccessMsg("保存成功", pJson.get("id").toString());
+            return SuccessMsg("保存成功", "");
 
         } catch (Exception ex) {
             return ExceptionMsg(ex.getMessage());
@@ -65,20 +72,53 @@ public class GatewayController extends RO {
     @RequestMapping(value = "/UpdateGateway", produces = "text/plain;charset=UTF-8")
     public String UpdateGateway(@RequestBody JSONObject pJson) throws UnsupportedEncodingException {
         try {
-            DbFactory.Open(DbFactory.FORM).update("eam_asset.updateAsset", pJson);
-            return SuccessMsg("保存成功", "");
+            JSONObject  gatewayHeader =  pJson.getJSONObject("gatewayHeader");
+            //获取网关id
+            String gatewayId = gatewayHeader.getString("gateway_id");
+            if(!checkGateway(gatewayId)){
+                return ErrorMsg("更新失败，网关不存在","");
+            }
+
+            //更新头
+            DbFactory.Open(DbFactory.FORM)
+                    .update("eam_gateway.updateEamGateway", gatewayHeader);
+
+            //删除网关关联的资产
+            DbFactory.Open(DbFactory.FORM).delete("eam_gateway_asset.rmAssetByGatewayId",pJson.getJSONObject("gatewayHeader"));
+
+            //重新插入关联资产
+            JSONArray jsonArray = pJson.getJSONArray("gatewayLines");
+            for (int i = 0; i < jsonArray.size(); i++) {
+                JSONObject jsonObject = jsonArray.getJSONObject(i);
+                jsonObject.put("gateway_id",gatewayId);
+                DbFactory.Open(DbFactory.FORM)
+                        .insert("eam_gateway.createGatewayLines", jsonObject);
+            }
+            return SuccessMsg("更新成功", "");
 
         } catch (Exception ex) {
             return ExceptionMsg(ex.getMessage());
         }
     }
 
+    /**
+     * 删除网关
+     * @param pJson
+     * @return
+     * @throws UnsupportedEncodingException
+     */
     @RequestMapping(value = "/DeleteGateway", produces = "text/plain;charset=UTF-8")
     public String DeleteGateway(@RequestBody JSONObject pJson) throws UnsupportedEncodingException {
         try {
-            DbFactory.Open(DbFactory.FORM).delete("eam_asset.deleteAsset", pJson);
-            return SuccessMsg("保存成功", "");
-
+            JSONArray jsonArray = pJson.getJSONArray("gatewayLines");
+            for (int i = 0; i < jsonArray.size(); i++) {
+                JSONObject jsonObject = jsonArray.getJSONObject(i);
+                //删除网关
+                DbFactory.Open(DbFactory.FORM).delete("eam_gateway.rmEamGateway", jsonObject);
+                //删除网关关联的资产
+                DbFactory.Open(DbFactory.FORM).delete("eam_gateway_asset.rmAssetByGatewayId",jsonObject);
+            }
+            return SuccessMsg("删除成功", "");
         } catch (Exception ex) {
             return ExceptionMsg(ex.getMessage());
         }
@@ -90,7 +130,7 @@ public class GatewayController extends RO {
 
         try {
             HashMap<String, Object> map = DbFactory.Open(DbFactory.FORM)
-                    .selectOne("eam_gateway.getGatewayById", pJson.getInteger("gateway_id"));
+                    .selectOne("eam_gateway.getGatewayById", pJson.getString("gateway_id"));
             JSONObject jsonObject = (JSONObject) JSON.toJSON(map);
             return SuccessMsg("", jsonObject);
         } catch (Exception ex) {
@@ -98,12 +138,25 @@ public class GatewayController extends RO {
         }
     }
 
+    private boolean checkGateway(String gateway_id){
+        HashMap<String, Object> map = DbFactory.Open(DbFactory.FORM)
+                .selectOne("eam_gateway.getGatewayById",gateway_id);
+       return map!=null && !map.isEmpty();
+
+    }
+
+
+    /**
+     * 通过网关获取资产
+     * @param pJson
+     * @return
+     */
     @RequestMapping(value = "/getGatewayAssetById", produces = "text/plain;charset=UTF-8")
     public String getGatewayAssetById(@RequestBody JSONObject pJson) {
 
         try {
             List<HashMap<String, Object>> list = DbFactory.Open(DbFactory.FORM)
-                    .selectList("eam_gateway.getGatewayAssetById", pJson.getInteger("gateway_id"));
+                    .selectList("eam_gateway.getGatewayAssetById", pJson);
             JSONArray jSONArray = (JSONArray) JSON.toJSON(list);
             return SuccessMsg("", jSONArray);
         } catch (Exception ex) {
@@ -155,6 +208,7 @@ public class GatewayController extends RO {
     public String listEamGateway(@RequestBody JSONObject pJson) throws UnsupportedEncodingException {
         int currentPage = Integer.valueOf(pJson.getString("pageNum"));
         int perPage = Integer.valueOf(pJson.getString("perPage"));
+
         if (1 == currentPage || 0 == currentPage) {
             currentPage = 0;
         } else {
@@ -163,8 +217,9 @@ public class GatewayController extends RO {
         Map<String, Object> map = new HashMap<String, Object>();
         map.put("startIndex", currentPage);
         map.put("perPage", perPage);
+        map.put("keyword",pJson.getString("keyword"));
         List<Map<String, Object>> gatewayList = DbFactory.Open(DbFactory.FORM).selectList("eam_gateway.listEamGatewayByPage", map);
-        int total = DbFactory.Open(DbFactory.FORM).selectOne("eam_gateway.countEamGateway", map);
+        int total = DbFactory.Open(DbFactory.FORM).selectOne("eam_gateway.countEamGatewayByPage", map);
         Map<String, Object> map2 = new HashMap<String, Object>();
         Map<String, Object> map3 = new HashMap<String, Object>();
         map3.put("list", gatewayList);
@@ -211,6 +266,13 @@ public class GatewayController extends RO {
             session.insert("eam_gateway_asset.bingAssetByGateway", child);
         });
         return SuccessMsg("关联成功", "");
+    }
+
+
+    @RequestMapping(value = "/treeGatewayByAddressId", produces = "text/plain;charset=UTF-8")
+    public String treeGatewayByAddressId(@RequestBody JSONObject pJson) throws UnsupportedEncodingException {
+        List<Map<String, Object>> gatewayList = DbFactory.Open(DbFactory.FORM).selectList("eam_gateway.treeGatewayByAddressId", pJson);
+        return JSON.toJSONString(gatewayList);
     }
 
 }

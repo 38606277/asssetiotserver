@@ -3,11 +3,11 @@
 "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="eam_gateway">
 
-	<select id="getGatewayById" resultType="map" parameterType="int">
-		select gateway_id,address,lng,rng,address_id from eam_gateway where gateway_id = #{gateway_id}
+	<select id="getGatewayById" resultType="Map" parameterType="String">
+		select * from eam_gateway where gateway_id = #{gateway_id}
 	</select>
 
-	<select id="getGatewayAssetById" resultType="map" parameterType="int">
+	<select id="getGatewayAssetById" resultType="Map" parameterType="Map">
 		SELECT
 			eg.gateway_id,
 			eg.address,
@@ -16,7 +16,8 @@
 			eg.address_id,
 			ea.asset_name,
 			ea.asset_num,
-			ea.iot_num
+			ea.iot_num,
+			ea.asset_id
 		FROM
 			eam_gateway eg,
 			eam_gateway_asset ega,
@@ -27,26 +28,29 @@
 			AND  eg.gateway_id = #{gateway_id}
 	</select>
 
-	<insert id="createGatewayHeader" parameterType="Map">
-		insert into eam_gateway(gateway_id, address,lng,rng,address_id,states) values(#{gateway_id}, #{address}, #{lng}, #{rng}, #{address_id}, #{states})
-	</insert>
-	<insert id="createGatewayLines" parameterType="Map">
-		insert into eam_gateway_asset(gateway_id,address_id) values(#{gateway_id}, #{address_id})
-	</insert>
-
-
-	<insert id="addEamGateway" parameterType="Map">
-		insert into eam_gateway(gateway_id, address,lng,rng,address_id,states) values(#{gateway_id}, #{address}, #{lng}, #{rng}, #{address_id}, #{states})
-	</insert>
 	<select id="queryCountByGatewayId" resultType="int" parameterType="int">
 		select count(gateway_id) from eam_gateway where gateway_id = #{gatewayId}
 	</select>
+
+	<select id="queryCountByAddressId" resultType="int" parameterType="String">
+		select count(gateway_id) from eam_gateway where address_id = #{addressId}
+	</select>
+
+	<select id="treeGatewayByAddressId" resultType="Map" parameterType="Map">
+		SELECT
+		e.gateway_id AS 'label',
+		e.gateway_id AS 'value',
+		'true' AS 'isLeaf',
+		'true' AS 'isGateway'
+		FROM
+		eam_gateway e
+		WHERE
+		address_id = #{address_id}
+	</select>
+
 	<select id="countEamGateway" resultType="int">
 		select count(gateway_id) from eam_gateway
 	</select>
-	<delete id="rmEamGateway" parameterType="int">
-		delete from eam_gateway where gateway_id=#{gatewayId}
-	</delete>
 
 	<select id="listEamGateway" resultType="Map" parameterType="Map">
 		select * from eam_gateway e
@@ -54,13 +58,41 @@
 		<if test="keyword != null and keyword!=''">  and (e.gateway_id like '%${keyword}%' or e.address like '%${keyword}%') </if>
 	</select>
 
+	<select id="countEamGatewayByPage" resultType="int" parameterType="Map">
+		select count(*) from eam_gateway e
+		where 1=1
+		<if test="keyword != null and keyword!=''">  and (e.gateway_id like '%${keyword}%' or e.address like '%${keyword}%' or e.lng like '%${keyword}%' or e.rng like '%${keyword}%') </if>
+		limit #{startIndex},#{perPage}
+
+	</select>
 
 	<select id="listEamGatewayByPage" resultType="Map" parameterType="Map">
 		select * from eam_gateway e
 		where 1=1
-		<if test="gateway_id != null and gateway_id!=''">  and e.gateway_id like '%${gateway_id}%' </if>
+		<if test="keyword != null and keyword!=''">  and (e.gateway_id like '%${keyword}%' or e.address like '%${keyword}%' or e.lng like '%${keyword}%' or e.rng like '%${keyword}%') </if>
 		limit #{startIndex},#{perPage}
 
 	</select>
+
+	<insert id="createGatewayHeader" parameterType="Map">
+		insert into eam_gateway(gateway_id, address,lng,rng,address_id,states) values(#{gateway_id}, #{address}, #{lng}, #{rng}, #{address_id}, #{states})
+	</insert>
+
+	<insert id="createGatewayLines" parameterType="Map">
+		insert into eam_gateway_asset(gateway_id,asset_id) values(#{gateway_id}, #{asset_id})
+	</insert>
+
+	<insert id="addEamGateway" parameterType="Map">
+		insert into eam_gateway(gateway_id, address,lng,rng,address_id,states) values(#{gateway_id}, #{address}, #{lng}, #{rng}, #{address_id}, #{states})
+	</insert>
+
+	<delete id="rmEamGateway"  parameterType="Map">
+		delete from eam_gateway where gateway_id=#{gateway_id}
+	</delete>
+
+	<update id="updateEamGateway" parameterType="Map">
+		update eam_gateway set address = #{address},lng = #{lng},rng = #{rng},address_id = #{address_id},states = #{states} where gateway_id=#{gateway_id}
+	</update>
+
 
 </mapper>

@@ -76,9 +76,9 @@ public class AssetController extends RO {
     }
     @RequestMapping(value = "/getAssetById", produces = "text/plain;charset=UTF-8")
     public String getFunctionByID(@RequestBody JSONObject pJson){
-
+       int assetId =  pJson.getInteger("asset_id");
         try{
-            HashMap<String,Object> map = DbFactory.Open(DbFactory.FORM).selectOne("eam_asset.getAssetById",pJson.getInteger("asset_id"));
+            HashMap<String,Object> map = DbFactory.Open(DbFactory.FORM).selectOne("eam_asset.getAssetById",assetId);
             JSONObject jsonObject =(JSONObject) JSON.toJSON(map);
             return  SuccessMsg("",jsonObject);
         }catch (Exception ex){
@@ -108,6 +108,40 @@ public class AssetController extends RO {
         return SuccessMsg("查询成功", assetList);
     }
 
+
+    /**
+     * 获取资产列表 by GatewayId （分页）
+     *
+     * @return
+     */
+    @RequestMapping(value = "/listEamAssetPageByGatewayId", produces = "text/plain;charset=UTF-8")
+    public String listEamAssetPageByGatewayId(@RequestBody JSONObject pJson) throws UnsupportedEncodingException {
+        int currentPage = Integer.valueOf(pJson.getString("pageNum"));
+        int perPage = Integer.valueOf(pJson.getString("perPage"));
+        String gatewayId = pJson.getString("gateway_id");
+        if (1 == currentPage || 0 == currentPage) {
+            currentPage = 0;
+        } else {
+            currentPage = (currentPage - 1) * perPage;
+        }
+        Map<String, Object> map = new HashMap<String, Object>();
+        map.put("startIndex", currentPage);
+        map.put("perPage", perPage);
+        map.put("gateway_id", gatewayId);
+        List<Map<String, Object>> gatewayList = DbFactory.Open(DbFactory.FORM).selectList("eam_gateway_asset.queryAssetListPageByGatewayId", map);
+        int total = DbFactory.Open(DbFactory.FORM).selectOne("eam_gateway_asset.countAssetByGatewayId", map);
+        Map<String, Object> map2 = new HashMap<String, Object>();
+        Map<String, Object> map3 = new HashMap<String, Object>();
+        map3.put("list", gatewayList);
+        map3.put("total", total);
+        map2.put("msg", "查询成功");
+        map2.put("data", map3);
+        map2.put("status", 0);
+        return JSON.toJSONString(map2);
+    }
+
+
+
     /**
      * 获取资产列表
      *
@@ -125,8 +159,9 @@ public class AssetController extends RO {
         Map<String, Object> map = new HashMap<String, Object>();
         map.put("startIndex", currentPage);
         map.put("perPage", perPage);
+        map.put("keyword",pJson.getString("keyword"));
         List<Map<String, Object>> assetList = DbFactory.Open(DbFactory.FORM).selectList("eam_asset.listEamAssetByPage", map);
-        int total = DbFactory.Open(DbFactory.FORM).selectOne("eam_asset.countEamAsset", map);
+        int total = DbFactory.Open(DbFactory.FORM).selectOne("eam_asset.countEamAssetByPage", map);
         Map<String, Object> map2 = new HashMap<String, Object>();
         Map<String, Object> map3 = new HashMap<String, Object>();
         map3.put("list", assetList);
@@ -155,8 +190,9 @@ public class AssetController extends RO {
         Map<String, Object> map = new HashMap<String, Object>();
         map.put("startIndex", currentPage);
         map.put("perPage", perPage);
+        map.put("keyword",pJson.getString("keyword"));
         List<Map<String, Object>> assetList = DbFactory.Open(DbFactory.FORM).selectList("eam_asset.listBindingEamAssetByPage", map);
-        int total = DbFactory.Open(DbFactory.FORM).selectOne("eam_asset.countEamAsset", map);
+        int total = DbFactory.Open(DbFactory.FORM).selectOne("eam_asset.countBindingEamAssetByPage", map);
         Map<String, Object> map2 = new HashMap<String, Object>();
         Map<String, Object> map3 = new HashMap<String, Object>();
         map3.put("list", assetList);
@@ -166,4 +202,37 @@ public class AssetController extends RO {
         map2.put("status", 0);
         return JSON.toJSONString(map2);
     }
+
+
+
+    /**
+     * 获取未关联网关的资产列表
+     * @return
+     */
+    @RequestMapping(value = "/listAssetNoBindGateway", produces = "text/plain;charset=UTF-8")
+    public String listAssetNoBindGateway(@RequestBody JSONObject pJson) throws UnsupportedEncodingException {
+        int currentPage = Integer.valueOf(pJson.getString("pageNum"));
+        int perPage = Integer.valueOf(pJson.getString("perPage"));
+        if (1 == currentPage || 0 == currentPage) {
+            currentPage = 0;
+        } else {
+            currentPage = (currentPage - 1) * perPage;
+        }
+        Map<String, Object> map = new HashMap<String, Object>();
+        map.put("startIndex", currentPage);
+        map.put("perPage", perPage);
+        List<Map<String, Object>> assetList = DbFactory.Open(DbFactory.FORM).selectList("eam_asset.listAssetNoBindGateway", map);
+        int total = DbFactory.Open(DbFactory.FORM).selectOne("eam_asset.countAssetNoBindGateway", map);
+        Map<String, Object> map2 = new HashMap<String, Object>();
+        Map<String, Object> map3 = new HashMap<String, Object>();
+        map3.put("list", assetList);
+        map3.put("total", total);
+        map2.put("msg", "查询成功");
+        map2.put("data", map3);
+        map2.put("status", 0);
+        return JSON.toJSONString(map2);
+    }
+
+
+
 }
