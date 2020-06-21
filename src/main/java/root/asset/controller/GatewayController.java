@@ -43,6 +43,8 @@ public class GatewayController extends RO {
 
         try {
             JSONObject  gatewayHeader =  pJson.getJSONObject("gatewayHeader");
+            String imageBase64 = gatewayHeader.getString("imageBase64");
+            gatewayHeader.put("image",imageBase64.getBytes());
             //获取网关id
             String gatewayId = gatewayHeader.getString("gateway_id");
             //检查网关是否已添加
@@ -73,6 +75,8 @@ public class GatewayController extends RO {
     public String UpdateGateway(@RequestBody JSONObject pJson) throws UnsupportedEncodingException {
         try {
             JSONObject  gatewayHeader =  pJson.getJSONObject("gatewayHeader");
+            String imageBase64 = gatewayHeader.getString("imageBase64");
+            gatewayHeader.put("image",imageBase64.getBytes());
             //获取网关id
             String gatewayId = gatewayHeader.getString("gateway_id");
             if(!checkGateway(gatewayId)){
@@ -144,7 +148,6 @@ public class GatewayController extends RO {
        return map!=null && !map.isEmpty();
 
     }
-
 
     /**
      * 通过网关获取资产

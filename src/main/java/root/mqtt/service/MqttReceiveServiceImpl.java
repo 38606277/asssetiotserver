@@ -56,8 +56,9 @@ public class MqttReceiveServiceImpl implements MqttReceiveService{
 					//添加
 					DbFactory.Open(DbFactory.FORM).insert("eam_asset_status.addEamAssetStatus",map);
 				}
+				buildAlarm(mqttBtMessage);
 			}
-		
+
 			System.out.println(labelList.toString());
 		}else if("update".equals(type)){
 			Map<String, Object> mapObj = JSON.parseObject(new String (payload));
@@ -127,5 +128,49 @@ public class MqttReceiveServiceImpl implements MqttReceiveService{
 
 		return label;
 	}
+
+	/**
+	 * 构建报警记录
+	 */
+	private void buildAlarm(MQTTBtMessage mqttBtMessage){
+		//获取资产数据
+		Map result =DbFactory.Open(DbFactory.FORM).selectOne("eam_asset.listEamAssetByIotNum",new HashMap<String,Object>(){
+			{
+				put("iot_num",mqttBtMessage.getCode());
+			}
+		});
+		if(result==null || result.size() == 0){
+			return ;
+		}
+		mqttBtMessage.setElectricity(11);
+		mqttBtMessage.setSignalIntensity(60);
+		/**
+		 * 电压警告
+		 */
+		if(mqttBtMessage.getElectricity()< 12){ //电压低
+			HashMap map = new HashMap<String,Object>();
+			map.put("alarm_num","DYD" + System.currentTimeMillis());
+			map.put("asset_id",result.get("asset_id"));
+			map.put("alarm_type","电压低");
+
+			//添加
+			DbFactory.Open(DbFactory.FORM).insert("eam_alarm.addEamAlarm",map);
+		}
+
+		/**
+		 * 距离信号警告
+		 */
+		if(50 < mqttBtMessage.getSignalIntensity()){
+			HashMap map = new HashMap<String,Object>();
+			map.put("alarm_num","WY" + System.currentTimeMillis());
+			map.put("asset_id",result.get("asset_id"));
+			map.put("alarm_type","位移");
+
+			//添加
+			DbFactory.Open(DbFactory.FORM).insert("eam_alarm.addEamAlarm",map);
+		}
+	}
+
+
 
 }

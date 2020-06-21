@@ -5,15 +5,16 @@
 
 	<insert id="addAsset"   useGeneratedKeys="true" keyProperty="id" parameterType="Map">
 		insert into eam_asset
-		 (asset_num,asset_name,iot_num)
+		 (asset_num,asset_name,iot_num,image)
 		values
-		 (#{asset_num}, #{asset_name},  #{iot_num})
+		 (#{asset_num}, #{asset_name}, #{iot_num},#{image})
 	</insert>
 	<update id="updateAsset" parameterType="Map">
 		update eam_asset set
-			asset_num='${asset_num}',
-			asset_name='${asset_name}',
-			iot_num='${iot_num}'
+			asset_num=${asset_num},
+			asset_name=${asset_name},
+			iot_num=${iot_num},
+		    image=${image}
 		where
 		    asset_id=${asset_id}
 	</update>
@@ -23,7 +24,7 @@
 	</delete>
 
 	<select id="getAssetById" resultType="map" parameterType="int">
-		select asset_id,asset_num,asset_name,iot_num from eam_asset where asset_id = #{assetId}
+		select e.asset_num,e.asset_name,e.iot_num,CONVERT(image USING utf8mb4) AS imageBase64,e.create_time,e.user,e.responsible  from eam_asset e where e.asset_id = #{assetId}
 	</select>
 
 	<select id="queryCountByAssetId" resultType="int" parameterType="int">
@@ -37,9 +38,14 @@
 
 
 	<update id="bindEamTag" parameterType="Map">
-		update eam_asset set asset_num = #{asset_num} where asset_id=#{asset_id}
+		update eam_asset set iot_num = #{iot_num} where asset_id=#{asset_id}
 	</update>
 
+
+	<select id="listEamAssetByIotNum" resultType="Map" parameterType="Map">
+		select * from eam_asset e where iot_num=#{iot_num}
+
+	</select>
 
 	<select id="countEamAssetByPage" resultType="int" parameterType="Map">
 		select count(*) from eam_asset e

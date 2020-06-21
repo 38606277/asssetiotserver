@@ -53,7 +53,7 @@
 	</select>
 
 	<select id="listEamGateway" resultType="Map" parameterType="Map">
-		select * from eam_gateway e
+		select * ,CONVERT(image USING utf8mb4) AS imageBase64 from eam_gateway e
 		where 1=1
 		<if test="keyword != null and keyword!=''">  and (e.gateway_id like '%${keyword}%' or e.address like '%${keyword}%') </if>
 	</select>
@@ -75,7 +75,7 @@
 	</select>
 
 	<insert id="createGatewayHeader" parameterType="Map">
-		insert into eam_gateway(gateway_id, address,lng,rng,address_id,states) values(#{gateway_id}, #{address}, #{lng}, #{rng}, #{address_id}, #{states})
+		insert into eam_gateway(gateway_id, address,lng,rng,address_id,states,image) values(#{gateway_id}, #{address}, #{lng}, #{rng}, #{address_id}, #{states}, #{image})
 	</insert>
 
 	<insert id="createGatewayLines" parameterType="Map">
@@ -91,7 +91,7 @@
 	</delete>
 
 	<update id="updateEamGateway" parameterType="Map">
-		update eam_gateway set address = #{address},lng = #{lng},rng = #{rng},address_id = #{address_id},states = #{states} where gateway_id=#{gateway_id}
+		update eam_gateway set address = #{address},lng = #{lng},rng = #{rng},address_id = #{address_id},states = #{states},image = #{image} where gateway_id=#{gateway_id}
 	</update>
 
 

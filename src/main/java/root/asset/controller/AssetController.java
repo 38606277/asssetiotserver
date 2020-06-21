@@ -27,7 +27,8 @@ public class AssetController extends RO {
      */
     @RequestMapping(value = "/CreateAsset", produces = "text/plain;charset=UTF-8")
     public String CreateAsset(@RequestBody JSONObject pJson) throws UnsupportedEncodingException {
-
+        String imageBase64 = pJson.getString("imageBase64");
+        pJson.put("image",imageBase64.getBytes());
         try{
             DbFactory.Open(DbFactory.FORM).insert("eam_asset.addAsset", pJson);
             return SuccessMsg("保存成功", pJson.get("id").toString());
@@ -41,6 +42,8 @@ public class AssetController extends RO {
     @RequestMapping(value = "/UpdateAsset", produces = "text/plain;charset=UTF-8")
     public String UpdateAsset(@RequestBody JSONObject pJson) throws UnsupportedEncodingException {
         try{
+            String imageBase64 = pJson.getString("imageBase64");
+            pJson.put("image",imageBase64.getBytes());
             DbFactory.Open(DbFactory.FORM).update("eam_asset.updateAsset", pJson);
             return SuccessMsg("保存成功", "");
 
@@ -53,7 +56,7 @@ public class AssetController extends RO {
     public String DeleteAsset(@RequestBody JSONObject pJson) throws UnsupportedEncodingException {
         try{
             DbFactory.Open(DbFactory.FORM).delete("eam_asset.deleteAsset", pJson);
-            return SuccessMsg("保存成功", "");
+            return SuccessMsg("删除成功", "");
 
         }catch (Exception ex){
             return ExceptionMsg(ex.getMessage());
@@ -74,6 +77,7 @@ public class AssetController extends RO {
         }
         return SuccessMsg("删除成功", "");
     }
+
     @RequestMapping(value = "/getAssetById", produces = "text/plain;charset=UTF-8")
     public String getFunctionByID(@RequestBody JSONObject pJson){
        int assetId =  pJson.getInteger("asset_id");
@@ -99,7 +103,6 @@ public class AssetController extends RO {
 
     /**
      * 获取资产列表 by GatewayId
-     *
      * @return
      */
     @RequestMapping(value = "/listEamAssetByGatewayId", produces = "text/plain;charset=UTF-8")
