@@ -10,13 +10,7 @@
 		 (#{asset_num}, #{asset_name}, #{iot_num},#{image})
 	</insert>
 	<update id="updateAsset" parameterType="Map">
-		update eam_asset set
-			asset_num=${asset_num},
-			asset_name=${asset_name},
-			iot_num=${iot_num},
-		    image=${image}
-		where
-		    asset_id=${asset_id}
+		update eam_asset set asset_num=#{asset_num}, asset_name=#{asset_name}, iot_num=#{iot_num},image = #{image} where asset_id=#{asset_id}
 	</update>
 
 	<delete id="deleteAsset" parameterType="map">
