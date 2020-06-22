@@ -19,6 +19,7 @@
 		<if test="keyword != null and keyword!=''">
 			and (a.alarm_num like '%${keyword}%' or a.alarm_type like '%${keyword}%' or a.status like '%${keyword}%' or e.asset_num like '%${keyword}%' or e.iot_num like '%${keyword}%' or e.asset_name like '%${keyword}%')
 		</if>
+		ORDER BY alarm_time desc
 		limit #{startIndex},#{perPage}
 	</select>
 
@@ -45,6 +46,7 @@
 		<if test="keyword != null and keyword!=''">
 			and (a.alarm_num like '%${keyword}%' or a.alarm_type like '%${keyword}%' or a.status like '%${keyword}%' or e.asset_num like '%${keyword}%' or e.iot_num like '%${keyword}%' or e.asset_name like '%${keyword}%')
 		</if>
+		ORDER BY alarm_time desc
 		limit #{startIndex},#{perPage}
 	</select>
 

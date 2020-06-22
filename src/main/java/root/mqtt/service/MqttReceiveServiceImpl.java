@@ -142,8 +142,6 @@ public class MqttReceiveServiceImpl implements MqttReceiveService{
 		if(result==null || result.size() == 0){
 			return ;
 		}
-		mqttBtMessage.setElectricity(11);
-		mqttBtMessage.setSignalIntensity(60);
 		/**
 		 * 电压警告
 		 */

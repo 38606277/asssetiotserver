@@ -63,6 +63,10 @@ public class GatewayController extends RO {
                 DbFactory.Open(DbFactory.FORM)
                         .insert("eam_gateway.createGatewayLines", jsonObject);
             }
+
+            //添加监听
+            topicService.addTopicByGateway(gatewayId);
+
             return SuccessMsg("保存成功", "");
 
         } catch (Exception ex) {
@@ -121,6 +125,8 @@ public class GatewayController extends RO {
                 DbFactory.Open(DbFactory.FORM).delete("eam_gateway.rmEamGateway", jsonObject);
                 //删除网关关联的资产
                 DbFactory.Open(DbFactory.FORM).delete("eam_gateway_asset.rmAssetByGatewayId",jsonObject);
+
+                topicService.removeTopicByGateway(jsonObject.getString("gateway_id"));
             }
             return SuccessMsg("删除成功", "");
         } catch (Exception ex) {
