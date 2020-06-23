@@ -67,7 +67,7 @@
 	</select>
 
 	<select id="listEamGatewayByPage" resultType="Map" parameterType="Map">
-		select * from eam_gateway e
+		select * ,CONVERT(image USING utf8mb4) AS imageBase64 from  eam_gateway e
 		where 1=1
 		<if test="keyword != null and keyword!=''">  and (e.gateway_id like '%${keyword}%' or e.address like '%${keyword}%' or e.lng like '%${keyword}%' or e.rng like '%${keyword}%') </if>
 		limit #{startIndex},#{perPage}

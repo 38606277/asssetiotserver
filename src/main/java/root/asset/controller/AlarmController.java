@@ -43,12 +43,10 @@ public class AlarmController extends RO {
         } else {
             currentPage = (currentPage - 1) * perPage;
         }
-        Map<String, Object> map = new HashMap<String, Object>();
-        map.put("startIndex", currentPage);
-        map.put("perPage", perPage);
-        map.put("keyword",pJson.getString("keyword"));
-        List<Map<String, Object>> gatewayList = DbFactory.Open(DbFactory.FORM).selectList("eam_alarm.listEamAlarmByPage", map);
-        int total = DbFactory.Open(DbFactory.FORM).selectOne("eam_alarm.countEamAlarmByPage", map);
+        pJson.put("startIndex", currentPage);
+        pJson.put("perPage", perPage);
+        List<Map<String, Object>> gatewayList = DbFactory.Open(DbFactory.FORM).selectList("eam_alarm.listEamAlarmByPage", pJson);
+        int total = DbFactory.Open(DbFactory.FORM).selectOne("eam_alarm.countEamAlarmByPage", pJson);
         Map<String, Object> map2 = new HashMap<String, Object>();
         Map<String, Object> map3 = new HashMap<String, Object>();
         map3.put("list", gatewayList);

@@ -50,7 +50,7 @@
 	</select>
 
 	<select id="listEamAssetByPage" resultType="Map" parameterType="Map">
-		select * from eam_asset e
+		select * ,CONVERT(image USING utf8mb4) AS imageBase64 from eam_asset e
 		where 1=1
 		<if test="keyword != null and keyword!=''">
 			and (e.asset_id like '%${keyword}%' or e.asset_num like '%${keyword}%' or e.asset_name like '%${keyword}%' or e.iot_num like '%${keyword}%')
