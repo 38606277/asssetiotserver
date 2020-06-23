@@ -7,7 +7,7 @@ spring:
   datasource:
     type: com.alibaba.druid.pool.DruidDataSource
 webapp:
-  title: 河北移动蓝牙资产监控系统
+  title: 河北移动蓝牙物联网资产管理系统
 management:
    endpoint:
      beans:

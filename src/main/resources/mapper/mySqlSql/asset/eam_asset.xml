@@ -86,7 +86,7 @@
 
 
 	<select id="countAssetNoBindGateway" resultType="int" parameterType="Map">
-		SELECT count(e.*) FROM eam_asset e
+		SELECT count(1) FROM eam_asset e
 		WHERE NOT EXISTS
 		(SELECT 1 FROM eam_gateway_asset g
 		WHERE e.asset_id = g.asset_id
