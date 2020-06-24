@@ -13,4 +13,32 @@
 	<update id="updateEamAssetStatus" parameterType="Map">
 		update eam_asset_status set gateway_id=#{gateway_id} ,tag_id=#{tag_id},receive_time=#{receive_time} , electricity=#{electricity}, signalIntensity=#{signalIntensity} where tag_id=#{tag_id}
 	</update>
+
+	<select id="countTagNoBindGateway" resultType="int" parameterType="Map">
+		SELECT
+		count(1)
+		FROM
+		eam_asset_status eas
+		LEFT JOIN eam_asset ea ON eas.tag_id = ea.asset_id
+		WHERE
+		ea.asset_id IS NOT NULL
+		AND NOT EXISTS ( SELECT 1 FROM eam_gateway_asset g WHERE ea.asset_id = g.asset_id )
+		limit #{startIndex},#{perPage}
+	</select>
+
+
+	<select id="listTagNoBindGateway" resultType="Map" parameterType="Map">
+		SELECT
+		eas.*,
+		ea.*
+		FROM
+		eam_asset_status eas
+		LEFT JOIN eam_asset ea ON eas.tag_id = ea.asset_id
+		WHERE
+		ea.asset_id IS NOT NULL
+		AND NOT EXISTS ( SELECT 1 FROM eam_gateway_asset g WHERE ea.asset_id = g.asset_id )
+		limit #{startIndex},#{perPage}
+	</select>
+
+
 </mapper>
