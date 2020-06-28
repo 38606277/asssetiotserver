@@ -4,7 +4,16 @@
 <mapper namespace="eam_gateway">
 
 	<select id="getGatewayById" resultType="Map" parameterType="String">
-		select * ,CONVERT(image USING utf8mb4) AS imageBase64 from eam_gateway where gateway_id = #{gateway_id}
+		SELECT
+		e.*,
+		CONVERT ( image USING utf8mb4 ) AS imageBase64 ,
+		sa.merger_name
+		FROM
+		eam_gateway e
+		LEFT JOIN
+		sys_area sa on e.address_id = sa.`code`
+		WHERE
+		gateway_id = #{gateway_id}
 	</select>
 
 	<select id="getGatewayAssetById" resultType="Map" parameterType="Map">

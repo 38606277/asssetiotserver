@@ -36,6 +36,7 @@ public class AreaController extends RO {
             Map data = new HashMap();
             data.put("label", areaData.get("name").toString());
             data.put("value", areaData.get("code").toString());
+            data.put("merger_name", areaData.get("merger_name").toString());
             data.put("level", areaData.get("level_type").toString());
             data.put("isLeaf", areaData.get("level_type").toString().equals(maxLevel));
             dataList.add(data);
