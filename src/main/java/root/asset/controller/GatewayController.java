@@ -291,8 +291,16 @@ public class GatewayController extends RO {
         try {
             HashMap<String, Object> map = DbFactory.Open(DbFactory.FORM)
                     .selectOne("eam_gateway_status.queryGatewayStatusByGatewayId", pJson.getString("gateway_id"));
-            JSONObject jsonObject = (JSONObject) JSON.toJSON(map);
-            return SuccessMsg("", jsonObject);
+
+            if(map == null){
+                return ErrorMsg("2000","网关信息获取失败");
+            }else{
+                JSONObject jsonObject = (JSONObject) JSON.toJSON(map);
+                return SuccessMsg("", jsonObject);
+            }
+
+
+
         } catch (Exception ex) {
             return ExceptionMsg(ex.getMessage());
         }
