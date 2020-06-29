@@ -1,13 +1,14 @@
 package root.mqtt.bean;
 
+import java.util.HashMap;
 import java.util.Map;
 
 public class MQTTUpdateMessage {
 
-	private String latitudeLBS;//"1792":LBS(纬度)
-	private String longitudeLBS;//"087B":LBS(经度)；
-	private String latitudeGPS;//"1480":GPS(纬度)；
-	private String longitudeGPS;//"00EA":GPS(经度)；
+	private float latitudeLBS;//"1792":LBS(纬度)
+	private float longitudeLBS;//"087B":LBS(经度)；
+	private float latitudeGPS;//"1480":GPS(纬度)；
+	private float longitudeGPS;//"00EA":GPS(经度)；
 	private String wifiMac;//"13DC":wifi mac值，最多上传5个；空时为大写NULL
 	private String baseStationInfo;//"24ED":基站信息，“imei=xxxxx&bts=xxxxx&nearbts=xxxx|xxxx|xxxx”，其中bts字段拼接如下：mcc,mnc,lac,cellid,bdm
 	private String electricQuantity;//"1E9D":电量百分比；
@@ -21,26 +22,45 @@ public class MQTTUpdateMessage {
 	private String bluetoothInterval;//"22BC":蓝牙数据传输间隔，单位秒，默认60秒
 	private String bluetoothWhiteList;//"22BD":蓝牙数据白名单开关，打开为1，关闭为0
 	private String bluetoothWhiteListCount;//"22BE":蓝牙数据白名单数量
-	
-	
+
+	public Map<String,Object> getDataMap(){
+		Map<String,Object> dataMap = new HashMap<>();
+		dataMap.put("latitudeLBS",latitudeLBS);
+		dataMap.put("longitudeLBS",longitudeLBS);
+		dataMap.put("latitudeGPS",latitudeGPS);
+		dataMap.put("longitudeGPS",longitudeGPS);
+		dataMap.put("wifiMac",wifiMac);
+		dataMap.put("baseStationInfo",baseStationInfo);
+		dataMap.put("electricQuantity",electricQuantity);
+		dataMap.put("runningTime",runningTime);
+		dataMap.put("signalIntensity",signalIntensity);
+		dataMap.put("satellitesCount",satellitesCount);
+		dataMap.put("speed",speed);
+		dataMap.put("orientation",orientation);
+		dataMap.put("distancePrecision",distancePrecision);
+		dataMap.put("uploadInterval",uploadInterval);
+		dataMap.put("bluetoothInterval",bluetoothInterval);
+		dataMap.put("bluetoothWhiteList",bluetoothWhiteList);
+		dataMap.put("bluetoothWhiteListCount",bluetoothWhiteListCount);
+		return dataMap;
+	}
+
 	public MQTTUpdateMessage(Map<String,Object> map){
-		this.latitudeLBS = getValue(map,"1792");
-		this.longitudeLBS = getValue(map,"087B");
-		this.latitudeGPS = getValue(map,"1480");
-		this.longitudeGPS = getValue(map,"00EA");
-		
+		this.latitudeLBS = getFloat(map,"1792");
+		this.longitudeLBS = getFloat(map,"087B");
+		this.latitudeGPS = getFloat(map,"1480");
+		this.longitudeGPS = getFloat(map,"00EA");
 		this.wifiMac = getValue(map,"13DC");
 		this.baseStationInfo = getValue(map,"24ED");
 		this.electricQuantity = getValue(map,"1E9D");
 		this.runningTime = getValue(map,"2557");
 		this.signalIntensity = getValue(map,"023A");
-		
+		this.satellitesCount = getValue(map,"023B");
 		this.speed = getValue(map,"1082");
 		this.orientation = getValue(map,"1182");
 		this.distancePrecision = getValue(map,"1382");
 		this.uploadInterval = getValue(map,"0F82");
 		this.bluetoothInterval = getValue(map,"22BC");
-		
 		this.bluetoothWhiteList = getValue(map,"22BD");
 		this.bluetoothWhiteListCount = getValue(map,"22BE");
 	}
@@ -51,35 +71,49 @@ public class MQTTUpdateMessage {
 			return String.valueOf(map.get(key));
 		}
 		return value;
-		
 	}
 
-	
-	
-	public String getLatitudeLBS() {
+	private float getFloat(Map<String,Object> map ,String key) {
+		float value = 0;
+		if(map.containsKey(key) && !"NULL".equals(map.get(key))) {
+			return Float.parseFloat(String.valueOf(map.get(key)));
+		}
+		return value;
+	}
+
+
+	public float getLatitudeLBS() {
 		return latitudeLBS;
 	}
-	public void setLatitudeLBS(String latitudeLBS) {
+
+	public void setLatitudeLBS(float latitudeLBS) {
 		this.latitudeLBS = latitudeLBS;
 	}
-	public String getLongitudeLBS() {
+
+	public float getLongitudeLBS() {
 		return longitudeLBS;
 	}
-	public void setLongitudeLBS(String longitudeLBS) {
+
+	public void setLongitudeLBS(float longitudeLBS) {
 		this.longitudeLBS = longitudeLBS;
 	}
-	public String getLatitudeGPS() {
+
+	public float getLatitudeGPS() {
 		return latitudeGPS;
 	}
-	public void setLatitudeGPS(String latitudeGPS) {
+
+	public void setLatitudeGPS(float latitudeGPS) {
 		this.latitudeGPS = latitudeGPS;
 	}
-	public String getLongitudeGPS() {
+
+	public float getLongitudeGPS() {
 		return longitudeGPS;
 	}
-	public void setLongitudeGPS(String longitudeGPS) {
+
+	public void setLongitudeGPS(float longitudeGPS) {
 		this.longitudeGPS = longitudeGPS;
 	}
+
 	public String getWifiMac() {
 		return wifiMac;
 	}

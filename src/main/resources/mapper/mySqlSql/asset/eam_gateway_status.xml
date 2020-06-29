@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="eam_gateway_status">
+
+
+	<insert id="addEamGatewayStatus" parameterType="Map">
+		INSERT INTO eam_gateway_status (
+		gateway_id,
+		lng,
+		rng,
+		longitudeLBS,
+		latitudeLBS,
+		longitudeGPS,
+		latitudeGPS,
+		wifiMac,
+		baseStationInfo,
+		electricQuantity,
+		runningTime,
+		signalIntensity,
+		satellitesCount,
+		speed,
+		orientation,
+		distancePrecision,
+		uploadInterval,
+		bluetoothInterval,
+		bluetoothWhiteList,
+		bluetoothWhiteListCount,
+		receive_time) VALUES
+		(#{gateway_id},#{lng},#{rng},#{longitudeLBS},#{latitudeLBS},#{longitudeGPS},#{latitudeGPS},#{wifiMac},#{baseStationInfo},#{electricQuantity},#{runningTime},#{signalIntensity},#{satellitesCount},#{speed},#{orientation},#{distancePrecision},#{uploadInterval},#{bluetoothInterval},#{bluetoothWhiteList},#{bluetoothWhiteListCount},#{receive_time})
+	</insert>
+
+	<select id="queryCountByGatewayId" resultType="Map" parameterType="Map">
+		select count(1) from eam_gateway_status where gateway_id = #{gateway_id}
+	</select>
+
+	<select id="queryGatewayStatusByGatewayId" resultType="Map" parameterType="Map">
+		select * from eam_gateway_status where gateway_id = #{gateway_id}
+	</select>
+
+
+	<update id="updateEamGatewayStatus" parameterType="Map">
+		UPDATE eam_gateway_status
+		SET lng = #{lng},
+		rng = #{rng} ,
+		longitudeLBS = #{longitudeLBS},
+		latitudeLBS = #{latitudeLBS} ,
+		longitudeGPS = #{longitudeGPS} ,
+		latitudeGPS = #{latitudeGPS} ,
+		wifiMac = #{wifiMac} ,
+		baseStationInfo = #{baseStationInfo} ,
+		electricQuantity = #{electricQuantity} ,
+		runningTime = #{runningTime} ,
+		signalIntensity = #{signalIntensity} ,
+		satellitesCount = #{satellitesCount} ,
+		speed = #{speed} ,
+		orientation = #{orientation} ,
+		distancePrecision = #{distancePrecision} ,
+		uploadInterval = #{uploadInterval} ,
+		bluetoothInterval = #{bluetoothInterval} ,
+		bluetoothWhiteList = #{bluetoothWhiteList} ,
+		bluetoothWhiteListCount = #{bluetoothWhiteListCount} ,
+		receive_time = #{receive_time}
+		WHERE
+		gateway_id = #{gateway_id}
+	</update>
+
+</mapper>

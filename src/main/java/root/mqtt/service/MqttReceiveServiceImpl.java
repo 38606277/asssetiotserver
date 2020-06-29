@@ -1,10 +1,14 @@
 package root.mqtt.service;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import root.mqtt.bean.*;
 import root.mqtt.util.HexUtils;
 import root.report.db.DbFactory;
+import root.report.service.webchat.HttpRequestUtil;
+import root.report.temperature.http;
 
 import javax.xml.bind.DatatypeConverter;
 import java.text.SimpleDateFormat;
@@ -17,6 +21,9 @@ import java.util.*;
  */
 @Service("mqttReceiveService")
 public class MqttReceiveServiceImpl implements MqttReceiveService{
+
+	@Autowired
+	private HttpRequestUtil httpRequestUtil;
 
 	@Override
 	public void handlerMqttMessage(String topic, byte[] payload,long timestamp) {
@@ -56,13 +63,58 @@ public class MqttReceiveServiceImpl implements MqttReceiveService{
 					//添加
 					DbFactory.Open(DbFactory.FORM).insert("eam_asset_status.addEamAssetStatus",map);
 				}
-				buildAlarm(mqttBtMessage);
+				buildAlarm(String.valueOf(gatewayId),mqttBtMessage);
 			}
 
 			System.out.println(labelList.toString());
 		}else if("update".equals(type)){
 			Map<String, Object> mapObj = JSON.parseObject(new String (payload));
 			MQTTUpdateMessage mqttUpdateMessage = new MQTTUpdateMessage(mapObj);
+			float lng  = 0;
+			float lat  = 0;
+
+			if(mqttUpdateMessage.getLongitudeGPS() != 0 && mqttUpdateMessage.getLatitudeGPS()!=0){
+				//GPS经纬度
+				lng = mqttUpdateMessage.getLongitudeGPS();
+				lat = mqttUpdateMessage.getLatitudeGPS();
+			}else if(mqttUpdateMessage.getLongitudeLBS() != 0 && mqttUpdateMessage.getLatitudeLBS()!=0){
+				//基站经纬度
+				lng = mqttUpdateMessage.getLongitudeLBS();
+				lat = mqttUpdateMessage.getLatitudeLBS();
+			}else if(!"NULL".equals(mqttUpdateMessage.getWifiMac())){
+				//通过wifi去获取经纬度
+			}else if(!"NULL".equals(mqttUpdateMessage.getBaseStationInfo())){
+				//通过基站信息获取经纬度
+				String url = "http://apilocate.amap.com/position";
+				String params = mqttUpdateMessage.getBaseStationInfo()+"&accesstype=0&output=json&key=f741b107dc26ffed2f7e332de0f4172c";
+				String response = http.sendGet(url,params);
+				System.out.println("基站获取定位结果：" + response);
+
+				JSONObject  jsonObject = JSONObject.parseObject(response);
+				if("1".equals(jsonObject.getString("status"))){//定位成功
+					String location = jsonObject.getJSONObject("result").getString("location");
+					String[] locationArr = location.split(",");
+					lng = Float.parseFloat(locationArr[0]);
+					lat = Float.parseFloat(locationArr[1]);
+				}
+			}
+
+			Map<String, Object> dataMap = mqttUpdateMessage.getDataMap();
+			dataMap.put("gateway_id",gatewayId);
+			//定位优先级：GPS>WIFI>LBS
+			dataMap.put("lng",lng);//结果经纬度
+			dataMap.put("rng",lat);//结果经纬度
+			dataMap.put("receive_time",receiveTime);
+
+			int count = DbFactory.Open(DbFactory.FORM).selectOne("eam_gateway_status.queryCountByGatewayId",dataMap);
+			if(0 < count){
+				//更新
+				DbFactory.Open(DbFactory.FORM).update("eam_gateway_status.updateEamGatewayStatus",dataMap);
+			}else{
+				//添加
+				DbFactory.Open(DbFactory.FORM).insert("eam_gateway_status.addEamGatewayStatus",dataMap);
+			}
+
 			System.out.println(mqttUpdateMessage.toString());
 		}else if("register".equals(type)) {
 			MQTTRegisterMessage mqttRegisterMessageBean  = JSON.parseObject(payload, MQTTRegisterMessage.class);
@@ -77,7 +129,7 @@ public class MqttReceiveServiceImpl implements MqttReceiveService{
 			System.out.println(new String (payload));
 		}
 	}
-	
+
 	/**
 	 * 解析电子标签集合
 	 * @param payload
@@ -132,7 +184,7 @@ public class MqttReceiveServiceImpl implements MqttReceiveService{
 	/**
 	 * 构建报警记录
 	 */
-	private void buildAlarm(MQTTBtMessage mqttBtMessage){
+	private void buildAlarm(String gatewayId,MQTTBtMessage mqttBtMessage){
 		//获取资产数据
 		Map result =DbFactory.Open(DbFactory.FORM).selectOne("eam_asset.listEamAssetByIotNum",new HashMap<String,Object>(){
 			{
@@ -142,6 +194,8 @@ public class MqttReceiveServiceImpl implements MqttReceiveService{
 		if(result==null || result.size() == 0){
 			return ;
 		}
+
+
 		/**
 		 * 电压警告
 		 */

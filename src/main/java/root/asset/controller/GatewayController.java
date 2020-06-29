@@ -284,4 +284,17 @@ public class GatewayController extends RO {
         return JSON.toJSONString(gatewayList);
     }
 
+
+    @RequestMapping(value = "/queryGatewayStatusByGatewayId", produces = "text/plain;charset=UTF-8")
+    public String queryGatewayStatusByGatewayId(@RequestBody JSONObject pJson) {
+
+        try {
+            HashMap<String, Object> map = DbFactory.Open(DbFactory.FORM)
+                    .selectOne("eam_gateway_status.queryGatewayStatusByGatewayId", pJson.getString("gateway_id"));
+            JSONObject jsonObject = (JSONObject) JSON.toJSON(map);
+            return SuccessMsg("", jsonObject);
+        } catch (Exception ex) {
+            return ExceptionMsg(ex.getMessage());
+        }
+    }
 }
