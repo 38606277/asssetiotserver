@@ -19,11 +19,10 @@
 		count(1)
 		FROM
 		eam_asset_status eas
-		LEFT JOIN eam_asset ea ON eas.tag_id = ea.asset_id
+		LEFT JOIN eam_asset ea ON eas.tag_id = ea.iot_num
 		WHERE
 		ea.asset_id IS NOT NULL
 		AND NOT EXISTS ( SELECT 1 FROM eam_gateway_asset g WHERE ea.asset_id = g.asset_id )
-		limit #{startIndex},#{perPage}
 	</select>
 
 
@@ -33,7 +32,7 @@
 		ea.*
 		FROM
 		eam_asset_status eas
-		LEFT JOIN eam_asset ea ON eas.tag_id = ea.asset_id
+		LEFT JOIN eam_asset ea ON eas.tag_id = ea.iot_num
 		WHERE
 		ea.asset_id IS NOT NULL
 		AND NOT EXISTS ( SELECT 1 FROM eam_gateway_asset g WHERE ea.asset_id = g.asset_id )

@@ -25,7 +25,6 @@
 		</if>
 
 		ORDER BY alarm_time desc
-		limit #{startIndex},#{perPage}
 	</select>
 
 	<select id="listEamAlarmByPage" resultType="Map" parameterType="Map">
