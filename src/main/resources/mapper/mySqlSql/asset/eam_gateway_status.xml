@@ -9,6 +9,7 @@
 		gateway_id,
 		lng,
 		rng,
+		address,
 		longitudeLBS,
 		latitudeLBS,
 		longitudeGPS,
@@ -27,10 +28,10 @@
 		bluetoothWhiteList,
 		bluetoothWhiteListCount,
 		receive_time) VALUES
-		(#{gateway_id},#{lng},#{rng},#{longitudeLBS},#{latitudeLBS},#{longitudeGPS},#{latitudeGPS},#{wifiMac},#{baseStationInfo},#{electricQuantity},#{runningTime},#{signalIntensity},#{satellitesCount},#{speed},#{orientation},#{distancePrecision},#{uploadInterval},#{bluetoothInterval},#{bluetoothWhiteList},#{bluetoothWhiteListCount},#{receive_time})
+		(#{gateway_id},#{lng},#{rng},#{address},#{longitudeLBS},#{latitudeLBS},#{longitudeGPS},#{latitudeGPS},#{wifiMac},#{baseStationInfo},#{electricQuantity},#{runningTime},#{signalIntensity},#{satellitesCount},#{speed},#{orientation},#{distancePrecision},#{uploadInterval},#{bluetoothInterval},#{bluetoothWhiteList},#{bluetoothWhiteListCount},#{receive_time})
 	</insert>
 
-	<select id="queryCountByGatewayId" resultType="Map" parameterType="Map">
+	<select id="queryCountByGatewayId" resultType="int" parameterType="Map">
 		select count(1) from eam_gateway_status where gateway_id = #{gateway_id}
 	</select>
 
@@ -43,6 +44,7 @@
 		UPDATE eam_gateway_status
 		SET lng = #{lng},
 		rng = #{rng} ,
+		address = #{address} ,
 		longitudeLBS = #{longitudeLBS},
 		latitudeLBS = #{latitudeLBS} ,
 		longitudeGPS = #{longitudeGPS} ,

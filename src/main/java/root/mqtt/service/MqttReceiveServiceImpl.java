@@ -2,6 +2,7 @@ package root.mqtt.service;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.google.gson.JsonObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import root.mqtt.bean.*;
@@ -72,11 +73,13 @@ public class MqttReceiveServiceImpl implements MqttReceiveService{
 			MQTTUpdateMessage mqttUpdateMessage = new MQTTUpdateMessage(mapObj);
 			float lng  = 0;
 			float lat  = 0;
+			String address = "";
 
 			if(mqttUpdateMessage.getLongitudeGPS() != 0 && mqttUpdateMessage.getLatitudeGPS()!=0){
 				//GPS经纬度
 				lng = mqttUpdateMessage.getLongitudeGPS();
 				lat = mqttUpdateMessage.getLatitudeGPS();
+
 			}else if(mqttUpdateMessage.getLongitudeLBS() != 0 && mqttUpdateMessage.getLatitudeLBS()!=0){
 				//基站经纬度
 				lng = mqttUpdateMessage.getLongitudeLBS();
@@ -92,10 +95,24 @@ public class MqttReceiveServiceImpl implements MqttReceiveService{
 
 				JSONObject  jsonObject = JSONObject.parseObject(response);
 				if("1".equals(jsonObject.getString("status"))){//定位成功
-					String location = jsonObject.getJSONObject("result").getString("location");
+					JSONObject resultObj  = jsonObject.getJSONObject("result");
+					String location = resultObj.getString("location");
 					String[] locationArr = location.split(",");
 					lng = Float.parseFloat(locationArr[0]);
 					lat = Float.parseFloat(locationArr[1]);
+					address = resultObj.getString("desc");
+				}
+			}
+
+			if(lng!=0 && lat!=0 && "".equals(address)){
+				String restApiUrl = "http://restapi.amap.com/v3/geocode/regeo";
+				String params = "location =" + lng + "," + lat + "&key=f741b107dc26ffed2f7e332de0f4172c&poitype=&radius=1000&extensions=base&batch=false&roadlevel=";
+				String response = http.sendGet(restApiUrl,params);
+				System.out.println("经纬度获取地址结果：" + response);
+
+				JSONObject  jsonObject = JSONObject.parseObject(response);
+				if("1".equals(jsonObject.getString("status"))) {//经纬度获取地址信息成功
+					address = jsonObject.getJSONObject("regeocode").getString("formatted_address");
 				}
 			}
 
@@ -104,6 +121,7 @@ public class MqttReceiveServiceImpl implements MqttReceiveService{
 			//定位优先级：GPS>WIFI>LBS
 			dataMap.put("lng",lng);//结果经纬度
 			dataMap.put("rng",lat);//结果经纬度
+			dataMap.put("address",address);
 			dataMap.put("receive_time",receiveTime);
 
 			int count = DbFactory.Open(DbFactory.FORM).selectOne("eam_gateway_status.queryCountByGatewayId",dataMap);
