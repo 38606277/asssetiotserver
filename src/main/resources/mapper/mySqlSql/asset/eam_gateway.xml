@@ -57,6 +57,8 @@
 		address_id = #{address_id}
 	</select>
 
+
+
 	<select id="countEamGateway" resultType="int">
 		select count(gateway_id) from eam_gateway
 	</select>

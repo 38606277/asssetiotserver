@@ -41,6 +41,23 @@
 		LEFT JOIN sys_area sa on egs.adcode = sa.six_code and sa.level_type = 3
 		where gateway_id = #{gateway_id}
 	</select>
+	<select id="listGatewayStatus" resultType="Map" parameterType="Map">
+		SELECT
+		egs.gateway_id,
+		egs.lng,
+		egs.rng,
+		egs.receive_time,
+		egs.address,
+		egs.uploadInterval
+		FROM
+		eam_gateway_status egs
+	</select>
+	<select id="countGatewayStatus" resultType="int" parameterType="Map">
+		SELECT
+		count(1)
+		FROM
+		eam_gateway_status egs
+	</select>
 
 
 	<update id="updateEamGatewayStatus" parameterType="Map">
