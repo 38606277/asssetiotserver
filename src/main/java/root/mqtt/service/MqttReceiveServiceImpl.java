@@ -74,6 +74,7 @@ public class MqttReceiveServiceImpl implements MqttReceiveService{
 			float lng  = 0;
 			float lat  = 0;
 			String address = "";
+			String adcode = "";
 
 			if(mqttUpdateMessage.getLongitudeGPS() != 0 && mqttUpdateMessage.getLatitudeGPS()!=0){
 				//GPS经纬度
@@ -101,18 +102,22 @@ public class MqttReceiveServiceImpl implements MqttReceiveService{
 					lng = Float.parseFloat(locationArr[0]);
 					lat = Float.parseFloat(locationArr[1]);
 					address = resultObj.getString("desc");
+					adcode = resultObj.getString("adcode");
+
 				}
 			}
 
 			if(lng!=0 && lat!=0 && "".equals(address)){
 				String restApiUrl = "http://restapi.amap.com/v3/geocode/regeo";
-				String params = "location =" + lng + "," + lat + "&key=f741b107dc26ffed2f7e332de0f4172c&poitype=&radius=1000&extensions=base&batch=false&roadlevel=";
+				String params = "location=" + lng + "," + lat + "&key=f741b107dc26ffed2f7e332de0f4172c&poitype=&radius=1000&extensions=base&batch=false&roadlevel=";
 				String response = http.sendGet(restApiUrl,params);
 				System.out.println("经纬度获取地址结果：" + response);
 
 				JSONObject  jsonObject = JSONObject.parseObject(response);
 				if("1".equals(jsonObject.getString("status"))) {//经纬度获取地址信息成功
 					address = jsonObject.getJSONObject("regeocode").getString("formatted_address");
+					adcode = jsonObject.getJSONObject("regeocode").getJSONObject("addressComponent").getString("adcode");
+
 				}
 			}
 
@@ -122,6 +127,8 @@ public class MqttReceiveServiceImpl implements MqttReceiveService{
 			dataMap.put("lng",lng);//结果经纬度
 			dataMap.put("rng",lat);//结果经纬度
 			dataMap.put("address",address);
+			dataMap.put("adcode",adcode);
+
 			dataMap.put("receive_time",receiveTime);
 
 			int count = DbFactory.Open(DbFactory.FORM).selectOne("eam_gateway_status.queryCountByGatewayId",dataMap);

@@ -80,7 +80,7 @@ public class GatewayController extends RO {
         try {
             JSONObject  gatewayHeader =  pJson.getJSONObject("gatewayHeader");
             String imageBase64 = gatewayHeader.getString("imageBase64");
-            gatewayHeader.put("image",imageBase64.getBytes());
+            gatewayHeader.put("image",imageBase64 !=null ? imageBase64.getBytes():null);
             //获取网关id
             String gatewayId = gatewayHeader.getString("gateway_id");
             if(!checkGateway(gatewayId)){

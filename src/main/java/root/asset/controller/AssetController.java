@@ -43,7 +43,7 @@ public class AssetController extends RO {
     public String UpdateAsset(@RequestBody JSONObject pJson) throws UnsupportedEncodingException {
         try{
             String imageBase64 = pJson.getString("imageBase64");
-            pJson.put("image",imageBase64.getBytes());
+            pJson.put("image",imageBase64 !=null ? imageBase64.getBytes():null);
             DbFactory.Open(DbFactory.FORM).update("eam_asset.updateAsset", pJson);
             return SuccessMsg("保存成功", "");
 
@@ -250,11 +250,10 @@ public class AssetController extends RO {
         } else {
             currentPage = (currentPage - 1) * perPage;
         }
-        Map<String, Object> map = new HashMap<String, Object>();
-        map.put("startIndex", currentPage);
-        map.put("perPage", perPage);
-        List<Map<String, Object>> assetList = DbFactory.Open(DbFactory.FORM).selectList("eam_asset_status.listTagNoBindGateway", map);
-        int total = DbFactory.Open(DbFactory.FORM).selectOne("eam_asset_status.countTagNoBindGateway", map);
+        pJson.put("startIndex", currentPage);
+        pJson.put("perPage", perPage);
+        List<Map<String, Object>> assetList = DbFactory.Open(DbFactory.FORM).selectList("eam_asset_status.listTagNoBindGateway", pJson);
+        int total = DbFactory.Open(DbFactory.FORM).selectOne("eam_asset_status.countTagNoBindGateway", pJson);
         Map<String, Object> map2 = new HashMap<String, Object>();
         Map<String, Object> map3 = new HashMap<String, Object>();
         map3.put("list", assetList);

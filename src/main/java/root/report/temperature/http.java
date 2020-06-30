@@ -26,6 +26,7 @@ public class http {
         BufferedReader in = null;
         try {
             String urlNameString = url + "?" + param;
+            System.out.println("Get请求地址：" + urlNameString);
             URL realUrl = new URL(urlNameString);
             // 打开和URL之间的连接
             URLConnection connection = realUrl.openConnection();
@@ -44,7 +45,7 @@ public class http {
             }
             // 定义 BufferedReader输入流来读取URL的响应
             in = new BufferedReader(new InputStreamReader(
-                    connection.getInputStream()));
+                    connection.getInputStream(),"UTF-8"));
             String line;
             while ((line = in.readLine()) != null) {
                 result += line;
@@ -69,7 +70,7 @@ public class http {
     /**
      * 向指定 URL 发送POST方法的请求
      *
-     * @param url
+     * @param urlPath
      *            发送请求的 URL
      * @param param
      *            请求参数，请求参数应该是 name1=value1&name2=value2 的形式。

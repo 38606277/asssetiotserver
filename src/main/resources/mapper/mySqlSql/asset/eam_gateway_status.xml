@@ -10,6 +10,7 @@
 		lng,
 		rng,
 		address,
+		adcode,
 		longitudeLBS,
 		latitudeLBS,
 		longitudeGPS,
@@ -28,7 +29,7 @@
 		bluetoothWhiteList,
 		bluetoothWhiteListCount,
 		receive_time) VALUES
-		(#{gateway_id},#{lng},#{rng},#{address},#{longitudeLBS},#{latitudeLBS},#{longitudeGPS},#{latitudeGPS},#{wifiMac},#{baseStationInfo},#{electricQuantity},#{runningTime},#{signalIntensity},#{satellitesCount},#{speed},#{orientation},#{distancePrecision},#{uploadInterval},#{bluetoothInterval},#{bluetoothWhiteList},#{bluetoothWhiteListCount},#{receive_time})
+		(#{gateway_id},#{lng},#{rng},#{address},#{adcode},#{longitudeLBS},#{latitudeLBS},#{longitudeGPS},#{latitudeGPS},#{wifiMac},#{baseStationInfo},#{electricQuantity},#{runningTime},#{signalIntensity},#{satellitesCount},#{speed},#{orientation},#{distancePrecision},#{uploadInterval},#{bluetoothInterval},#{bluetoothWhiteList},#{bluetoothWhiteListCount},#{receive_time})
 	</insert>
 
 	<select id="queryCountByGatewayId" resultType="int" parameterType="Map">
@@ -36,7 +37,9 @@
 	</select>
 
 	<select id="queryGatewayStatusByGatewayId" resultType="Map" parameterType="Map">
-		select * from eam_gateway_status where gateway_id = #{gateway_id}
+		select * from eam_gateway_status  egs
+		LEFT JOIN sys_area sa on egs.adcode = sa.six_code and sa.level_type = 3
+		where gateway_id = #{gateway_id}
 	</select>
 
 
@@ -45,6 +48,7 @@
 		SET lng = #{lng},
 		rng = #{rng} ,
 		address = #{address} ,
+		adcode = #{adcode},
 		longitudeLBS = #{longitudeLBS},
 		latitudeLBS = #{latitudeLBS} ,
 		longitudeGPS = #{longitudeGPS} ,
