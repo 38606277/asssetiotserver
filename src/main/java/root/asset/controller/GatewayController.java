@@ -228,7 +228,7 @@ public class GatewayController extends RO {
         map.put("perPage", perPage);
         map.put("keyword",pJson.getString("keyword"));
         List<Map<String, Object>> gatewayList = DbFactory.Open(DbFactory.FORM).selectList("eam_gateway.listEamGatewayByPage", map);
-        int total = DbFactory.Open(DbFactory.FORM).selectOne("eam_gateway.countEamGatewayByPage", map);
+        int total = DbFactory.Open(DbFactory.FORM).selectOne("eam_gateway.countGatewayStatus", map);
         Map<String, Object> map2 = new HashMap<String, Object>();
         Map<String, Object> map3 = new HashMap<String, Object>();
         map3.put("list", gatewayList);
@@ -304,5 +304,35 @@ public class GatewayController extends RO {
         } catch (Exception ex) {
             return ExceptionMsg(ex.getMessage());
         }
+    }
+    /**
+     * 获取网关列表
+     *
+     * @return
+     */
+    @RequestMapping(value = "/listGatewayStatus", produces = "text/plain;charset=UTF-8")
+    public String listGatewayStatus(@RequestBody JSONObject pJson) throws UnsupportedEncodingException {
+        int currentPage = Integer.valueOf(pJson.getString("pageNum"));
+        int perPage = Integer.valueOf(pJson.getString("perPage"));
+
+        if (1 == currentPage || 0 == currentPage) {
+            currentPage = 0;
+        } else {
+            currentPage = (currentPage - 1) * perPage;
+        }
+        Map<String, Object> map = new HashMap<String, Object>();
+        map.put("startIndex", currentPage);
+        map.put("perPage", perPage);
+        map.put("keyword",pJson.getString("keyword"));
+        List<Map<String, Object>> gatewayList = DbFactory.Open(DbFactory.FORM).selectList("eam_gateway_status.listGatewayStatus", map);
+        int total = DbFactory.Open(DbFactory.FORM).selectOne("eam_gateway_status.countGatewayStatus", map);
+        Map<String, Object> map2 = new HashMap<String, Object>();
+        Map<String, Object> map3 = new HashMap<String, Object>();
+        map3.put("list", gatewayList);
+        map3.put("total", total);
+        map2.put("msg", "查询成功");
+        map2.put("data", map3);
+        map2.put("status", 0);
+        return JSON.toJSONString(map2,features);
     }
 }
