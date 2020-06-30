@@ -228,7 +228,7 @@ public class GatewayController extends RO {
         map.put("perPage", perPage);
         map.put("keyword",pJson.getString("keyword"));
         List<Map<String, Object>> gatewayList = DbFactory.Open(DbFactory.FORM).selectList("eam_gateway.listEamGatewayByPage", map);
-        int total = DbFactory.Open(DbFactory.FORM).selectOne("eam_gateway.countGatewayStatus", map);
+        int total = DbFactory.Open(DbFactory.FORM).selectOne("eam_gateway.countEamGatewayByPage", map);
         Map<String, Object> map2 = new HashMap<String, Object>();
         Map<String, Object> map3 = new HashMap<String, Object>();
         map3.put("list", gatewayList);
