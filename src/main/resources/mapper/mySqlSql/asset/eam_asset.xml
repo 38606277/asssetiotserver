@@ -18,7 +18,7 @@
 	</delete>
 
 	<select id="getAssetById" resultType="map" parameterType="int">
-		select e.asset_num,e.asset_name,e.iot_num,CONVERT(image USING utf8mb4) AS imageBase64,e.create_time,e.user,e.responsible  from eam_asset e where e.asset_id = #{assetId}
+		select e.*,CONVERT(image USING utf8mb4) AS imageBase64 from eam_asset e where e.asset_id = #{assetId}
 	</select>
 
 	<select id="queryCountByAssetId" resultType="int" parameterType="int">
