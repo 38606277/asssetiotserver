@@ -22,10 +22,7 @@
 			eg.lng,
 			eg.rng,
 			eg.address_id,
-			ea.asset_name,
-			ea.asset_num,
-			ea.iot_num,
-			ea.asset_id
+			ea.*
 		FROM
 			eam_gateway eg,
 			eam_gateway_asset ega,
