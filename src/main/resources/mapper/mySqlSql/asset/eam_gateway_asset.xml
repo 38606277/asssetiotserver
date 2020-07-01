@@ -6,9 +6,9 @@
 
 	<select id="queryAssetListByGatewayId" resultType="Map" parameterType="Map">
 		SELECT
-		a.gateway_id , a.asset_id ,CONVERT(image USING utf8mb4) AS imageBase64,
-		b.asset_name ,b.asset_num,b.responsible,b.`user`,
-		c.electricity,c.signalIntensity,c.receive_time,c.tag_id,c.status
+		a.gateway_id ,
+		b.*,
+		c.*
 		FROM
 		eam_gateway_asset a
 		LEFT JOIN eam_asset b ON a.asset_id = b.asset_id
