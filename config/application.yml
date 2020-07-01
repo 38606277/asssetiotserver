@@ -25,3 +25,5 @@ mqtt:
   topic: /init
   timeout: 10000
   keepalibe: 20
+
+fileDirPath: /Users/cannon/image/

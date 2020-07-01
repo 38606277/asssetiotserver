@@ -6,7 +6,6 @@
 	<select id="getGatewayById" resultType="Map" parameterType="String">
 		SELECT
 		e.*,
-		CONVERT ( image USING utf8mb4 ) AS imageBase64 ,
 		sa.merger_name
 		FROM
 		eam_gateway e
@@ -64,7 +63,7 @@
 	</select>
 
 	<select id="listEamGateway" resultType="Map" parameterType="Map">
-		select * ,CONVERT(image USING utf8mb4) AS imageBase64 from eam_gateway e
+		select * from eam_gateway e
 		where 1=1
 		<if test="keyword != null and keyword!=''">  and (e.gateway_id like '%${keyword}%' or e.address like '%${keyword}%') </if>
 	</select>
@@ -78,7 +77,7 @@
 	</select>
 
 	<select id="listEamGatewayByPage" resultType="Map" parameterType="Map">
-		select * ,CONVERT(image USING utf8mb4) AS imageBase64 from  eam_gateway e
+		select *  from  eam_gateway e
 		where 1=1
 		<if test="keyword != null and keyword!=''">  and (e.gateway_id like '%${keyword}%' or e.address like '%${keyword}%' or e.lng like '%${keyword}%' or e.rng like '%${keyword}%') </if>
 		limit #{startIndex},#{perPage}

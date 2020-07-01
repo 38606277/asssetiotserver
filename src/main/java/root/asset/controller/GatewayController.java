@@ -4,16 +4,18 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import org.apache.ibatis.session.SqlSession;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import root.mqtt.configure.MqttSendMessage;
 import root.mqtt.service.TopicService;
 import root.report.common.RO;
 import root.report.db.DbFactory;
 
 import javax.annotation.Resource;
-import java.io.UnsupportedEncodingException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.*;
+import java.net.URLEncoder;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -43,8 +45,6 @@ public class GatewayController extends RO {
 
         try {
             JSONObject  gatewayHeader =  pJson.getJSONObject("gatewayHeader");
-            String imageBase64 = gatewayHeader.getString("imageBase64");
-            gatewayHeader.put("image",imageBase64.getBytes());
             //获取网关id
             String gatewayId = gatewayHeader.getString("gateway_id");
             //检查网关是否已添加
@@ -79,8 +79,6 @@ public class GatewayController extends RO {
     public String UpdateGateway(@RequestBody JSONObject pJson) throws UnsupportedEncodingException {
         try {
             JSONObject  gatewayHeader =  pJson.getJSONObject("gatewayHeader");
-            String imageBase64 = gatewayHeader.getString("imageBase64");
-            gatewayHeader.put("image",imageBase64 !=null ? imageBase64.getBytes():null);
             //获取网关id
             String gatewayId = gatewayHeader.getString("gateway_id");
             if(!checkGateway(gatewayId)){
