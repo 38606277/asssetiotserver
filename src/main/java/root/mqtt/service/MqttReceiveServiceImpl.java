@@ -188,8 +188,9 @@ public class MqttReceiveServiceImpl implements MqttReceiveService{
 		//byte数组转换为二进制字符串
 		String bitStr =	HexUtils.byteArrToBinStr(bytes);
 		//电量
-		int electricityBit = Integer.parseInt(bitStr.substring(0,4),2);
-		String electricityStr = ((electricityBit + 20)/10f) + "V";
+		float electricityBit = Integer.parseInt(bitStr.substring(0,4),2);
+		electricityBit =  ((electricityBit + 20)/10f);
+		//String electricityStr = ((electricityBit + 20)/10f) + "V";
 		//编号
 		int number  = Integer.parseInt(bitStr.substring(4,32),2);
 		//信号强度
