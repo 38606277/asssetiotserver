@@ -243,6 +243,11 @@ public class GatewayController extends RO {
         return SuccessMsg("查询成功", gatewayList);
     }
 
+    @RequestMapping(value = "/listEamGatewayByMap", produces = "text/plain;charset=UTF-8")
+    public String listEamGatewayByMap(@RequestBody JSONObject pJson) throws UnsupportedEncodingException {
+        List<Map<String, Object>> gatewayList = DbFactory.Open(DbFactory.FORM).selectList("eam_gateway.listEamGatewayByMap", pJson);
+        return SuccessMsg("查询成功", gatewayList);
+    }
     /**
      * 修改网关配置
      *

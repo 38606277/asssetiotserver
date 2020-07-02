@@ -65,6 +65,35 @@
 		<if test="keyword != null and keyword!=''">  and (e.gateway_id like '%${keyword}%' or e.address like '%${keyword}%') </if>
 	</select>
 
+	<select id="listEamGatewayByMap" resultType="Map" parameterType="Map">
+		SELECT
+		*
+		FROM
+		eam_gateway e
+		WHERE
+		1 = 1
+		<if test="keyword != null and keyword!=''">
+			AND ( e.gateway_id LIKE '%${keyword}%' OR e.address LIKE '%${keyword}%' )
+			union
+			SELECT
+			eg.*
+			FROM
+			eam_asset ea
+			LEFT JOIN eam_gateway_asset ega ON ea.asset_id = ega.asset_id
+			LEFT JOIN eam_gateway eg ON ega.gateway_id = eg.gateway_id
+			WHERE
+			1 = 1
+			AND eg.gateway_id IS NOT NULL
+			AND ( ea.asset_num LIKE '%${keyword}%' OR ea.asset_name LIKE '%${keyword}%' OR ea.iot_num LIKE '%${keyword}%' )
+			GROUP BY
+			eg.id
+		</if>
+	</select>
+
+
+
+
+
 	<select id="countEamGatewayByPage" resultType="int" parameterType="Map">
 		select count(*) from eam_gateway e
 		where 1=1
