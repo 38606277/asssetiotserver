@@ -208,8 +208,8 @@ public class AssetController extends RO {
      * 获取未关联网关的资产列表
      * @return
      */
-    @RequestMapping(value = "/listAssetNoBindGateway", produces = "text/plain;charset=UTF-8")
-    public String listAssetNoBindGateway(@RequestBody JSONObject pJson) throws UnsupportedEncodingException {
+    @RequestMapping(value = "/getAssetInventory", produces = "text/plain;charset=UTF-8")
+    public String getAssetInventory(@RequestBody JSONObject pJson) throws UnsupportedEncodingException {
         int currentPage = Integer.valueOf(pJson.getString("pageNum"));
         int perPage = Integer.valueOf(pJson.getString("perPage"));
         if (1 == currentPage || 0 == currentPage) {
@@ -220,8 +220,8 @@ public class AssetController extends RO {
         Map<String, Object> map = new HashMap<String, Object>();
         map.put("startIndex", currentPage);
         map.put("perPage", perPage);
-        List<Map<String, Object>> assetList = DbFactory.Open(DbFactory.FORM).selectList("eam_asset.listAssetNoBindGateway", map);
-        int total = DbFactory.Open(DbFactory.FORM).selectOne("eam_asset.countAssetNoBindGateway", map);
+        List<Map<String, Object>> assetList = DbFactory.Open(DbFactory.FORM).selectList("eam_asset.getAssetInventory", map);
+        int total = DbFactory.Open(DbFactory.FORM).selectOne("eam_asset.countAssetInventory", map);
         Map<String, Object> map2 = new HashMap<String, Object>();
         Map<String, Object> map3 = new HashMap<String, Object>();
         map3.put("list", assetList);
@@ -229,7 +229,7 @@ public class AssetController extends RO {
         map2.put("msg", "查询成功");
         map2.put("data", map3);
         map2.put("status", 0);
-        return JSON.toJSONString(map2);
+        return JSON.toJSONString(map2,features);
     }
 
 
@@ -257,7 +257,7 @@ public class AssetController extends RO {
         map2.put("msg", "查询成功");
         map2.put("data", map3);
         map2.put("status", 0);
-        return JSON.toJSONString(map2);
+        return JSON.toJSONString(map2,features);
     }
 
 
