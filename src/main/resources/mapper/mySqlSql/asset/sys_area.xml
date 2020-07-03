@@ -5,4 +5,8 @@
 	<select id="getTaskIdByParentCode" parameterType="java.lang.String" resultType="Map">
 		SELECT  a.code, a.name , a.level_type ,a.merger_name FROM sys_area a  WHERE a.parent_code = #{parentCode}
 	</select>
+	<select id="getCityByProvince" parameterType="java.lang.String" resultType="Map">
+		SELECT  a.code, a.name , a.level_type ,a.merger_name FROM sys_area a  WHERE a.parent_code = #{parentCode}
+	</select>
+
 </mapper>

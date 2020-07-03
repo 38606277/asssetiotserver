@@ -23,15 +23,16 @@ public class AreaController extends RO {
 
     /**
      * 获取区域信息
+     *
      * @return
      */
-    @RequestMapping(value="/getArea",produces = "text/plain;charset=UTF-8")
+    @RequestMapping(value = "/getArea", produces = "text/plain;charset=UTF-8")
     public String getArea(@RequestBody JSONObject pJson) throws UnsupportedEncodingException {
         String parentCode = pJson.getString("parentCode");
         String maxLevel = pJson.getString("maxLevel");
-        List<Map<String,Object>> areaList = DbFactory.Open(DbFactory.FORM).selectList("sys_area.getTaskIdByParentCode",parentCode);
+        List<Map<String, Object>> areaList = DbFactory.Open(DbFactory.FORM).selectList("sys_area.getTaskIdByParentCode", parentCode);
 
-        List<Map<String,Object>> dataList = new ArrayList<>();
+        List<Map<String, Object>> dataList = new ArrayList<>();
         for (Map areaData : areaList) {
             Map data = new HashMap();
             data.put("label", areaData.get("name").toString());
@@ -47,31 +48,40 @@ public class AreaController extends RO {
 
     /**
      * 获取区域信息并判断是否有网关信息
+     *
      * @return
      */
-    @RequestMapping(value="/getGatewayArea",produces = "text/plain;charset=UTF-8")
+    @RequestMapping(value = "/getGatewayArea", produces = "text/plain;charset=UTF-8")
     public String getGatewayArea(@RequestBody JSONObject pJson) throws UnsupportedEncodingException {
         String parentCode = pJson.getString("parentCode");
         String maxLevel = pJson.getString("maxLevel");
-        List<Map<String,Object>> areaList = DbFactory.Open(DbFactory.FORM).selectList("sys_area.getTaskIdByParentCode",parentCode);
+        List<Map<String, Object>> areaList = DbFactory.Open(DbFactory.FORM).selectList("sys_area.getTaskIdByParentCode", parentCode);
 
-        List<Map<String,Object>> dataList = new ArrayList<>();
+        List<Map<String, Object>> dataList = new ArrayList<>();
         for (Map areaData : areaList) {
             Map data = new HashMap();
             data.put("label", areaData.get("name").toString());
             data.put("value", areaData.get("code").toString());
             data.put("level", areaData.get("level_type").toString());
-            if(areaData.get("level_type").toString().equals(maxLevel)){
+            if (areaData.get("level_type").toString().equals(maxLevel)) {
                 String addressId = areaData.get("code").toString();
                 int count = DbFactory.Open(DbFactory.FORM).selectOne("eam_gateway.queryCountByAddressId", addressId);
                 data.put("isLeaf", count == 0);
-            }else{
+            } else {
                 data.put("isLeaf", false);
             }
 
             dataList.add(data);
         }
         return JSON.toJSONString(dataList);
+    }
+
+    @RequestMapping(value = "/getCityByProvince", produces = "text/plain;charset=UTF-8")
+    public String getCityByProvince(@RequestBody JSONObject pJson) throws UnsupportedEncodingException {
+        Map<String, Object> map = new HashMap<String, Object>();
+        map.put("parentCode","13");
+        List<Map<String, Object>> list = DbFactory.Open(DbFactory.FORM).selectList("sys_area.getCityByProvince", map);
+        return SuccessMsg("", list);
     }
 
 }
