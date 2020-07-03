@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
-"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+		"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="eam_asset">
 
 	<insert id="addAsset"   useGeneratedKeys="true" keyProperty="id" parameterType="Map">
@@ -102,7 +102,7 @@
 		)
 		limit #{startIndex},#{perPage}
 	</select>
-	<select id="getAssetInventory" resultType="Map" parameterType="Map">
+	<select id="getAssetInventory" resultType="Map" parameterType="map">
 		SELECT
 			ea.asset_id,
 			ea.iot_num,
@@ -116,12 +116,15 @@
 			sa.`name` ,
 			sa.city_code
 		FROM
-			( eam_asset ea LEFT JOIN eam_gateway_asset ega ON ea.asset_id = ega.asset_id )
+			eam_asset ea
+			LEFT JOIN eam_gateway_asset ega ON ea.asset_id = ega.asset_id
 			LEFT JOIN eam_gateway eg ON ega.gateway_id = eg.gateway_id
 			LEFT JOIN eam_asset_status eas ON ea.iot_num = eas.tag_id
 			LEFT JOIN sys_area sa ON sa.`code` = eg.address_id
-		-- where sa.city_code='130400000000'
-		limit #{startIndex},#{perPage}
+		where 1=1 <if test="receiveTime != null and receiveTime != ''"> and eas.receive_time like  concat(#{receiveTime},'%') </if>
+		<if test="cityCode != null and cityCode != ''">
+			and FIND_IN_SET(sa.city_code,'${cityCode}')
+		</if>
 	</select>
 	<select id="countAssetInventory" resultType="int" parameterType="Map">
 		SELECT count(1) FROM (SELECT
