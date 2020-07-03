@@ -2,6 +2,8 @@ package root.asset.controller;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.github.pagehelper.PageRowBounds;
+import org.apache.ibatis.session.RowBounds;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -17,7 +19,7 @@ import java.util.Map;
  * 资产控制器
  */
 @RestController
-@RequestMapping(value = "/reportServer/asset")
+@RequestMapping("/reportServer/asset")
 public class AssetController extends RO {
 
     /**
@@ -209,27 +211,63 @@ public class AssetController extends RO {
      * @return
      */
     @RequestMapping(value = "/getAssetInventory", produces = "text/plain;charset=UTF-8")
-    public String getAssetInventory(@RequestBody JSONObject pJson) throws UnsupportedEncodingException {
-        int currentPage = Integer.valueOf(pJson.getString("pageNum"));
-        int perPage = Integer.valueOf(pJson.getString("perPage"));
-        if (1 == currentPage || 0 == currentPage) {
-            currentPage = 0;
-        } else {
-            currentPage = (currentPage - 1) * perPage;
+    public String getAssetInventory(@RequestBody JSONObject pJson) {
+
+        List<Map> aResult = null;
+        Long totalSize = 0L;
+        try {
+            Map map = new HashMap();
+            RowBounds bounds = null;
+            if(pJson==null){
+                bounds = RowBounds.DEFAULT;
+            }else{
+                int startIndex = Integer.valueOf(pJson.getString("pageNum"));
+                int perPage = Integer.valueOf(pJson.getString("perPage"));
+                if(startIndex==1 || startIndex==0){
+                    startIndex=0;
+                }else{
+                    startIndex=(startIndex-1)*perPage;
+                }
+                bounds = new PageRowBounds(startIndex, perPage);
+//                map.put("startIndex",startIndex);
+//                map.put("perPage",perPage);
+            }
+
+            map.put("cityCode",pJson.getString("cityCode"));
+            map.put("receiveTime",pJson.getString("receiveTime"));
+            aResult = DbFactory.Open(DbFactory.FORM).selectList("eam_asset.getAssetInventory", map,bounds);
+            if(pJson!=null){
+                totalSize = ((PageRowBounds)bounds).getTotal();
+            }else{
+                totalSize = Long.valueOf(aResult.size());
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-        Map<String, Object> map = new HashMap<String, Object>();
-        map.put("startIndex", currentPage);
-        map.put("perPage", perPage);
-        List<Map<String, Object>> assetList = DbFactory.Open(DbFactory.FORM).selectList("eam_asset.getAssetInventory", map);
-        int total = DbFactory.Open(DbFactory.FORM).selectOne("eam_asset.countAssetInventory", map);
-        Map<String, Object> map2 = new HashMap<String, Object>();
-        Map<String, Object> map3 = new HashMap<String, Object>();
-        map3.put("list", assetList);
-        map3.put("total", total);
-        map2.put("msg", "查询成功");
-        map2.put("data", map3);
-        map2.put("status", 0);
-        return JSON.toJSONString(map2,features);
+        Map maps=new HashMap<>();
+        maps.put("list",aResult);
+        maps.put("total",totalSize);
+
+//        int currentPage = Integer.valueOf(pJson.getString("pageNum"));
+//        int perPage = Integer.valueOf(pJson.getString("perPage"));
+//        if (1 == currentPage || 0 == currentPage) {
+//            currentPage = 0;
+//        } else {
+//            currentPage = (currentPage - 1) * perPage;
+//        }
+//        Map<String, Object> map = new HashMap<String, Object>();
+//        map.put("startIndex", currentPage);
+//        map.put("perPage", perPage);
+//        List<Map<String, Object>> assetList = DbFactory.Open(DbFactory.FORM).selectList("eam_asset.getAssetInventory", map);
+//        int total = DbFactory.Open(DbFactory.FORM).selectOne("eam_asset.countAssetInventory", map);
+//        Map<String, Object> map2 = new HashMap<String, Object>();
+//        Map<String, Object> map3 = new HashMap<String, Object>();
+//        map3.put("list", assetList);
+//        map3.put("total", total);
+//        map2.put("msg", "查询成功");
+//        map2.put("data", map3);
+//        map2.put("status", 0);
+        return JSON.toJSONString(maps);
     }
 
 
