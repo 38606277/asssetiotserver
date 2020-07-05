@@ -10,15 +10,15 @@
 		 (#{asset_num}, #{asset_name}, #{iot_num},#{image})
 	</insert>
 	<update id="updateAsset" parameterType="Map">
-		update eam_asset set asset_num=#{asset_num}, asset_name=#{asset_name}, iot_num=#{iot_num},image = #{image} where asset_id=#{asset_id}
+		update eam_asset set   iot_num=#{iot_num},image = #{image} where asset_tag=#{asset_tag}
 	</update>
 
 	<delete id="deleteAsset" parameterType="map">
 		delete from eam_asset where asset_id in (${asset_ids})
 	</delete>
 
-	<select id="getAssetById" resultType="map" parameterType="int">
-		select e.*,CONVERT(image USING utf8mb4) AS imageBase64 from eam_asset e where e.asset_id = #{assetId}
+	<select id="getAssetById" resultType="map" parameterType="map">
+		select e.*,CONVERT(image USING utf8mb4) AS imageBase64 from eam_asset e where e.asset_tag = #{asset_tag}
 	</select>
 
 	<select id="queryCountByAssetId" resultType="int" parameterType="int">
@@ -45,7 +45,7 @@
 		select count(*) from eam_asset e
 		where 1=1
 		<if test="keyword != null and keyword!=''">
-			and (e.asset_id like '%${keyword}%' or e.asset_num like '%${keyword}%' or e.asset_name like '%${keyword}%' or e.iot_num like '%${keyword}%')
+			and (e.asset_tag like '%${keyword}%' or e.asset_num like '%${keyword}%' or e.asset_name like '%${keyword}%' or e.iot_num like '%${keyword}%')
 		</if>
 	</select>
 
@@ -53,7 +53,7 @@
 		select * ,CONVERT(image USING utf8mb4) AS imageBase64 from eam_asset e
 		where 1=1
 		<if test="keyword != null and keyword!=''">
-			and (e.asset_id like '%${keyword}%' or e.asset_num like '%${keyword}%' or e.asset_name like '%${keyword}%' or e.iot_num like '%${keyword}%')
+			and (e.asset_tag like '%${keyword}%' or e.asset_num like '%${keyword}%' or e.asset_name like '%${keyword}%' or e.iot_num like '%${keyword}%')
 		</if>
 		limit #{startIndex},#{perPage}
 	</select>

@@ -77,10 +77,9 @@ public class AssetController extends RO {
     }
 
     @RequestMapping(value = "/getAssetById", produces = "text/plain;charset=UTF-8")
-    public String getFunctionByID(@RequestBody JSONObject pJson){
-       int assetId =  pJson.getInteger("asset_id");
+    public String getAssetById(@RequestBody JSONObject pJson){
         try{
-            HashMap<String,Object> map = DbFactory.Open(DbFactory.FORM).selectOne("eam_asset.getAssetById",assetId);
+            HashMap<String,Object> map = DbFactory.Open(DbFactory.FORM).selectOne("eam_asset.getAssetById",pJson);
             JSONObject jsonObject =(JSONObject) JSON.toJSON(map);
             return  SuccessMsg("",jsonObject);
         }catch (Exception ex){

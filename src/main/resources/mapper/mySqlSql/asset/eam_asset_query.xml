@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+		"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="eam_asset_query">
+
+
+	<select id="getAssetNum" resultType="map" parameterType="Map">
+		SELECT
+			sum(a.asset_num) asset_num,
+			sum(a.normal_num) normal_num,
+			sum(a.asset_num)-sum(a.normal_num) abnormal_num
+		FROM
+			(
+			(
+			SELECT
+			0 asset_num,
+			count( 1 ) normal_num
+			FROM
+			( eam_asset ea LEFT JOIN eam_gateway_asset ega ON ea.asset_id = ega.asset_id )
+			LEFT JOIN eam_gateway eg ON ega.gateway_id = eg.gateway_id
+			LEFT JOIN eam_asset_status eas ON ea.iot_num = eas.tag_id
+			LEFT JOIN sys_area sa ON sa.`code` = eg.address_id
+			WHERE
+			1 = 1
+			-- 		AND sa.city_code = '130400000000'
+			AND eas.receive_time > '2020-7-4 00:00:00'
+			) UNION
+			( SELECT count( 1 ) asset_num, 0 normal_num FROM eam_asset ea WHERE ea.iot_num IS NOT NULL )
+			) a
+	</select>
+
+	<select id="getAssetNumByCity" resultType="map" parameterType="Map">
+		SELECT
+		a.city_code,
+		max( city_name ) name,
+		sum( iot_sum ) value
+		FROM
+		(
+		SELECT
+		sa.CODE city_code,
+		sa.NAME city_name,
+		0 iot_sum
+		FROM
+		sys_area sa
+		WHERE
+		sa.parent_code = 13 UNION
+		(
+		SELECT
+		sa.parent_code city_code,
+		'' city_name,
+		count( 1 ) iot_sum
+		FROM
+		( eam_asset ea LEFT JOIN eam_gateway_asset ega ON ea.asset_id = ega.asset_id )
+		LEFT JOIN eam_gateway eg ON ega.gateway_id = eg.gateway_id
+		LEFT JOIN sys_area sa ON sa.`code` = eg.address_id
+		WHERE
+		1 = 1
+		AND ( iot_num IS NOT NULL )
+		)
+		) a
+		GROUP BY
+		a.city_code
+	</select>
+
+
+
+
+</mapper>
