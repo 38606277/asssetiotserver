@@ -284,7 +284,7 @@ public class GatewayController extends RO {
     @RequestMapping(value = "/treeGatewayByAddressId", produces = "text/plain;charset=UTF-8")
     public String treeGatewayByAddressId(@RequestBody JSONObject pJson) throws UnsupportedEncodingException {
         List<Map<String, Object>> gatewayList = DbFactory.Open(DbFactory.FORM).selectList("eam_gateway.treeGatewayByAddressId", pJson);
-        return JSON.toJSONString(gatewayList);
+        return SuccessMsg("", gatewayList);
     }
 
 

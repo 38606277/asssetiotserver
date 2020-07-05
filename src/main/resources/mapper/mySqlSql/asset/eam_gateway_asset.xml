@@ -21,8 +21,7 @@
 
 	<select id="queryAssetListPageByGatewayId" resultType="Map" parameterType="Map">
 		SELECT
-		a.gateway_id , a.asset_id ,
-		b.asset_name ,b.asset_tag,b.responsible,b.`user`,b.iot_num,
+		a.gateway_id , b.*,
 		c.electricity,c.signalIntensity,c.receive_time,c.tag_id,c.status
 		FROM
 		eam_gateway_asset a
