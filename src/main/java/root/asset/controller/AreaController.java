@@ -1,6 +1,5 @@
 package root.asset.controller;
 
-import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
@@ -43,7 +42,7 @@ public class AreaController extends RO {
             data.put("isLeaf", areaData.get("level_type").toString().equals(maxLevel));
             dataList.add(data);
         }
-        return JSON.toJSONString(dataList);
+        return SuccessMsg("", dataList);
     }
 
 
@@ -74,15 +73,52 @@ public class AreaController extends RO {
 
             dataList.add(data);
         }
-        return JSON.toJSONString(dataList);
+        return SuccessMsg("", dataList);
     }
 
-    @RequestMapping(value = "/getCityByProvince", produces = "text/plain;charset=UTF-8")
-    public String getCityByProvince(@RequestBody JSONObject pJson) throws UnsupportedEncodingException {
-        Map<String, Object> map = new HashMap<String, Object>();
-        map.put("parentCode","13");
-        List<Map<String, Object>> list = DbFactory.Open(DbFactory.FORM).selectList("sys_area.getCityByProvince", map);
-        return SuccessMsg("", list);
+
+    /**
+     * 获取含有网关的市
+     * @param pJson
+     * @return
+     * @throws UnsupportedEncodingException
+     */
+    @RequestMapping(value = "/getCityContainingGateway", produces = "text/plain;charset=UTF-8")
+    public String getCityContainingGateway(@RequestBody JSONObject pJson) throws UnsupportedEncodingException {
+        List<Map<String, Object>> areaList = DbFactory.Open(DbFactory.FORM).selectList("sys_area.getCityContainingGateway", pJson);
+        List<Map<String, Object>> dataList = new ArrayList<>();
+        for (Map areaData : areaList) {
+            Map data = new HashMap();
+            data.put("label", areaData.get("name").toString());
+            data.put("value", areaData.get("code").toString());
+            data.put("level", areaData.get("level_type").toString());
+            data.put("isLeaf", false);
+            dataList.add(data);
+        }
+
+
+        return SuccessMsg("", dataList);
+    }
+
+    /**
+     * 获取含有网关的区
+     * @param pJson
+     * @return
+     * @throws UnsupportedEncodingException
+     */
+    @RequestMapping(value = "/getDistrictContainingGateway", produces = "text/plain;charset=UTF-8")
+    public String getDistrictContainingGateway(@RequestBody JSONObject pJson) throws UnsupportedEncodingException {
+        List<Map<String, Object>> areaList = DbFactory.Open(DbFactory.FORM).selectList("sys_area.getDistrictContainingGateway", pJson);
+        List<Map<String, Object>> dataList = new ArrayList<>();
+        for (Map areaData : areaList) {
+            Map data = new HashMap();
+            data.put("label", areaData.get("name").toString());
+            data.put("value", areaData.get("code").toString());
+            data.put("level", areaData.get("level_type").toString());
+            data.put("isLeaf", false);
+            dataList.add(data);
+        }
+        return SuccessMsg("", dataList);
     }
     @RequestMapping(value = "/getPostionByCityName", produces = "text/plain;charset=UTF-8")
     public String getPostionByCityName(@RequestHeader("credentials") String credentials, @RequestBody JSONObject pJson) throws UnsupportedEncodingException {
