@@ -130,7 +130,7 @@ public class AreaController extends RO {
     @RequestMapping(value = "/getPostionByCityName", produces = "text/plain;charset=UTF-8")
     public String getPostionByCityName(@RequestHeader("credentials") String credentials, @RequestBody JSONObject pJson) throws UnsupportedEncodingException {
         Map<String, Object> map = new HashMap<String, Object>();
-        List<Map<String, Object>>  resut = DbFactory.Open(DbFactory.FORM).selectList("sys_area.getPostionByCityName", pJson);
+        Map<String, Object> resut = DbFactory.Open(DbFactory.FORM).selectOne("sys_area.getPostionByCityName", pJson);
         return SuccessMsg("", resut);
     }
 
