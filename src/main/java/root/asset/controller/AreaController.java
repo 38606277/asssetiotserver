@@ -120,12 +120,20 @@ public class AreaController extends RO {
         }
         return SuccessMsg("", dataList);
     }
+    @RequestMapping(value = "/getCityByProvince", produces = "text/plain;charset=UTF-8")
+    public String getCityByProvince(@RequestHeader("credentials") String credentials, @RequestBody JSONObject pJson) throws UnsupportedEncodingException {
+        Map<String, Object> map = new HashMap<String, Object>();
+        List<Map<String, Object>>  resut = DbFactory.Open(DbFactory.FORM).selectList("sys_area.getCityByProvince", pJson);
+        return SuccessMsg("", resut);
+    }
+
     @RequestMapping(value = "/getPostionByCityName", produces = "text/plain;charset=UTF-8")
     public String getPostionByCityName(@RequestHeader("credentials") String credentials, @RequestBody JSONObject pJson) throws UnsupportedEncodingException {
         Map<String, Object> map = new HashMap<String, Object>();
-        Map<String, Object>  resutlMap = DbFactory.Open(DbFactory.FORM).selectOne("sys_area.getPostionByCityName", pJson);
-        return SuccessMsg("", resutlMap);
+        List<Map<String, Object>>  resut = DbFactory.Open(DbFactory.FORM).selectList("sys_area.getPostionByCityName", pJson);
+        return SuccessMsg("", resut);
     }
+
 
 
 }
