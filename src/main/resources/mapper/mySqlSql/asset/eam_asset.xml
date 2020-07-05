@@ -108,6 +108,8 @@
 			ea.iot_num,
 			ea.asset_name,
 			ea.asset_num,
+		    ea.base_station_code,
+		    ea.base_station_name,
 			ega.gateway_id,
 			eg.address,
 			eas.receive_time,
@@ -121,7 +123,9 @@
 			LEFT JOIN eam_gateway eg ON ega.gateway_id = eg.gateway_id
 			LEFT JOIN eam_asset_status eas ON ea.iot_num = eas.tag_id
 			LEFT JOIN sys_area sa ON sa.`code` = eg.address_id
-		where 1=1 <if test="receiveTime != null and receiveTime != ''"> and eas.receive_time like  concat(#{receiveTime},'%') </if>
+		where 1=1
+		<if test="receiveTime != null and receiveTime != ''">
+			and eas.receive_time like  concat(#{receiveTime},'%') </if>
 		<if test="cityCode != null and cityCode != ''">
 			and FIND_IN_SET(sa.city_code,'${cityCode}')
 		</if>

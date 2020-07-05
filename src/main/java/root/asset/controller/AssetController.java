@@ -266,7 +266,7 @@ public class AssetController extends RO {
 //        map2.put("msg", "查询成功");
 //        map2.put("data", map3);
 //        map2.put("status", 0);
-        return JSON.toJSONString(maps);
+        return  SuccessMsg("",maps);
     }
 
 

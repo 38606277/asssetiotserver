@@ -3,6 +3,7 @@ package root.asset.controller;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import root.report.common.RO;
@@ -84,7 +85,7 @@ public class AreaController extends RO {
         return SuccessMsg("", list);
     }
     @RequestMapping(value = "/getPostionByCityName", produces = "text/plain;charset=UTF-8")
-    public String getPostionByCityName(@RequestBody JSONObject pJson) throws UnsupportedEncodingException {
+    public String getPostionByCityName(@RequestHeader("credentials") String credentials, @RequestBody JSONObject pJson) throws UnsupportedEncodingException {
         Map<String, Object> map = new HashMap<String, Object>();
         Map<String, Object>  resutlMap = DbFactory.Open(DbFactory.FORM).selectOne("sys_area.getPostionByCityName", pJson);
         return SuccessMsg("", resutlMap);
