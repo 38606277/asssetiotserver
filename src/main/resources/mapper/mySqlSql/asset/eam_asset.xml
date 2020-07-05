@@ -17,8 +17,8 @@
 		delete from eam_asset where asset_id in (${asset_ids})
 	</delete>
 
-	<select id="getAssetById" resultType="map" parameterType="int">
-		select e.*,CONVERT(image USING utf8mb4) AS imageBase64 from eam_asset e where e.asset_id = #{assetId}
+	<select id="getAssetById" resultType="map" parameterType="map">
+		select e.* from eam_asset e where e.asset_id = #{asset_id}
 	</select>
 
 	<select id="queryCountByAssetId" resultType="int" parameterType="int">
@@ -50,7 +50,7 @@
 	</select>
 
 	<select id="listEamAssetByPage" resultType="Map" parameterType="Map">
-		select * ,CONVERT(image USING utf8mb4) AS imageBase64 from eam_asset e
+		select *  from eam_asset e
 		where 1=1
 		<if test="keyword != null and keyword!=''">
 			and (e.asset_id like '%${keyword}%' or e.asset_num like '%${keyword}%' or e.asset_tag like '%${keyword}%' or e.asset_name like '%${keyword}%' or e.iot_num like '%${keyword}%')
