@@ -5,12 +5,12 @@
 
 	<insert id="addAsset"   useGeneratedKeys="true" keyProperty="id" parameterType="Map">
 		insert into eam_asset
-		 (asset_num,asset_name,iot_num,image)
+		 (asset_tag,asset_name,iot_num,image)
 		values
-		 (#{asset_num}, #{asset_name}, #{iot_num},#{image})
+		 (#{asset_tag}, #{asset_name}, #{iot_num},#{image})
 	</insert>
 	<update id="updateAsset" parameterType="Map">
-		update eam_asset set asset_num=#{asset_num}, asset_name=#{asset_name}, iot_num=#{iot_num},image = #{image} where asset_id=#{asset_id}
+		update eam_asset set asset_tag=#{asset_tag}, asset_name=#{asset_name}, iot_num=#{iot_num},image = #{image} where asset_id=#{asset_id}
 	</update>
 
 	<delete id="deleteAsset" parameterType="map">
@@ -45,7 +45,7 @@
 		select count(*) from eam_asset e
 		where 1=1
 		<if test="keyword != null and keyword!=''">
-			and (e.asset_id like '%${keyword}%' or e.asset_num like '%${keyword}%' or e.asset_name like '%${keyword}%' or e.iot_num like '%${keyword}%')
+			and (e.asset_id like '%${keyword}%' or e.asset_num like '%${keyword}%' or e.asset_tag like '%${keyword}%' or e.asset_name like '%${keyword}%' or e.iot_num like '%${keyword}%')
 		</if>
 	</select>
 
@@ -53,7 +53,7 @@
 		select * ,CONVERT(image USING utf8mb4) AS imageBase64 from eam_asset e
 		where 1=1
 		<if test="keyword != null and keyword!=''">
-			and (e.asset_id like '%${keyword}%' or e.asset_num like '%${keyword}%' or e.asset_name like '%${keyword}%' or e.iot_num like '%${keyword}%')
+			and (e.asset_id like '%${keyword}%' or e.asset_num like '%${keyword}%' or e.asset_tag like '%${keyword}%' or e.asset_name like '%${keyword}%' or e.iot_num like '%${keyword}%')
 		</if>
 		limit #{startIndex},#{perPage}
 	</select>
@@ -70,12 +70,7 @@
 
 	<select id="listBindingEamAssetByPage" resultType="Map" parameterType="Map">
 		SELECT
-		e.asset_id,
-		e.asset_name,
-		e.asset_num,
-		e.iot_num,
-		e.`user`,
-		e.responsible,
+		e.*,
 		g.gateway_id
 		FROM
 		eam_asset e
@@ -104,10 +99,7 @@
 	</select>
 	<select id="getAssetInventory" resultType="Map" parameterType="map">
 		SELECT
-			ea.asset_id,
-			ea.iot_num,
-			ea.asset_name,
-			ea.asset_num,
+			ea.*,
 			ega.gateway_id,
 			eg.address,
 			eas.receive_time,
