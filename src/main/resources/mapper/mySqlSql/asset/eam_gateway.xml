@@ -67,7 +67,14 @@
 
 	<select id="listEamGatewayByMap" resultType="Map" parameterType="Map">
 		SELECT
-		*
+		*, (
+		SELECT
+		count(eam_gateway_asset.asset_id)
+		FROM
+		eam_gateway_asset
+		WHERE
+		e.gateway_id = eam_gateway_asset.gateway_id
+		) assetCount
 		FROM
 		eam_gateway e
 		WHERE
@@ -76,7 +83,14 @@
 			AND ( e.gateway_id LIKE '%${keyword}%' OR e.address LIKE '%${keyword}%' )
 			union
 			SELECT
-			eg.*
+			eg.*, (
+			SELECT
+			count(eam_gateway_asset.asset_id)
+			FROM
+			eam_gateway_asset
+			WHERE
+			eg.gateway_id = eam_gateway_asset.gateway_id
+			) assetCount
 			FROM
 			eam_asset ea
 			LEFT JOIN eam_gateway_asset ega ON ea.asset_id = ega.asset_id
