@@ -305,7 +305,7 @@ public class AssetController extends RO {
     }
 
     @RequestMapping(value = "/importExcel", method={RequestMethod.POST})
-    public  @ResponseBody Map<String, Object> importExcel(@RequestParam("file") MultipartFile file, HttpServletRequest request, HttpServletResponse response) throws SQLException {
+    public String importExcel(@RequestParam("file") MultipartFile file) throws SQLException {
         Map<String, Object> map = new HashMap<String, Object>();
         Date date=new Date();
         String result = "";
@@ -497,7 +497,7 @@ public class AssetController extends RO {
             result = "上传失败";
         }
         map.put("message", result);
-        return map;
+        return SuccessMsg("",result);
     }
 
     /**
