@@ -64,7 +64,7 @@ public class MqttReceiveServiceImpl implements MqttReceiveService{
 					//添加
 					DbFactory.Open(DbFactory.FORM).insert("eam_asset_status.addEamAssetStatus",map);
 				}
-				buildAlarm(String.valueOf(gatewayId),mqttBtMessage);
+				//buildAlarm(String.valueOf(gatewayId),mqttBtMessage);
 			}
 
 			System.out.println(labelList.toString());
@@ -225,7 +225,7 @@ public class MqttReceiveServiceImpl implements MqttReceiveService{
 		/**
 		 * 电压警告
 		 */
-		if(mqttBtMessage.getElectricity()< 12){ //电压低
+		if(mqttBtMessage.getElectricity()< 50){ //电压低
 			HashMap map = new HashMap<String,Object>();
 			map.put("alarm_num","DYD" + System.currentTimeMillis());
 			map.put("asset_id",result.get("asset_id"));

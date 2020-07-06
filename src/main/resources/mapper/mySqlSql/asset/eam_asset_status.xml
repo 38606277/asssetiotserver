@@ -42,4 +42,39 @@
 	</select>
 
 
+	<select id="listLostTagAlarm" resultType="Map" parameterType="Map">
+		SELECT
+		eas.*,
+		ea.*
+		FROM
+		eam_asset_status eas
+		LEFT JOIN eam_asset ea ON eas.tag_id = ea.iot_num
+		WHERE
+		receive_time &lt; ( NOW()- INTERVAL 2 HOUR )
+		AND ea.asset_id IS NOT NULL
+		AND EXISTS ( SELECT 1 FROM eam_gateway_asset ega WHERE ega.asset_id = ea.asset_id )
+		AND NOT EXISTS ( SELECT 1 FROM asset_alarm aa where aa.asset_id = ea.asset_id and ( NOW()- INTERVAL 1 HOUR ) &lt; aa.alarm_time )
+		ORDER BY
+		receive_time DESC
+	</select>
+
+	<select id="listLowVoltageTagAlarm" resultType="Map" parameterType="Map">
+		SELECT
+		eas.*,
+		ea.*
+		FROM
+		eam_asset_status eas
+		LEFT JOIN eam_asset ea ON eas.tag_id = ea.iot_num
+		WHERE
+		eas.electricity &lt; '3.2'
+		AND ea.asset_id IS NOT NULL
+		AND EXISTS ( SELECT 1 FROM eam_gateway_asset ega WHERE ega.asset_id = ea.asset_id )
+		AND NOT EXISTS ( SELECT 1 FROM asset_alarm aa where aa.asset_id = ea.asset_id and ( NOW()- INTERVAL 1 HOUR ) &lt; aa.alarm_time )
+		ORDER BY
+		receive_time DESC
+	</select>
+
+
+
+
 </mapper>
