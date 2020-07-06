@@ -16,7 +16,7 @@ public class AlarmJob {
 
     //每10分钟执行一次
     @Scheduled(cron = "0 1/15 * * * ?")
-    public void testScheduled(){
+    public void AlarmScheduled(){
         System.out.println("springScheduled run:" + LocalDateTime.now().format(DateTimeFormatter.ofPattern("HH:mm:ss")));
         check();
     }
