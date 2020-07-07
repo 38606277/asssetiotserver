@@ -43,7 +43,7 @@
 
 	<select id="treeGatewayByAddressId" resultType="Map" parameterType="Map">
 		SELECT
-		e.gateway_id AS 'label',
+		e.gateway_name AS 'label',
 		e.gateway_id AS 'value',
 		'true' AS 'isLeaf',
 		'true' AS 'isGateway'
