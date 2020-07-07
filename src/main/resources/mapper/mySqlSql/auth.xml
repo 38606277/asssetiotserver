@@ -89,7 +89,7 @@
     <select id="getMenuByUserId" resultType="Map" parameterType="Map">
         select * from fnd_func f inner join (SELECT DISTINCT a.func_id from fnd_auth a
         inner join (select u.role_id from fnd_user_role u where u.user_id=#{userId,jdbcType=INTEGER}) as b on a.role_id=b.role_id
-        where a.auth_type='webFunc')as r on f.func_id=r.func_id where f.func_type='reactWeb' and f.func_pid=#{pid,jdbcType=INTEGER} order by f.order,f.func_id asc
+        where a.auth_type='webFunc')as r on f.func_id=r.func_id where f.func_type='reactWeb' and f.valid=1 and f.func_pid=#{pid,jdbcType=INTEGER} order by f.order,f.func_id asc
     </select>
     <select id="getMenuAll" resultType="Map" parameterType="Map">
          select f.* from fnd_func f inner join (SELECT DISTINCT a.func_id from fnd_auth a

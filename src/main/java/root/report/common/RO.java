@@ -7,6 +7,7 @@ import org.dom4j.Document;
 import org.dom4j.Element;
 
 import java.util.List;
+import java.util.Map;
 
 public class RO {
 	
@@ -15,9 +16,11 @@ public class RO {
 			SerializerFeature.WriteNullStringAsEmpty, SerializerFeature.WriteMapNullValue,
 			SerializerFeature.PrettyFormat, SerializerFeature.UseISO8601DateFormat,
 			SerializerFeature.WriteDateUseDateFormat, SerializerFeature.WriteNullListAsEmpty };
-	
+	private Object List;
+
 	public  String SuccessMsg(String message,Object data)
 	{
+		//根据列权限过滤返回的列
 		JSONObject jsonObject=new JSONObject();
 		jsonObject.put("resultCode", "1000");
 		jsonObject.put("message", message);
@@ -58,5 +61,34 @@ public class RO {
 		}
 		return true;
 	}
+	//查询列表
+	protected   <E> List<E> selectList(String credentials,String mapperId, Map param)
+	{
+//		//注入行权限过滤
+//		JSONObject obj= JSON.parseObject(credentials);
+//		String userCode = obj.getString("UserCode");
+//		//取得当用用户的数据权限
+//		String authData=getAuthDataByUser(userCode);
+//		List dataAuthTypes=getDataAuthType();
+//		for(dataAuth in dataAuthTypes)
+//		{
+//			param.put(dataAuth.name,authData.value);
+//		}
+//
+////		String dataAuth="";
+////		param.put("org_ids",dataAuth);
+////		param.put("dept_ids",dataAuth);
+//		List result=DbFactory.Open(DbFactory.FORM).selectList(mapperId, param);
+//        return result;
+		//列权限过滤
+		return  null;
+
+	}
+
+	//查询map
+	<T> T selectOne(String var1, Object var2){
+		return null;
+	}
+	//
 
 }
