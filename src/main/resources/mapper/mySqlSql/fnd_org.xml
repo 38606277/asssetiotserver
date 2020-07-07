@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="fndOrg">
+
+    <select id="listByOrgPid" resultType="Map" parameterType="Map">
+        SELECT * FROM fnd_org where org_pid=#{org_pid}
+    </select>
+    <select id="listOrgTreeByOrgPid" resultType="Map" parameterType="Map">
+        SELECT
+        *,
+        ( SELECT CASE count( 1 ) WHEN '0' THEN true ELSE false END FROM fnd_org temp WHERE temp.org_pid = fo.org_id ) AS isLeaf
+        FROM
+        fnd_org fo
+        WHERE
+        org_pid = #{org_pid}
+    </select>
+
+    <insert id="addOrg" parameterType="Map">
+        INSERT INTO fnd_org(org_type,org_num,org_name,org_pid) VALUES (#{org_type},#{org_num},#{org_name},#{org_pid})
+    </insert>
+
+    <insert id="deleteByOrgId" parameterType="Map">
+        delete from fnd_org where org_id=#{org_id}
+    </insert>
+
+    <insert id="updateOrgByOrgId" parameterType="Map">
+        update fnd_org set org_name=#{org_name},org_num=#{org_num},address=#{address},org_type=#{org_type},org_pid=#{org_pid}  where org_id=#{org_id}
+    </insert>
+
+
+
+</mapper>
