@@ -2,6 +2,26 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
 "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="fndOrg">
+    <cache/>
+
+    <select id="getAll" resultType="root.report.util.Node" parameterType="Map">
+        SELECT
+        fo.org_id id,
+        fo.org_name NAME,
+        fo.org_pid pid
+        FROM
+        fnd_org fo
+    </select>
+
+    <select id="getByOrgID" resultType="Map" parameterType="Map">
+        SELECT
+        fo.org_id ,
+        fo.org_name ,
+        fo.org_pid
+        FROM
+        fnd_org fo
+        where fo.org_id=${org_id}
+    </select>
 
     <select id="listByOrgPid" resultType="Map" parameterType="Map">
         SELECT * FROM fnd_org where org_pid=#{org_pid}
@@ -20,13 +40,17 @@
         INSERT INTO fnd_org(org_type,org_num,org_name,org_pid) VALUES (#{org_type},#{org_num},#{org_name},#{org_pid})
     </insert>
 
+    <insert id="createOrg"  useGeneratedKeys="true" keyProperty="org_id"  parameterType="Map">
+        INSERT INTO fnd_org(org_type,org_num,org_name,org_pid) VALUES (#{org_type},#{org_num},#{org_name},#{org_pid})
+    </insert>
+
     <insert id="deleteByOrgId" parameterType="Map">
         delete from fnd_org where org_id=#{org_id}
     </insert>
 
-    <insert id="updateOrgByOrgId" parameterType="Map">
-        update fnd_org set org_name=#{org_name},org_num=#{org_num},address=#{address},org_type=#{org_type},org_pid=#{org_pid}  where org_id=#{org_id}
-    </insert>
+    <update id="updateOrgByOrgId" parameterType="Map">
+        update fnd_org set org_name=#{org_name},org_num=#{org_num},address=#{address},org_type=1,org_pid=#{org_pid}  where org_id=#{org_id}
+    </update>
 
 
 

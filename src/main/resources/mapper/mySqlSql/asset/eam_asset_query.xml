@@ -168,7 +168,20 @@
 		FROM
 		eam_asset
 	</select>
-
+	<select id="getAssetAlarm" resultType="java.util.LinkedHashMap" parameterType="Map">
+		SELECT
+		aa.alarm_time,
+		ea.asset_name,
+		aa.alarm_type,
+		ea.iot_num
+		FROM
+		asset_alarm aa,
+		eam_asset ea
+		WHERE
+		aa.asset_id = ea.asset_id
+		and aa.`status`=0
+		and aa.alarm_type='丢失'
+	</select>
 
 
 </mapper>

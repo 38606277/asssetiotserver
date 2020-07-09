@@ -5,6 +5,8 @@ import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.serializer.SerializerFeature;
 import org.dom4j.Document;
 import org.dom4j.Element;
+import root.report.db.DbFactory;
+import root.report.sys.SysContext;
 
 import java.util.List;
 import java.util.Map;
@@ -62,27 +64,26 @@ public class RO {
 		return true;
 	}
 	//查询列表
-	protected   <E> List<E> selectList(String credentials,String mapperId, Map param)
+	protected   <E> List<E> selectList(String mapperId, Map param)
 	{
-//		//注入行权限过滤
-//		JSONObject obj= JSON.parseObject(credentials);
-//		String userCode = obj.getString("UserCode");
-//		//取得当用用户的数据权限
-//		String authData=getAuthDataByUser(userCode);
-//		List dataAuthTypes=getDataAuthType();
-//		for(dataAuth in dataAuthTypes)
-//		{
-//			param.put(dataAuth.name,authData.value);
-//		}
-//
-////		String dataAuth="";
-////		param.put("org_ids",dataAuth);
-////		param.put("dept_ids",dataAuth);
-//		List result=DbFactory.Open(DbFactory.FORM).selectList(mapperId, param);
-//        return result;
-		//列权限过滤
-		return  null;
+		//注入行权限过滤	param.put("org_ids",dataAuth);
+		////		param.put("dept_ids",dataAuth);
+		String userCode = SysContext.getUserCode();
+		Map authData= getDataAuthByUsercode(userCode);
+		param.putAll(authData);
+		authData.forEach((key, value) -> {
+			param.put(key,value);
+		});
+		List result= DbFactory.Open(DbFactory.FORM).selectList(mapperId, param);
+//		列权限过滤
+		return  result;
 
+	}
+
+	private Map<String,String> getDataAuthByUsercode(String userCode) {
+//		org:"12,23,23" dept:"4,43,34"
+
+return null;
 	}
 
 	//查询map
