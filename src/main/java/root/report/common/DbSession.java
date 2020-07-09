@@ -7,9 +7,9 @@ import root.report.db.DbFactory;
 import java.util.List;
 import java.util.Map;
 
-public class DbSession {
+ public  class DbSession {
 
-    public SqlSession getDefaultSession() {
+    public static  SqlSession getDefaultSession() {
         SqlSession sqlSession = null;
         try {
             sqlSession = DbFactory.Open(DbFactory.FORM);
@@ -19,19 +19,18 @@ public class DbSession {
         }
     }
 
-    public List selectList(String mapper, Map param) {
+    public static  <E> List<E>   selectList(String mapper, Object param) {
         SqlSession sqlSession = null;
         try {
             sqlSession = DbFactory.Open(DbFactory.FORM);
-            List<Object> list = sqlSession.selectList(mapper, param);
-            return list;
+            return  sqlSession.selectList(mapper, param);
         } catch (Exception ex) {
             throw ex;
         } finally {
             sqlSession.close();
         }
     }
-    public List selectList(String mapper, Map param, RowBounds rowBounds) {
+    public static List selectList(String mapper, Map param, RowBounds rowBounds) {
         SqlSession sqlSession = null;
         try {
             sqlSession = DbFactory.Open(DbFactory.FORM);
@@ -44,7 +43,7 @@ public class DbSession {
         }
     }
 
-    public List selectListByAuth(String mapperId, Map param) {
+    public static List selectListByAuth(String mapperId, Map param) {
        SqlSession sqlSession = null;
 //        //注入行权限过滤	param.put("org_ids",dataAuth);
 //        ////		param.put("dept_ids",dataAuth);
@@ -72,12 +71,11 @@ public class DbSession {
         }
     }
 
-    public Object selectOne(String mapperId, Map param) {
+    public static  <T> T selectOne(String mapper, Object param) {
         SqlSession sqlSession = null;
         try {
             sqlSession = DbFactory.Open(DbFactory.FORM);
-            Object object = sqlSession.selectOne(mapperId, param);
-            return object;
+            return sqlSession.selectOne(mapper, param);
         } catch (Exception ex) {
             throw ex;
         } finally {
@@ -85,12 +83,12 @@ public class DbSession {
         }
     }
 
-    public Object insert(String mapperId, Map param) {
+
+    public static  int insert(String mapperId, Map param) {
         SqlSession sqlSession = null;
         try {
             sqlSession = DbFactory.Open(DbFactory.FORM);
-            Object object = sqlSession.insert(mapperId, param);
-            return object;
+            return  sqlSession.insert(mapperId, param);
         } catch (Exception ex) {
             throw ex;
         } finally {
@@ -98,12 +96,11 @@ public class DbSession {
         }
     }
 
-    public Object update(String mapperId, Map param) {
+    public static int update(String mapperId, Map param) {
         SqlSession sqlSession = null;
         try {
             sqlSession = DbFactory.Open(DbFactory.FORM);
-            Object object = sqlSession.update(mapperId, param);
-            return object;
+            return sqlSession.update(mapperId, param);
         } catch (Exception ex) {
             throw ex;
         } finally {
@@ -111,12 +108,11 @@ public class DbSession {
         }
     }
 
-    public Object delete(String mapperId, Map param) {
+    public static int delete(String mapperId, Map param) {
         SqlSession sqlSession = null;
         try {
             sqlSession = DbFactory.Open(DbFactory.FORM);
-            Object object = sqlSession.delete(mapperId, param);
-            return object;
+           return sqlSession.delete(mapperId, param);
         } catch (Exception ex) {
             throw ex;
         } finally {

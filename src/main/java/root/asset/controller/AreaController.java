@@ -56,7 +56,7 @@ public class AreaController extends RO {
     public String getGatewayArea(@RequestBody JSONObject pJson) throws UnsupportedEncodingException {
         String parentCode = pJson.getString("parentCode");
         String maxLevel = pJson.getString("maxLevel");
-        List<Map<String, Object>> areaList = DbFactory.Open(DbFactory.FORM).selectList("sys_area.getTaskIdByParentCode", parentCode);
+        List<Map<String, Object>> areaList =DbSession.selectList("sys_area.getTaskIdByParentCode", parentCode);
 
         List<Map<String, Object>> dataList = new ArrayList<>();
         for (Map areaData : areaList) {
@@ -66,7 +66,7 @@ public class AreaController extends RO {
             data.put("level", areaData.get("level_type").toString());
             if (areaData.get("level_type").toString().equals(maxLevel)) {
                 String addressId = areaData.get("code").toString();
-                int count = DbFactory.Open(DbFactory.FORM).selectOne("eam_gateway.queryCountByAddressId", addressId);
+                int count = DbSession.selectOne("eam_gateway.queryCountByAddressId", addressId);
                 data.put("isLeaf", count == 0);
             } else {
                 data.put("isLeaf", false);
@@ -86,7 +86,7 @@ public class AreaController extends RO {
      */
     @RequestMapping(value = "/getCityContainingGateway", produces = "text/plain;charset=UTF-8")
     public String getCityContainingGateway(@RequestBody JSONObject pJson) throws UnsupportedEncodingException {
-        List<Map<String, Object>> areaList = DbFactory.Open(DbFactory.FORM).selectList("sys_area.getCityContainingGateway", pJson);
+        List<Map<String, Object>> areaList =DbSession.selectList("sys_area.getCityContainingGateway", pJson);
         List<Map<String, Object>> dataList = new ArrayList<>();
         for (Map areaData : areaList) {
             Map data = new HashMap();
@@ -109,7 +109,7 @@ public class AreaController extends RO {
      */
     @RequestMapping(value = "/getDistrictContainingGateway", produces = "text/plain;charset=UTF-8")
     public String getDistrictContainingGateway(@RequestBody JSONObject pJson) throws UnsupportedEncodingException {
-        List<Map<String, Object>> areaList = DbFactory.Open(DbFactory.FORM).selectList("sys_area.getDistrictContainingGateway", pJson);
+        List<Map<String, Object>> areaList =DbSession.selectList("sys_area.getDistrictContainingGateway", pJson);
         List<Map<String, Object>> dataList = new ArrayList<>();
         for (Map areaData : areaList) {
             Map data = new HashMap();
@@ -123,14 +123,14 @@ public class AreaController extends RO {
     }
     @RequestMapping(value = "/getCityByProvince", produces = "text/plain;charset=UTF-8")
     public String getCityByProvince(@RequestBody JSONObject pJson) throws UnsupportedEncodingException {
-        List<Map<String, Object>>  list =new DbSession().selectList("sys_area.getCityByProvince", pJson);
+        List<Map<String, Object>>  list =DbSession.selectList("sys_area.getCityByProvince", pJson);
         return SuccessMsg("", list);
     }
 
     @RequestMapping(value = "/getPostionByCityName", produces = "text/plain;charset=UTF-8")
     public String getPostionByCityName(@RequestHeader("credentials") String credentials, @RequestBody JSONObject pJson) throws UnsupportedEncodingException {
         Map<String, Object> map = new HashMap<String, Object>();
-        Map<String, Object> resut = DbFactory.Open(DbFactory.FORM).selectOne("sys_area.getPostionByCityName", pJson);
+        Map<String, Object> resut =DbSession.selectOne("sys_area.getPostionByCityName", pJson);
         return SuccessMsg("", resut);
     }
 
