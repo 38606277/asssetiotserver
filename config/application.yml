@@ -27,3 +27,7 @@ mqtt:
   keepalibe: 20
 
 fileDirPath: C://eam//images//
+
+durid:
+  username: admin
+  password: admin

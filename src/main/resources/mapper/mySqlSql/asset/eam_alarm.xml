@@ -5,7 +5,7 @@
 
 
 	<select id="addEamAlarm" parameterType="Map">
-		INSERT INTO asset_alarm (alarm_num, asset_id, alarm_type) VALUES (#{alarm_num},#{asset_id},#{alarm_type})
+		INSERT INTO eam_asset_alarm (alarm_num, asset_id, alarm_type) VALUES (#{alarm_num},#{asset_id},#{alarm_type})
 	</select>
 
 
@@ -13,7 +13,7 @@
 		SELECT
 		count(1)
 		FROM
-		asset_alarm a
+		eam_asset_alarm a
 		LEFT JOIN  eam_asset e on a.asset_id = e.asset_id
 		where 1=1
 		<if test="keyword != null and keyword!=''">
@@ -38,7 +38,7 @@
 		a.remark,
 		e.*
 		FROM
-		asset_alarm a
+		eam_asset_alarm a
 		LEFT JOIN  eam_asset e on a.asset_id = e.asset_id
 		where 1=1
 		<if test="keyword != null and keyword!=''">
@@ -54,6 +54,6 @@
 	</select>
 
 	<update id="updateAlarmStatus" parameterType="Map">
-		update asset_alarm set status=#{status},remark=#{remark} where alarm_id=#{alarm_id}
+		update eam_asset_alarm set status=#{status},remark=#{remark} where alarm_id=#{alarm_id}
 	</update>
 </mapper>

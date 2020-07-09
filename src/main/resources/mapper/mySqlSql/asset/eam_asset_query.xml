@@ -175,7 +175,7 @@
 		aa.alarm_type,
 		ea.iot_num
 		FROM
-		asset_alarm aa,
+		eam_asset_alarm aa,
 		eam_asset ea
 		WHERE
 		aa.asset_id = ea.asset_id
