@@ -58,13 +58,13 @@ public class RestInterceptor extends HandlerInterceptorAdapter {
 	@Override
 	public void postHandle(HttpServletRequest request, HttpServletResponse response, Object handler,
 			ModelAndView modelAndView) throws Exception {
-		SysApiLog apiLog = logMap.get();
-		if(apiLog!=null){
-			Date date = new Date();
-			String end_time = sdf.format(date);
-			apiLog.setEnd_time(end_time);
-			DbFactory.Open(DbFactory.FORM).insert("system.insertSysApiLog", apiLog);
-		}
+//		SysApiLog apiLog = logMap.get();
+//		if(apiLog!=null){
+//			Date date = new Date();
+//			String end_time = sdf.format(date);
+//			apiLog.setEnd_time(end_time);
+//			DbFactory.Open(DbFactory.FORM).insert("system.insertSysApiLog", apiLog);
+//		}
 	}
 
 	@Override

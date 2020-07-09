@@ -1,0 +1,128 @@
+package root.report.common;
+
+import org.apache.ibatis.session.RowBounds;
+import org.apache.ibatis.session.SqlSession;
+import root.report.db.DbFactory;
+
+import java.util.List;
+import java.util.Map;
+
+public class DbSession {
+
+    public SqlSession getDefaultSession() {
+        SqlSession sqlSession = null;
+        try {
+            sqlSession = DbFactory.Open(DbFactory.FORM);
+            return sqlSession;
+        } catch (Exception ex) {
+            throw ex;
+        }
+    }
+
+    public List selectList(String mapper, Map param) {
+        SqlSession sqlSession = null;
+        try {
+            sqlSession = DbFactory.Open(DbFactory.FORM);
+            List<Object> list = sqlSession.selectList(mapper, param);
+            return list;
+        } catch (Exception ex) {
+            throw ex;
+        } finally {
+            sqlSession.close();
+        }
+    }
+    public List selectList(String mapper, Map param, RowBounds rowBounds) {
+        SqlSession sqlSession = null;
+        try {
+            sqlSession = DbFactory.Open(DbFactory.FORM);
+            List<Object> list = sqlSession.selectList(mapper, param,rowBounds);
+            return list;
+        } catch (Exception ex) {
+            throw ex;
+        } finally {
+            sqlSession.close();
+        }
+    }
+
+    public List selectListByAuth(String mapperId, Map param) {
+       SqlSession sqlSession = null;
+//        //注入行权限过滤	param.put("org_ids",dataAuth);
+//        ////		param.put("dept_ids",dataAuth);
+//        String userCode = SysContext.getUserCode();
+//        Map authData = getDataAuthByUsercode(userCode);
+//        param.putAll(authData);
+//        authData.forEach((key, value) -> {
+//            param.put(key, value);
+//        });
+//
+//
+//        List result = DbFactory.Open(DbFactory.FORM).selectList(mapperId, param);
+////		列权限过滤
+//        return result;
+
+
+        try {
+            sqlSession = DbFactory.Open(DbFactory.FORM);
+            List<Map<String, Object>> list = sqlSession.selectList(mapperId, param);
+            return list;
+        } catch (Exception ex) {
+            throw ex;
+        } finally {
+            sqlSession.close();
+        }
+    }
+
+    public Object selectOne(String mapperId, Map param) {
+        SqlSession sqlSession = null;
+        try {
+            sqlSession = DbFactory.Open(DbFactory.FORM);
+            Object object = sqlSession.selectOne(mapperId, param);
+            return object;
+        } catch (Exception ex) {
+            throw ex;
+        } finally {
+            sqlSession.close();
+        }
+    }
+
+    public Object insert(String mapperId, Map param) {
+        SqlSession sqlSession = null;
+        try {
+            sqlSession = DbFactory.Open(DbFactory.FORM);
+            Object object = sqlSession.insert(mapperId, param);
+            return object;
+        } catch (Exception ex) {
+            throw ex;
+        } finally {
+            sqlSession.close();
+        }
+    }
+
+    public Object update(String mapperId, Map param) {
+        SqlSession sqlSession = null;
+        try {
+            sqlSession = DbFactory.Open(DbFactory.FORM);
+            Object object = sqlSession.update(mapperId, param);
+            return object;
+        } catch (Exception ex) {
+            throw ex;
+        } finally {
+            sqlSession.close();
+        }
+    }
+
+    public Object delete(String mapperId, Map param) {
+        SqlSession sqlSession = null;
+        try {
+            sqlSession = DbFactory.Open(DbFactory.FORM);
+            Object object = sqlSession.delete(mapperId, param);
+            return object;
+        } catch (Exception ex) {
+            throw ex;
+        } finally {
+            sqlSession.close();
+        }
+    }
+
+
+}

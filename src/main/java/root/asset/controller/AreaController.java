@@ -5,6 +5,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import root.report.common.DbSession;
 import root.report.common.RO;
 import root.report.db.DbFactory;
 
@@ -121,10 +122,9 @@ public class AreaController extends RO {
         return SuccessMsg("", dataList);
     }
     @RequestMapping(value = "/getCityByProvince", produces = "text/plain;charset=UTF-8")
-    public String getCityByProvince(@RequestHeader("credentials") String credentials, @RequestBody JSONObject pJson) throws UnsupportedEncodingException {
-        Map<String, Object> map = new HashMap<String, Object>();
-        List<Map<String, Object>>  resut = DbFactory.Open(DbFactory.FORM).selectList("sys_area.getCityByProvince", pJson);
-        return SuccessMsg("", resut);
+    public String getCityByProvince(@RequestBody JSONObject pJson) throws UnsupportedEncodingException {
+        List<Map<String, Object>>  list =new DbSession().selectList("sys_area.getCityByProvince", pJson);
+        return SuccessMsg("", list);
     }
 
     @RequestMapping(value = "/getPostionByCityName", produces = "text/plain;charset=UTF-8")

@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSONObject;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import root.report.common.DbSession;
 import root.report.common.RO;
 import root.report.db.DbFactory;
 
@@ -33,13 +34,13 @@ public class AssetQueryController extends RO {
 
     @RequestMapping(value = "/getAssetCube", produces = "text/plain;charset=UTF-8")
     public String getAssetCube(@RequestBody JSONObject pJson) throws UnsupportedEncodingException {
-        List<Map<String, Object>> resutlList = DbFactory.Open(DbFactory.FORM).selectList("eam_asset_query.getAssetCube", pJson);
+        List<Map<String, Object>>  resutlList =new DbSession().selectList("eam_asset_query.getAssetCube", pJson);
         return SuccessMsg("", resutlList);
     }
 
     @RequestMapping(value = "/getAsset", produces = "text/plain;charset=UTF-8")
     public String getAsset(@RequestBody JSONObject pJson) throws UnsupportedEncodingException {
-        List<Map<String, Object>> result = selectList("eam_asset_query.getAssetCube",pJson);
+        List<Map<String, Object>> result = new DbSession().selectList("eam_asset_query.getAssetCube",pJson);
         return SuccessMsg("", result);
     }
 

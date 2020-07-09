@@ -5,24 +5,24 @@ import com.alibaba.fastjson.JSONObject;
 import com.github.pagehelper.PageRowBounds;
 import org.apache.ibatis.session.RowBounds;
 import org.apache.ibatis.session.SqlSession;
-import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import root.report.common.DbSession;
 import root.report.common.RO;
 import root.report.db.DbFactory;
 import root.report.service.AssetService;
-import root.report.util.ExportExcel;
 import root.report.util.ReadExcel;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
 import java.sql.SQLException;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * 资产控制器
@@ -246,7 +246,7 @@ public class AssetController extends RO {
 
             map.put("cityCode",pJson.getString("cityCode"));
             map.put("receiveTime",pJson.getString("receiveTime"));
-            aResult = DbFactory.Open(DbFactory.FORM).selectList("eam_asset.getAssetInventory", map,bounds);
+            aResult =new DbSession().selectList("eam_asset.getAssetInventory", map,bounds);
             if(pJson!=null){
                 totalSize = ((PageRowBounds)bounds).getTotal();
             }else{
