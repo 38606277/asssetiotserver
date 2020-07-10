@@ -16,5 +16,7 @@
         ( #{func_type},#{func_pid},#{func_name},#{valid},#{func_desc},#{func_icon},#{func_url},#{order});
     </insert>
 
-
+    <update id="updateMenuOrder"  parameterType="Map">
+        update fnd_func f set f.`order`=#{order} where f.func_id=#{func_id}
+    </update>
 </mapper>

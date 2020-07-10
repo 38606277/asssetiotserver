@@ -2,6 +2,7 @@ package root.report.menu;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.google.gson.JsonObject;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -73,4 +74,33 @@ public class MenuController extends RO {
 		}
 
 	}
+
+
+	/**
+	 * 更新数据排序
+	 * @param pJson
+	 * @return
+	 */
+	@RequestMapping(value = "/updateMenuTreeListOrder", produces = "text/plain;charset=UTF-8")
+	public String updateMenuTreeList(@RequestBody JSONObject pJson)  {
+
+		recursiveUpdateMenuTreeListOrder(pJson.getJSONArray("menuTreeList"));
+		return SuccessMsg("保存成功","");
+	}
+
+	/**
+	 * 遍历列表并更新
+	 */
+	private void recursiveUpdateMenuTreeListOrder(JSONArray jsonArray){
+		if(jsonArray == null || jsonArray.size() == 0){
+			return ;
+		}
+		for(int i = 0 ; i < jsonArray.size() ; i++ ){
+			JSONObject jsonObject = jsonArray.getJSONObject(i);
+			jsonObject.put("order",i+1);
+			DbSession.update("fnd_menu.updateMenuOrder",jsonObject);
+			recursiveUpdateMenuTreeListOrder(jsonObject.getJSONArray("children"));
+		}
+	}
+
 }
