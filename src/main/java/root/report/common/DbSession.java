@@ -3,7 +3,9 @@ package root.report.common;
 import org.apache.ibatis.session.RowBounds;
 import org.apache.ibatis.session.SqlSession;
 import root.report.db.DbFactory;
+import root.report.sys.SysContext;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -26,8 +28,6 @@ import java.util.Map;
             return  sqlSession.selectList(mapper, param);
         } catch (Exception ex) {
             throw ex;
-        } finally {
-            sqlSession.close();
         }
     }
     public static List selectList(String mapper, Map param, RowBounds rowBounds) {
@@ -38,36 +38,27 @@ import java.util.Map;
             return list;
         } catch (Exception ex) {
             throw ex;
-        } finally {
-            sqlSession.close();
         }
     }
 
     public static List selectListByAuth(String mapperId, Map param) {
        SqlSession sqlSession = null;
-//        //注入行权限过滤	param.put("org_ids",dataAuth);
-//        ////		param.put("dept_ids",dataAuth);
-//        String userCode = SysContext.getUserCode();
-//        Map authData = getDataAuthByUsercode(userCode);
-//        param.putAll(authData);
-//        authData.forEach((key, value) -> {
-//            param.put(key, value);
-//        });
-//
-//
+        //注入行权限过滤	param.put("org_ids",dataAuth);
+        ////		param.put("dept_ids",dataAuth);
 //        List result = DbFactory.Open(DbFactory.FORM).selectList(mapperId, param);
-////		列权限过滤
+//		列权限过滤
 //        return result;
 
 
         try {
             sqlSession = DbFactory.Open(DbFactory.FORM);
+            String userCode = SysContext.getUserCode();
+            Map authData =DbSession.getDataAuthByUsercode(userCode);
+            param.putAll(authData);
             List<Map<String, Object>> list = sqlSession.selectList(mapperId, param);
             return list;
         } catch (Exception ex) {
             throw ex;
-        } finally {
-            sqlSession.close();
         }
     }
 
@@ -78,8 +69,6 @@ import java.util.Map;
             return sqlSession.selectOne(mapper, param);
         } catch (Exception ex) {
             throw ex;
-        } finally {
-            sqlSession.close();
         }
     }
 
@@ -91,8 +80,6 @@ import java.util.Map;
             return  sqlSession.insert(mapperId, param);
         } catch (Exception ex) {
             throw ex;
-        } finally {
-            sqlSession.close();
         }
     }
 
@@ -103,8 +90,6 @@ import java.util.Map;
             return sqlSession.update(mapperId, param);
         } catch (Exception ex) {
             throw ex;
-        } finally {
-            sqlSession.close();
         }
     }
 
@@ -115,10 +100,15 @@ import java.util.Map;
            return sqlSession.delete(mapperId, param);
         } catch (Exception ex) {
             throw ex;
-        } finally {
-            sqlSession.close();
         }
     }
+
+     public static Map getDataAuthByUsercode(String userCode){
+        Map map=new HashMap();
+        DbSession.selectList("",userCode);
+
+        return map;
+     }
 
 
 }

@@ -32,9 +32,9 @@ public class AssetQueryController extends RO {
     }
 
     @RequestMapping(value = "/getAssetCube", produces = "text/plain;charset=UTF-8")
-    public String getAssetCube(@RequestBody JSONObject pJson) throws UnsupportedEncodingException {
-        List<Map<String, Object>>  resutlList =DbSession.selectList("eam_asset_query.getAssetCube", pJson);
-        return SuccessMsg("", resutlList);
+    public String getAssetCube(@RequestBody JSONObject pJson)  {
+        List<Object> r =DbSession.selectList("eam_asset_query.getAssetCube", pJson);
+        return SuccessMsg("", r);
     }
 
     @RequestMapping(value = "/getAsset", produces = "text/plain;charset=UTF-8")

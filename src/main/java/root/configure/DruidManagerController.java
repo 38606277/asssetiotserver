@@ -1,17 +1,12 @@
 package root.configure;
 
 import com.alibaba.druid.support.http.StatViewServlet;
-import com.alibaba.druid.support.http.WebStatFilter;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.boot.web.servlet.ServletRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
-import javax.servlet.ServletRequest;
-import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.BufferedReader;
@@ -32,14 +27,14 @@ public class DruidManagerController {
 //        return filter;
 //    }
 
-    @Bean    //监控
-    public FilterRegistrationBean filterRegistrationBean(){
-        FilterRegistrationBean filterRegistrationBean=new FilterRegistrationBean();
-        filterRegistrationBean.setFilter(new WebStatFilter());
-        filterRegistrationBean.addUrlPatterns("/*");//所有请求进行监控处理
-        filterRegistrationBean.addInitParameter("exclusions", "*.js,*.gif,*.jpg,*.css,/druid/*");//排除
-        return filterRegistrationBean;
-    }
+//    @Bean    //监控
+//    public FilterRegistrationBean filterRegistrationBean(){
+//        FilterRegistrationBean filterRegistrationBean=new FilterRegistrationBean();
+////        filterRegistrationBean.setFilter(new WebStatFilter());
+////        filterRegistrationBean.addUrlPatterns("/*");//所有请求进行监控处理
+////        filterRegistrationBean.addInitParameter("exclusions", "*.js,*.gif,*.jpg,*.css,/druid/*");//排除
+//        return filterRegistrationBean;
+//    }
 
     //just use database user for easy
     @Value("${durid.username}")
