@@ -57,7 +57,7 @@ public class DbFactory {
             dataSource.setMinEvictableIdleTimeMillis(300000);//连接空闲时间
             dataSource.setTestWhileIdle(true);
             dataSource.setTestOnBorrow(true);
-            dataSource.setFilters("stat,wall,log4j");
+//            dataSource.setFilters("stat,wall,log4j");
 
 //            if ("Oracle".equals(dbtype)) {
 //                dataSource.setPoolPreparedStatements(true);
