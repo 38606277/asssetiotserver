@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import root.mqtt.configure.MqttSendMessage;
 import root.mqtt.service.TopicService;
+import root.report.common.DbSession;
 import root.report.common.RO;
 import root.report.db.DbFactory;
 
@@ -45,8 +46,8 @@ public class AlarmController extends RO {
         }
         pJson.put("startIndex", currentPage);
         pJson.put("perPage", perPage);
-        List<Map<String, Object>> gatewayList = DbFactory.Open(DbFactory.FORM).selectList("eam_alarm.listEamAlarmByPage", pJson);
-        int total = DbFactory.Open(DbFactory.FORM).selectOne("eam_alarm.countEamAlarmByPage", pJson);
+        List<Map<String, Object>> gatewayList = DbSession.selectList("eam_alarm.listEamAlarmByPage", pJson);
+        int total = DbSession.selectOne("eam_alarm.countEamAlarmByPage", pJson);
         Map<String, Object> map2 = new HashMap<String, Object>();
         Map<String, Object> map3 = new HashMap<String, Object>();
         map3.put("list", gatewayList);
@@ -64,7 +65,7 @@ public class AlarmController extends RO {
      */
     @RequestMapping(value = "/updateAlarmStatus", produces = "text/plain;charset=UTF-8")
     public String updateAlarmStatus(@RequestBody JSONObject pJson) throws UnsupportedEncodingException {
-        DbFactory.Open(DbFactory.FORM).update("eam_alarm.updateAlarmStatus", pJson);
+        DbSession.update("eam_alarm.updateAlarmStatus", pJson);
         return SuccessMsg("修改成功", "");
     }
 

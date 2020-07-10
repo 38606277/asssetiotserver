@@ -68,7 +68,7 @@ public class TreeBuilder {
 
     // 判断是否为根节点
     public boolean rootNode(Node node) {
-        if(node.getPid().equals("0"))
+        if("0".equals(node.getPid()))
         {
             return true;
         } else{

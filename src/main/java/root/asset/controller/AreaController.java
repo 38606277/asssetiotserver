@@ -31,7 +31,7 @@ public class AreaController extends RO {
     public String getArea(@RequestBody JSONObject pJson) throws UnsupportedEncodingException {
         String parentCode = pJson.getString("parentCode");
         String maxLevel = pJson.getString("maxLevel");
-        List<Map<String, Object>> areaList = DbFactory.Open(DbFactory.FORM).selectList("sys_area.getTaskIdByParentCode", parentCode);
+        List<Map<String, Object>> areaList = DbSession.selectList("sys_area.getTaskIdByParentCode", parentCode);
 
         List<Map<String, Object>> dataList = new ArrayList<>();
         for (Map areaData : areaList) {

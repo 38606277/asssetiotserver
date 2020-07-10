@@ -1,8 +1,9 @@
 package root.report.util;
 
+import java.io.Serializable;
 import java.util.List;
 
-public class Node {
+public class Node implements Serializable {
 
 
 

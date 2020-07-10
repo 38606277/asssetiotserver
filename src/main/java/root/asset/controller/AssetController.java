@@ -42,7 +42,7 @@ public class AssetController extends RO {
     @RequestMapping(value = "/CreateAsset", produces = "text/plain;charset=UTF-8")
     public String CreateAsset(@RequestBody JSONObject pJson) throws UnsupportedEncodingException {
         try{
-            DbFactory.Open(DbFactory.FORM).insert("eam_asset.addAsset", pJson);
+            DbSession.insert("eam_asset.addAsset", pJson);
             return SuccessMsg("保存成功", pJson.get("id").toString());
 
         }catch (Exception ex){
@@ -54,7 +54,7 @@ public class AssetController extends RO {
     @RequestMapping(value = "/UpdateAsset", produces = "text/plain;charset=UTF-8")
     public String UpdateAsset(@RequestBody JSONObject pJson) throws UnsupportedEncodingException {
         try{
-            DbFactory.Open(DbFactory.FORM).update("eam_asset.updateAsset", pJson);
+            DbSession.update("eam_asset.updateAsset", pJson);
             return SuccessMsg("保存成功", "");
 
         }catch (Exception ex){
@@ -65,7 +65,7 @@ public class AssetController extends RO {
     @RequestMapping(value = "/DeleteAsset", produces = "text/plain;charset=UTF-8")
     public String DeleteAsset(@RequestBody JSONObject pJson) throws UnsupportedEncodingException {
         try{
-            DbFactory.Open(DbFactory.FORM).delete("eam_asset.deleteAsset", pJson);
+            DbSession.delete("eam_asset.deleteAsset", pJson);
             return SuccessMsg("删除成功", "");
 
         }catch (Exception ex){
@@ -73,25 +73,10 @@ public class AssetController extends RO {
         }
     }
 
-    /**
-     * 删除资产
-     *
-     * @return
-     */
-    @RequestMapping(value = "/deleteAsset", produces = "text/plain;charset=UTF-8")
-    public String deleteGateway(@RequestBody JSONObject pJson) throws UnsupportedEncodingException {
-        int gatewayId = pJson.getIntValue("asset_id");
-        int count = DbFactory.Open(DbFactory.FORM).selectOne("eam_asset.queryCountByGatewayId", gatewayId);
-        if (0 < count) {
-            DbFactory.Open(DbFactory.FORM).insert("eam_asset.rmEamAsset", gatewayId);
-        }
-        return SuccessMsg("删除成功", "");
-    }
-
     @RequestMapping(value = "/getAssetById", produces = "text/plain;charset=UTF-8")
     public String getAssetById(@RequestBody JSONObject pJson){
         try{
-            HashMap<String,Object> map = DbFactory.Open(DbFactory.FORM).selectOne("eam_asset.getAssetById",pJson);
+            HashMap<String,Object> map = DbSession.selectOne("eam_asset.getAssetById",pJson);
             JSONObject jsonObject =(JSONObject) JSON.toJSON(map);
             return  SuccessMsg("",jsonObject);
         }catch (Exception ex){
@@ -106,7 +91,7 @@ public class AssetController extends RO {
      */
     @RequestMapping(value = "/bindEamTag", produces = "text/plain;charset=UTF-8")
     public String bindTag(@RequestBody JSONObject pJson) throws UnsupportedEncodingException {
-        DbFactory.Open(DbFactory.FORM).selectOne("eam_asset.bindEamTag", pJson);
+        DbSession.selectOne("eam_asset.bindEamTag", pJson);
         return SuccessMsg("绑定成功", "");
     }
 
@@ -116,7 +101,7 @@ public class AssetController extends RO {
      */
     @RequestMapping(value = "/listEamAssetByGatewayId", produces = "text/plain;charset=UTF-8")
     public String listEamAssetByGatewayId(@RequestBody JSONObject pJson) throws UnsupportedEncodingException {
-        List<Map<String, Object>> assetList = DbFactory.Open(DbFactory.FORM).selectList("eam_gateway_asset.queryAssetListByGatewayId", pJson);
+        List<Map<String, Object>> assetList = DbSession.selectList("eam_gateway_asset.queryAssetListByGatewayId", pJson);
         return SuccessMsg("查询成功", assetList);
     }
 
@@ -140,8 +125,8 @@ public class AssetController extends RO {
         map.put("startIndex", currentPage);
         map.put("perPage", perPage);
         map.put("gateway_id", gatewayId);
-        List<Map<String, Object>> gatewayList = DbFactory.Open(DbFactory.FORM).selectList("eam_gateway_asset.queryAssetListPageByGatewayId", map);
-        int total = DbFactory.Open(DbFactory.FORM).selectOne("eam_gateway_asset.countAssetByGatewayId", map);
+        List<Map<String, Object>> gatewayList = DbSession.selectList("eam_gateway_asset.queryAssetListPageByGatewayId", map);
+        int total = DbSession.selectOne("eam_gateway_asset.countAssetByGatewayId", map);
         Map<String, Object> map2 = new HashMap<String, Object>();
         Map<String, Object> map3 = new HashMap<String, Object>();
         map3.put("list", gatewayList);
@@ -172,8 +157,8 @@ public class AssetController extends RO {
         map.put("startIndex", currentPage);
         map.put("perPage", perPage);
         map.put("keyword",pJson.getString("keyword"));
-        List<Map<String, Object>> assetList = DbFactory.Open(DbFactory.FORM).selectList("eam_asset.listEamAssetByPage", map);
-        int total = DbFactory.Open(DbFactory.FORM).selectOne("eam_asset.countEamAssetByPage", map);
+        List<Map<String, Object>> assetList = DbSession.selectList("eam_asset.listEamAssetByPage", map);
+        int total = DbSession.selectOne("eam_asset.countEamAssetByPage", map);
         Map<String, Object> map2 = new HashMap<String, Object>();
         Map<String, Object> map3 = new HashMap<String, Object>();
         map3.put("list", assetList);
@@ -203,8 +188,8 @@ public class AssetController extends RO {
         map.put("startIndex", currentPage);
         map.put("perPage", perPage);
         map.put("keyword",pJson.getString("keyword"));
-        List<Map<String, Object>> assetList = DbFactory.Open(DbFactory.FORM).selectList("eam_asset.listBindingEamAssetByPage", map);
-        int total = DbFactory.Open(DbFactory.FORM).selectOne("eam_asset.countBindingEamAssetByPage", map);
+        List<Map<String, Object>> assetList = DbSession.selectList("eam_asset.listBindingEamAssetByPage", map);
+        int total = DbSession.selectOne("eam_asset.countBindingEamAssetByPage", map);
         Map<String, Object> map2 = new HashMap<String, Object>();
         Map<String, Object> map3 = new HashMap<String, Object>();
         map3.put("list", assetList);
@@ -269,8 +254,8 @@ public class AssetController extends RO {
 //        Map<String, Object> map = new HashMap<String, Object>();
 //        map.put("startIndex", currentPage);
 //        map.put("perPage", perPage);
-//        List<Map<String, Object>> assetList = DbFactory.Open(DbFactory.FORM).selectList("eam_asset.getAssetInventory", map);
-//        int total = DbFactory.Open(DbFactory.FORM).selectOne("eam_asset.countAssetInventory", map);
+//        List<Map<String, Object>> assetList = DbSession.selectList("eam_asset.getAssetInventory", map);
+//        int total = DbSession.selectOne("eam_asset.countAssetInventory", map);
 //        Map<String, Object> map2 = new HashMap<String, Object>();
 //        Map<String, Object> map3 = new HashMap<String, Object>();
 //        map3.put("list", assetList);
@@ -290,7 +275,7 @@ public class AssetController extends RO {
         try{
             map.put("cityCode",pJson.getString("cityCode"));
             map.put("receiveTime",pJson.getString("receiveTime"));
-            List<Map> aResult = DbFactory.Open(DbFactory.FORM).selectList("eam_asset.getAssetInventory", map);
+            List<Map> aResult = DbSession.selectList("eam_asset.getAssetInventory", map);
 //            String fileName="盘点名称.xls";
 //            String[] titles={"资产标签号", "资产名称", "物联网编号", "网关编号", "最后接收时间", "综资基站编号", "综资基站名称", "地址"};
 //            String[] column={"asset_tag","asset_name","iot_num","gateway_id","receive_time","base_station_code","base_station_name","address"};
@@ -515,8 +500,8 @@ public class AssetController extends RO {
         }
         pJson.put("startIndex", currentPage);
         pJson.put("perPage", perPage);
-        List<Map<String, Object>> assetList = DbFactory.Open(DbFactory.FORM).selectList("eam_asset_status.listTagNoBindGateway", pJson);
-        int total = DbFactory.Open(DbFactory.FORM).selectOne("eam_asset_status.countTagNoBindGateway", pJson);
+        List<Map<String, Object>> assetList = DbSession.selectList("eam_asset_status.listTagNoBindGateway", pJson);
+        int total = DbSession.selectOne("eam_asset_status.countTagNoBindGateway", pJson);
         Map<String, Object> map2 = new HashMap<String, Object>();
         Map<String, Object> map3 = new HashMap<String, Object>();
         map3.put("list", assetList);
@@ -543,8 +528,8 @@ public class AssetController extends RO {
         Map<String, Object> map = new HashMap<String, Object>();
         map.put("startIndex", currentPage);
         map.put("perPage", perPage);
-        List<Map<String, Object>> assetList = DbFactory.Open(DbFactory.FORM).selectList("eam_asset.listAssetNoBindGateway", map);
-        int total = DbFactory.Open(DbFactory.FORM).selectOne("eam_asset.countAssetNoBindGateway", map);
+        List<Map<String, Object>> assetList = DbSession.selectList("eam_asset.listAssetNoBindGateway", map);
+        int total = DbSession.selectOne("eam_asset.countAssetNoBindGateway", map);
         Map<String, Object> map2 = new HashMap<String, Object>();
         Map<String, Object> map3 = new HashMap<String, Object>();
         map3.put("list", assetList);

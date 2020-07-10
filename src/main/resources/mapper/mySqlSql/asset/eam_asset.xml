@@ -183,10 +183,6 @@
 		select e.* from eam_asset e where e.asset_id = #{asset_id}
 	</select>
 
-	<select id="queryCountByAssetId" resultType="int" parameterType="int">
-		select count(asset_id) from eam_asset where asset_id = #{assetId}
-	</select>
-
 
 	<delete id="rmEamAsset" parameterType="int">
 		delete from eam_asset where asset_id=#{assetId}

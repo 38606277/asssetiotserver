@@ -33,8 +33,8 @@
 			AND  eg.gateway_id = #{gateway_id}
 	</select>
 
-	<select id="queryCountByGatewayId" resultType="int" parameterType="int">
-		select count(gateway_id) from eam_gateway where gateway_id = #{gatewayId}
+	<select id="queryCountByGatewayId" resultType="int" parameterType="Map">
+		select count(gateway_id) from eam_gateway where gateway_id = #{gateway_id}
 	</select>
 
 	<select id="queryCountByAddressId" resultType="int" parameterType="String">

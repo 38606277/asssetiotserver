@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import root.mqtt.configure.MqttSendMessage;
 import root.mqtt.service.TopicService;
+import root.report.common.DbSession;
 import root.report.common.RO;
 import root.report.db.DbFactory;
 
@@ -90,7 +91,7 @@ public class GatewayController extends RO {
                     .update("eam_gateway.updateEamGateway", gatewayHeader);
 
             //删除网关关联的资产
-            DbFactory.Open(DbFactory.FORM).delete("eam_gateway_asset.rmAssetByGatewayId",pJson.getJSONObject("gatewayHeader"));
+            DbSession.delete("eam_gateway_asset.rmAssetByGatewayId",pJson.getJSONObject("gatewayHeader"));
 
             //重新插入关联资产
             JSONArray jsonArray = pJson.getJSONArray("gatewayLines");
@@ -120,9 +121,9 @@ public class GatewayController extends RO {
             for (int i = 0; i < jsonArray.size(); i++) {
                 JSONObject jsonObject = jsonArray.getJSONObject(i);
                 //删除网关
-                DbFactory.Open(DbFactory.FORM).delete("eam_gateway.rmEamGateway", jsonObject);
+                DbSession.delete("eam_gateway.rmEamGateway", jsonObject);
                 //删除网关关联的资产
-                DbFactory.Open(DbFactory.FORM).delete("eam_gateway_asset.rmAssetByGatewayId",jsonObject);
+                DbSession.delete("eam_gateway_asset.rmAssetByGatewayId",jsonObject);
 
                 topicService.removeTopicByGateway(jsonObject.getString("gateway_id"));
             }
@@ -180,11 +181,11 @@ public class GatewayController extends RO {
     @RequestMapping(value = "/addGateway", produces = "text/plain;charset=UTF-8")
     public String addGateway(@RequestBody JSONObject pJson) throws UnsupportedEncodingException {
         int gatewayId = pJson.getIntValue("gateway_id");
-        int count = DbFactory.Open(DbFactory.FORM).selectOne("eam_gateway.queryCountByGatewayId", gatewayId);
+        int count = DbSession.selectOne("eam_gateway.queryCountByGatewayId", gatewayId);
         if (0 < count) {
             return ExceptionMsg("网关已添加,请勿重复添加");
         } else {
-            DbFactory.Open(DbFactory.FORM).insert("eam_gateway.addEamGateway", pJson);
+            DbSession.insert("eam_gateway.addEamGateway", pJson);
             topicService.addTopicByGateway(pJson.getString("gatewayNumber"));
             return SuccessMsg("保存成功", "");
         }
@@ -197,10 +198,10 @@ public class GatewayController extends RO {
      */
     @RequestMapping(value = "/deleteGateway", produces = "text/plain;charset=UTF-8")
     public String deleteGateway(@RequestBody JSONObject pJson) throws UnsupportedEncodingException {
-        int gatewayId = pJson.getIntValue("gateway_id");
-        int count = DbFactory.Open(DbFactory.FORM).selectOne("eam_gateway.queryCountByGatewayId", gatewayId);
+
+        int count = DbSession.selectOne("eam_gateway.queryCountByGatewayId", pJson);
         if (0 < count) {
-            DbFactory.Open(DbFactory.FORM).insert("eam_gateway.rmEamGateway", gatewayId);
+            DbSession.insert("eam_gateway.rmEamGateway", pJson);
             topicService.removeTopicByGateway(pJson.getString("gatewayNumber"));
         }
         return SuccessMsg("删除成功", "");
@@ -225,8 +226,8 @@ public class GatewayController extends RO {
         map.put("startIndex", currentPage);
         map.put("perPage", perPage);
         map.put("keyword",pJson.getString("keyword"));
-        List<Map<String, Object>> gatewayList = DbFactory.Open(DbFactory.FORM).selectList("eam_gateway.listEamGatewayByPage", map);
-        int total = DbFactory.Open(DbFactory.FORM).selectOne("eam_gateway.countEamGatewayByPage", map);
+        List<Map<String, Object>> gatewayList = DbSession.selectList("eam_gateway.listEamGatewayByPage", map);
+        int total = DbSession.selectOne("eam_gateway.countEamGatewayByPage", map);
         Map<String, Object> map2 = new HashMap<String, Object>();
         Map<String, Object> map3 = new HashMap<String, Object>();
         map3.put("list", gatewayList);
@@ -239,13 +240,13 @@ public class GatewayController extends RO {
 
     @RequestMapping(value = "/listEamGatewayAll", produces = "text/plain;charset=UTF-8")
     public String listEamGatewayAll(@RequestBody JSONObject pJson) throws UnsupportedEncodingException {
-        List<Map<String, Object>> gatewayList = DbFactory.Open(DbFactory.FORM).selectList("eam_gateway.listEamGateway", pJson);
+        List<Map<String, Object>> gatewayList = DbSession.selectList("eam_gateway.listEamGateway", pJson);
         return SuccessMsg("查询成功", gatewayList);
     }
 
     @RequestMapping(value = "/listEamGatewayByMap", produces = "text/plain;charset=UTF-8")
     public String listEamGatewayByMap(@RequestBody JSONObject pJson) throws UnsupportedEncodingException {
-        List<Map<String, Object>> gatewayList = DbFactory.Open(DbFactory.FORM).selectList("eam_gateway.listEamGatewayByMap", pJson);
+        List<Map<String, Object>> gatewayList = DbSession.selectList("eam_gateway.listEamGatewayByMap", pJson);
         return SuccessMsg("查询成功", gatewayList);
     }
     /**
@@ -283,7 +284,7 @@ public class GatewayController extends RO {
 
     @RequestMapping(value = "/treeGatewayByAddressId", produces = "text/plain;charset=UTF-8")
     public String treeGatewayByAddressId(@RequestBody JSONObject pJson) throws UnsupportedEncodingException {
-        List<Map<String, Object>> gatewayList = DbFactory.Open(DbFactory.FORM).selectList("eam_gateway.treeGatewayByAddressId", pJson);
+        List<Map<String, Object>> gatewayList = DbSession.selectList("eam_gateway.treeGatewayByAddressId", pJson);
         return SuccessMsg("", gatewayList);
     }
 
@@ -327,8 +328,8 @@ public class GatewayController extends RO {
         map.put("startIndex", currentPage);
         map.put("perPage", perPage);
         map.put("keyword",pJson.getString("keyword"));
-        List<Map<String, Object>> gatewayList = DbFactory.Open(DbFactory.FORM).selectList("eam_gateway_status.listGatewayStatus", map);
-        int total = DbFactory.Open(DbFactory.FORM).selectOne("eam_gateway_status.countGatewayStatus", map);
+        List<Map<String, Object>> gatewayList = DbSession.selectList("eam_gateway_status.listGatewayStatus", map);
+        int total = DbSession.selectOne("eam_gateway_status.countGatewayStatus", map);
         Map<String, Object> map2 = new HashMap<String, Object>();
         Map<String, Object> map3 = new HashMap<String, Object>();
         map3.put("list", gatewayList);
