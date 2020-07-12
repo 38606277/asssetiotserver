@@ -103,4 +103,65 @@ public class MenuController extends RO {
 		}
 	}
 
+	/**
+	 * 获取一级菜单列表
+	 * @param pJson
+	 * @return
+	 */
+	@RequestMapping(value = "/getRootMenuList", produces = "text/plain;charset=UTF-8")
+	public String getRootMenuList(@RequestBody JSONObject pJson)  {
+		List<Map<String,Object>> data = DbSession.selectList("fnd_menu.getRootMenuList",pJson);
+		return SuccessMsg("获取成功",data);
+	}
+
+
+	/**
+	 * 获取菜单信息
+	 * @param pJson
+	 * @return
+	 */
+	@RequestMapping(value = "/getMenuInfo", produces = "text/plain;charset=UTF-8")
+	public String getMenuInfo(@RequestBody JSONObject pJson)  {
+		Map<String,Object> data = DbSession.selectOne("fnd_menu.getMenuInfo",pJson);
+		return SuccessMsg("获取成功",data);
+	}
+
+
+	/**
+	 * 更新菜单信息
+	 * @param pJson
+	 * @return
+	 */
+	@RequestMapping(value = "/updateMenu", produces = "text/plain;charset=UTF-8")
+	public String updateMenu(@RequestBody JSONObject pJson)  {
+		int id = DbSession.update("fnd_menu.updateMenu",pJson);
+		return SuccessMsg("更新成功",id);
+	}
+
+
+	/**
+	 * 添加菜单
+	 * @param pJson
+	 * @return
+	 */
+	@RequestMapping(value = "/createMenu", produces = "text/plain;charset=UTF-8")
+	public String createMenu(@RequestBody JSONObject pJson)  {
+		Map<String,Integer> data = DbSession.selectOne("fnd_menu.getMenuLastOrder",pJson);
+		pJson.put("order",data == null? 1 : data.get("order") + 1);
+		int id = DbSession.insert("fnd_menu.addMenu",pJson);
+		return SuccessMsg("添加成功",id);
+	}
+
+
+	/**
+	 * 删除菜单
+	 * @param pJson
+	 * @return
+	 */
+	@RequestMapping(value = "/deleteMenu", produces = "text/plain;charset=UTF-8")
+	public String deleteMenu(@RequestBody JSONObject pJson)  {
+		int order = DbSession.delete("fnd_menu.deleteMenu",pJson);
+		return SuccessMsg("删除成功",order);
+	}
+
 }
