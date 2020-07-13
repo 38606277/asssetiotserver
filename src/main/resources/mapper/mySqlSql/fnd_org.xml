@@ -38,8 +38,13 @@
         INSERT INTO fnd_org(org_type,org_num,org_name,org_pid) VALUES (#{org_type},#{org_num},#{org_name},#{org_pid})
     </insert>
 
-    <insert id="createOrg"  useGeneratedKeys="true" keyProperty="org_id"  parameterType="Map">
-        INSERT INTO fnd_org(org_type,org_num,org_name,org_pid) VALUES (#{org_type},#{org_num},#{org_name},#{org_pid})
+    <insert id="createOrg" parameterType="Map">
+        <selectKey keyProperty="org_id" order="BEFORE" resultType="java.lang.String">
+            <if test="org_id == null or org_id == ''">
+                select MAX(org_id)+1 from fnd_org
+            </if>
+        </selectKey>
+        INSERT INTO fnd_org(org_id,org_type,org_num,org_name,org_pid,address) VALUES (#{org_id},#{org_type},#{org_num},#{org_name},#{org_pid},#{address})
     </insert>
 
     <delete id="deleteByOrgId" parameterType="Map">
@@ -52,7 +57,7 @@
     </delete>
 
     <update id="updateOrgByOrgId" parameterType="Map">
-        update fnd_org set org_name=#{org_name},org_num=#{org_num},address=#{address},org_type=1,org_pid=#{org_pid}  where org_id=#{org_id}
+        update fnd_org set org_name=#{org_name},org_num=#{org_num},address=#{address},org_type=#{org_type},org_pid=#{org_pid}  where org_id=#{org_id}
     </update>
 
 
