@@ -6,6 +6,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
+import root.report.common.DbSession;
 import root.report.common.RO;
 import root.report.db.DbFactory;
 
@@ -29,6 +30,19 @@ public class AuthTypecontroller extends RO {
         }
 
     }
+
+    @RequestMapping(value = "/getAllAuthType", produces = "text/plain;charset=UTF-8")
+    public @ResponseBody String getAllAuthType() {
+        try{
+            List<Map> authTypeList = DbSession.selectList("authType.getAllAuthType",null);
+            return SuccessMsg("查询成功", authTypeList);
+        }catch(Exception ex){
+            ex.printStackTrace();
+            return ErrorMsg("3000", ex.getMessage());
+        }
+
+    }
+
     @RequestMapping(value = "/getAuthTypeListByType", produces = "text/plain;charset=UTF-8")
     public @ResponseBody String getAuthTypeListByType(@RequestBody JSONObject pJson) {
         List<Map<String, Object>> list = new ArrayList<>();

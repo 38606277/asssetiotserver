@@ -8,11 +8,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.xml.sax.SAXException;
 import root.form.user.UserModel;
+import root.report.common.DbSession;
 import root.report.common.RO;
 import root.report.db.DbFactory;
 import root.report.service.FunctionService;
 import root.report.service.QueryService;
 import root.report.sys.SysContext;
+import root.report.util.Node;
+import root.report.util.TreeBuilder;
 
 import java.io.UnsupportedEncodingException;
 import java.sql.ResultSet;
@@ -586,4 +589,58 @@ public class AuthController extends RO {
         List<Map<String, Object>> listQueryName = DbFactory.Open(DbFactory.FORM).selectList("auth.getDashboardListInAuth",param);
         return SuccessMsg("",listQueryName);
     }
+    //根据AuthType获取数据
+    @RequestMapping(value="/getDataByAuthType",produces = "text/plain;charset=UTF-8")
+    public String getDataByAuthType(@RequestBody String pJson) {
+        try {
+            JSONObject jsonObject=JSONObject.parseObject(pJson);
+            String authTypeName=jsonObject.getString("authTypeName");
+            Map<String, Object> authType =DbFactory.Open(DbFactory.FORM).selectOne("authType.getAuthSqlByName", authTypeName);
+            //取得AuthType的SQL
+            String  auth_sql= authType.get("authSql").toString();
+            String  auth_db= authType.get("auth_db").toString();
+            //执行SQL取得数据
+            List<Node> nodes=DbSession.selectList("utils.sql",auth_sql);
+            // 拼装树形json字符串
+            List<Node>  result= new TreeBuilder().buildTree(nodes);
+            return SuccessMsg("",result);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            return ErrorMsg("3000", ex.getMessage());
+
+        }
+    }
+    @RequestMapping(value="/getAuthByAuthType",produces = "text/plain;charset=UTF-8")
+    public String getAuthByAuthType(@RequestBody String pJson) {
+        try {
+            //执行SQL取得数据
+            JSONObject param=JSONObject.parseObject(pJson);
+            List<Map<String,Object>> result=DbFactory.Open(DbFactory.FORM).selectList("auth.getAuthByAuthType",param);
+            // 拼装树形json字符串
+
+            return SuccessMsg("",result);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            return ErrorMsg("3000", ex.getMessage());
+
+        }
+    }
+    @RequestMapping(value="/getAuthByUserId",produces = "text/plain;charset=UTF-8")
+    public String getAuthByUserId(@RequestBody String pJson) {
+        try {
+            //执行SQL取得数据
+            JSONObject param=JSONObject.parseObject(pJson);
+            List<Map<String,Object>> result=DbFactory.Open(DbFactory.FORM).selectList("auth.getAuthByUserId",param);
+            // 拼装树形json字符串
+
+            return SuccessMsg("",result);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            return ErrorMsg("3000", ex.getMessage());
+
+        }
+    }
+
+
+
 }

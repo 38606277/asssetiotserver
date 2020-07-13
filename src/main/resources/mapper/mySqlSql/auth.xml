@@ -112,4 +112,33 @@
             on a.role_id=role.role_id
         </if>
     </select>
+
+    <select id="getAuthByAuthType" resultType="Map" parameterType="Map">
+        SELECT
+            fa.role_id,
+            fa.func_id
+        FROM
+         fnd_auth fa
+        WHERE
+            fa.auth_type = #{auth_type}
+            AND fa.role_id = ${role_id}
+    </select>
+    <select id="getAuthByUserId" resultType="Map" parameterType="Map">
+        SELECT
+            fa.auth_type,
+            GROUP_CONCAT( fa.func_id )
+        FROM
+            fnd_user fu
+            LEFT JOIN fnd_user_role fur ON fu._id = fur.user_id
+            LEFT JOIN fnd_auth fa ON fur.role_id = fa.role_id
+            LEFT JOIN fnd_authtype fat ON fa.auth_type = fat.authtype_name
+        WHERE
+            fu._id = #{user_id}
+            AND fat.authtype_class = 'data'
+        GROUP BY
+            fa.auth_type
+    </select>
+
+
+
 </mapper>
