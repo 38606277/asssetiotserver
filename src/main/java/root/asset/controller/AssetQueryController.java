@@ -8,6 +8,7 @@ import root.report.common.DbSession;
 import root.report.common.RO;
 
 import java.io.UnsupportedEncodingException;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -21,6 +22,18 @@ public class AssetQueryController extends RO {
     @RequestMapping(value = "/getAssetNum", produces = "text/plain;charset=UTF-8")
     public String getAssetNum(@RequestBody JSONObject pJson) throws UnsupportedEncodingException {
         Map<String, Object>  resultMap = DbSession.selectOne("eam_asset_query.getAssetNum", pJson);
+
+        /**
+         * 获取资产原值
+         * */
+        String assetCost =DbSession.selectOne("eam_asset_query.getAssetCost", null);
+        resultMap.put("assetCost",assetCost);
+        /**
+         * 获取资产条数
+         * */
+        String assetNumber =DbSession.selectOne("eam_asset_query.getAssetNumber", null);
+
+        resultMap.put("assetNumber",assetNumber);
         return SuccessMsg("", resultMap);
     }
 
@@ -49,6 +62,20 @@ public class AssetQueryController extends RO {
         return SuccessMsg("", resutlList);
     }
 
+    /**
+     * 获取资产异常统计
+     * */
+    @RequestMapping(value = "/getAssetAlarmNum", produces = "text/plain;charset=UTF-8")
+    public String getAssetAlarmNum(@RequestBody JSONObject pJson) throws UnsupportedEncodingException {
+        Map<String, Object> map=new HashMap<>();
+        String gatewayNumber =DbSession.selectOne("eam_asset_query.getGatewayNumber", null);
+        String assetAlarmNumber =DbSession.selectOne("eam_asset_query.getAssetAlarmNumber", null);
+        String pendAssetAlarmNumber =DbSession.selectOne("eam_asset_query.getPendAssetAlarmNumber", null);
+        map.put("gatewayNumber",gatewayNumber);
+        map.put("assetAlarmNumber",assetAlarmNumber);
+        map.put("pendAssetAlarmNumber",pendAssetAlarmNumber);
+        return SuccessMsg("", map);
+    }
 
 
 }

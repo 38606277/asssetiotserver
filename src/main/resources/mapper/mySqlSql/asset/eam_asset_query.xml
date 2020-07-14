@@ -183,5 +183,29 @@
 		and aa.alarm_type='丢失'
 	</select>
 
+	<!--	获取资产原值-->
+	<select id="getAssetCost"  resultType="java.lang.String" parameterType="Map">
+		SELECT cast(sum(ea.cost) AS DECIMAL (19, 2)) AS cost FROM eam_asset ea
+	</select>
+	<!--	获取资产条数-->
+	<select id="getAssetNumber"  resultType="java.lang.String" parameterType="Map">
+		SELECT count(1) AS num FROM eam_asset ea
+	</select>
+	<!--	获取资产异常条数-->
+	<select id="getAssetAlarmNumber" resultType="java.lang.String" parameterType="Map">
+		SELECT	count(ea.asset_id) AS num FROM	eam_asset_alarm aa,eam_asset ea
+		WHERE aa.asset_id = ea.asset_id and aa.`status`=0
+	</select>
+	<!--	获取网关异常条数-->
+	<select id="getGatewayNumber" resultType="java.lang.String" parameterType="Map">
+		SELECT	count(eg.gateway_id) AS num FROM eam_gateway eg,eam_gateway_status egs
+		where eg.gateway_id=egs.gateway_id and egs.`status`=0
+	</select>
+	<!--	获取网关异常条数-->
+	<select id="getPendAssetAlarmNumber" resultType="java.lang.String" parameterType="Map">
+		SELECT	count(eg.gateway_id) AS num FROM eam_gateway eg,eam_gateway_status egs
+		where eg.gateway_id=egs.gateway_id and egs.`status`=1
+	</select>
+
 
 </mapper>
