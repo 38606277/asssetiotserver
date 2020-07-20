@@ -207,5 +207,11 @@
 		where eg.gateway_id=egs.gateway_id and egs.`status`=1
 	</select>
 
+	<select id="getAssetTypeNum" resultType="Map" parameterType="Map">
+		SELECT substring_index(substring_index(substring_index(substring_index(ea.asset_class,'.', -2), '.', 1),'-',2),'-',-1) as assetclass
+ 		,COUNT(ea.asset_id) AS total from eam_asset ea
+ 		GROUP BY substring_index(substring_index(substring_index(substring_index(ea.asset_class,'.', -2), '.', 1),'-',2),'-',-1);
+
+	</select>
 
 </mapper>
