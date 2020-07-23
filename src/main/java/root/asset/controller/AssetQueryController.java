@@ -34,6 +34,11 @@ public class AssetQueryController extends RO {
         String assetNumber =DbSession.selectOne("eam_asset_query.getAssetNumber", null);
 
         resultMap.put("assetNumber",assetNumber);
+        String baseStationNum =DbSession.selectOne("eam_asset_query.getBaseStationNum", null);
+
+        resultMap.put("baseStationNum",baseStationNum);
+
+
         return SuccessMsg("", resultMap);
     }
 
@@ -101,4 +106,19 @@ public class AssetQueryController extends RO {
         return SuccessMsg("", map);
     }
 
+
+    /**
+     * 获取资产类别统计
+     * */
+    @RequestMapping(value = "/getNetTypeNum", produces = "text/plain;charset=UTF-8")
+    public String getNetTypeNum(@RequestBody JSONObject pJson) throws UnsupportedEncodingException {
+        List<Map<String, Object>> resutlList =DbSession.selectList("eam_asset_query.getNetTypeNum", pJson);
+        return SuccessMsg("", resutlList);
+    }
+
+    @RequestMapping(value = "/getBaseStationNum", produces = "text/plain;charset=UTF-8")
+    public String getBaseStationNum(@RequestBody JSONObject pJson) throws UnsupportedEncodingException {
+        Map<String, Object> resutlList =DbSession.selectOne("eam_asset_query.getBaseStationNum", pJson);
+        return SuccessMsg("", resutlList);
+    }
 }

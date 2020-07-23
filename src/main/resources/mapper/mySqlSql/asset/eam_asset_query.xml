@@ -213,5 +213,37 @@
  		GROUP BY substring_index(substring_index(substring_index(substring_index(ea.asset_class,'.', -2), '.', 1),'-',2),'-',-1);
 
 	</select>
+	<select id="getNetTypeNum" resultType="Map" parameterType="Map">
+		SELECT
+		CASE
+
+		WHEN
+		t.class2 = '02-01' THEN
+		'2G'
+		WHEN t.class2 = '02-02' THEN
+		'3G' ELSE '4G'
+		END name,
+		t.count_class2 value
+		FROM
+		(
+		SELECT
+		SUBSTRING_INDEX( SUBSTRING_INDEX( SUBSTRING_INDEX( class_code, '.',- 2 ), '.', 1 ), '-', 2 ) class2,
+		count( 1 ) count_class2
+		FROM
+		eam_asset ea
+		GROUP BY
+		SUBSTRING_INDEX( SUBSTRING_INDEX( SUBSTRING_INDEX( class_code, '.',- 2 ), '.', 1 ), '-', 2 )
+		) t
+		WHERE
+		t.class2 IN ( '02-01', '02-02', '02-03' )
+	</select>
+
+	<select id="getBaseStationNum" resultType="java.lang.String" parameterType="Map">
+		SELECT
+		count( 1 ) AS baseStationNum
+		FROM
+		( SELECT ea.base_station_code FROM eam_asset ea GROUP BY ea.base_station_code ) a
+	</select>
+
 
 </mapper>
