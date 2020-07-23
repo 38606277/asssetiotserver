@@ -100,5 +100,19 @@ public class AssetQueryController extends RO {
         map.put("typeNum",typeNum);
         return SuccessMsg("", map);
     }
+    /**
+     * 获取资产类别统计
+     * */
+    @RequestMapping(value = "/getAssetJZType", produces = "text/plain;charset=UTF-8")
+    public String getAssetJZType(@RequestBody JSONObject pJson) throws UnsupportedEncodingException {
+        Map<String, Object> map=new HashMap<>();
+        List<Map<String, Object>> list =DbSession.selectList("eam_asset_query.getAssetJZType", null);
+//        String typeName="",typeNum="";
+//        for(int i=0;i<list.size();i++){
+//            typeNum = list.get(i).get("total");
+//        }
+//        map.put("typeNum",list);
+        return SuccessMsg("", list);
+    }
 
 }
