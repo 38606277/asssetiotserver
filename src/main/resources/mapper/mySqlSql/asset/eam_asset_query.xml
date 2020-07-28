@@ -247,9 +247,12 @@
 	</select>
 
 	<select id="getAssetTypeNum" resultType="Map" parameterType="Map">
-		SELECT c.`类名称` as assetclass
- 		,COUNT(ea.asset_id) AS total from eam_asset ea INNER JOIN eam_asset_class c on ea.class_code=c.class_code
- 		GROUP BY ea.class_code;
+		SELECT c.`项名称` as assetclass
+		   ,COUNT(ea.asset_id) AS total from eam_asset ea INNER JOIN eam_asset_class c on substring_index(ea.class_code,'.', -2)=c.`资产目录编码`
+		GROUP BY c.`项名称`;
+-- 		SELECT c.`类名称` as assetclass
+--  		,COUNT(ea.asset_id) AS total from eam_asset ea INNER JOIN eam_asset_class c on ea.class_code=c.class_code
+--  		GROUP BY ea.class_code;
 -- 		SELECT substring_index(substring_index(substring_index(substring_index(ea.class_code,'.', -2), '.', 1),'-',2),'-',-1) as assetclass
 --  		,COUNT(ea.asset_id) AS total from eam_asset ea
 --  		GROUP BY substring_index(substring_index(substring_index(substring_index(ea.class_code,'.', -2), '.', 1),'-',2),'-',-1);
