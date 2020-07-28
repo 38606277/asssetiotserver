@@ -285,4 +285,10 @@
 	</select>
 
 
+	<select id="getAssetJZType" resultType="Map" parameterType="Map">
+		select count(1) as total from eam_asset ea where  locate('2G无线设备', ea.asset_class) UNION
+		select count(1) as total  from eam_asset ea where  locate('TD-SCDMA无线设备', ea.asset_class) UNION
+		select count(1) as total  from eam_asset ea where  locate('TD-LTE无线设备', ea.asset_class)
+	</select>
+
 </mapper>
