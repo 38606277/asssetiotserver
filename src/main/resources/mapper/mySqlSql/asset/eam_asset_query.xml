@@ -85,88 +85,127 @@
 		FROM
 		eam_asset
 	</select>
+<!--	<select id="getAssetCube1" resultType="java.util.LinkedHashMap" parameterType="Map">-->
+<!--		SELECT-->
+<!--		eam_asset.iot_num AS `物联网标签号`,-->
+<!--		eam_asset.asset_tag AS `资产标签号`,-->
+<!--		eam_asset.asset_name AS `资产名称`,-->
+<!--		eam_asset.asset_type AS `资产种类`,-->
+<!--		eam_asset.class_code AS `类别编码`,-->
+<!--		eam_asset.asset_class AS `资产类别`,-->
+<!--		eam_asset.productor AS `生产厂商`,-->
+<!--		eam_asset.supplier AS `供应商`,-->
+<!--		eam_asset.model AS `规格型号`,-->
+<!--		eam_asset.`序列号`,-->
+<!--		eam_asset.asset_num 资产编号,-->
+<!--		eam_asset.`应用领域编码`,-->
+<!--		eam_asset.`应用领域名称`,-->
+<!--		eam_asset.lifeInMonth AS `折旧剩余月数`,-->
+<!--		eam_asset.lifeInYears AS `折旧年限`,-->
+<!--		eam_asset.`是否重要资产`,-->
+<!--		eam_asset.`备注`,-->
+<!--		eam_asset.`erp创建时间`,-->
+<!--		eam_asset.amount AS `数量`,-->
+<!--		eam_asset.`计量单位`,-->
+<!--		eam_asset.`传输线路资源量`,-->
+<!--		eam_asset.`传输线路资源量单位`,-->
+<!--		eam_asset.`资产状态`,-->
+<!--		eam_asset.`资产子状态`,-->
+<!--		eam_asset.dutyCode AS `责任人编码`,-->
+<!--		eam_asset.dutyName AS `责任人名称`,-->
+<!--		eam_asset.userCode AS `使用人编码`,-->
+<!--		eam_asset.userName AS `使用人名称`,-->
+<!--		eam_asset.`责任部门编码`,-->
+<!--		eam_asset.dutyDeptName AS `责任部门`,-->
+<!--		eam_asset.`实物管理部门编码`,-->
+<!--		eam_asset.`实物管理部门`,-->
+<!--		eam_asset.addressCode 资产地点编码,-->
+<!--		eam_asset.addressName 资产地点,-->
+<!--		eam_asset.base_station_code 综资站点编码,-->
+<!--		eam_asset.base_station_name 综资站点名称,-->
+<!--		eam_asset.`对应综资站点状态`,-->
+<!--		eam_asset.`基站/营业厅/仓库编码`,-->
+<!--		eam_asset.`基站/营业厅/仓库`,-->
+<!--		eam_asset.`责任人确认`,-->
+<!--		eam_asset.`使用人确认`,-->
+<!--		eam_asset.`是否共享设备`,-->
+<!--		eam_asset.`是否共建设备`,-->
+<!--		eam_asset.startDate 启用日期,-->
+<!--		eam_asset.`合同编号`,-->
+<!--		eam_asset.`租金`,-->
+<!--		eam_asset.`起租日期`,-->
+<!--		eam_asset.`止租日期/报废日期`,-->
+<!--		eam_asset.`老资产标签号`,-->
+<!--		eam_asset.`资产使用状态`,-->
+<!--		eam_asset.`是否机密`,-->
+<!--		eam_asset.`购置日期`,-->
+<!--		eam_asset.cost 原值,-->
+<!--		eam_asset.netValue 净值,-->
+<!--		eam_asset.netQuota 净额,-->
+<!--		eam_asset.residualValue 残值,-->
+<!--		eam_asset.periodDepreciation 本期折旧额,-->
+<!--		eam_asset.yearDepreciation 本年折旧额,-->
+<!--		eam_asset.cumulativeDepreciation 累计折旧额,-->
+<!--		eam_asset.periodImpairment 本期减值准备,-->
+<!--		eam_asset.yearImpairment 本年减值准备,-->
+<!--		eam_asset.cumulativeImpairment 累计减值准备,-->
+<!--		eam_asset.`网络元素编码`,-->
+<!--		eam_asset.`网络元素名称`,-->
+<!--		eam_asset.`投资分类编码`,-->
+<!--		eam_asset.`投资分类名称`,-->
+<!--		eam_asset.`业务平台编码`,-->
+<!--		eam_asset.`业务平台名称`,-->
+<!--		eam_asset.`网络层次编码`,-->
+<!--		eam_asset.`网络层次名称`,-->
+<!--		eam_asset.`支撑网设备类型编码`,-->
+<!--		eam_asset.`支撑网设备类型名称`,-->
+<!--		eam_asset.`项目编号`,-->
+<!--		eam_asset.`项目名称`,-->
+<!--		eam_asset.`项目小类`,-->
+<!--		eam_asset.`是否抵扣`,-->
+<!--		eam_asset.`原规格型号`,-->
+<!--		eam_asset.image-->
+<!--		FROM-->
+<!--		eam_asset-->
+<!--	</select>-->
 	<select id="getAssetCube1" resultType="java.util.LinkedHashMap" parameterType="Map">
 		SELECT
-		eam_asset.iot_num AS `物联网标签号`,
-		eam_asset.asset_tag AS `资产标签号`,
-		eam_asset.asset_name AS `资产名称`,
-		eam_asset.asset_type AS `资产种类`,
-		eam_asset.class_code AS `类别编码`,
-		eam_asset.asset_class AS `资产类别`,
-		eam_asset.productor AS `生产厂商`,
-		eam_asset.supplier AS `供应商`,
-		eam_asset.model AS `规格型号`,
-		eam_asset.`序列号`,
-		eam_asset.asset_num 资产编号,
-		eam_asset.`应用领域编码`,
-		eam_asset.`应用领域名称`,
-		eam_asset.lifeInMonth AS `折旧剩余月数`,
-		eam_asset.lifeInYears AS `折旧年限`,
-		eam_asset.`是否重要资产`,
-		eam_asset.`备注`,
-		eam_asset.`erp创建时间`,
-		eam_asset.amount AS `数量`,
-		eam_asset.`计量单位`,
-		eam_asset.`传输线路资源量`,
-		eam_asset.`传输线路资源量单位`,
-		eam_asset.`资产状态`,
-		eam_asset.`资产子状态`,
-		eam_asset.dutyCode AS `责任人编码`,
-		eam_asset.dutyName AS `责任人名称`,
-		eam_asset.userCode AS `使用人编码`,
-		eam_asset.userName AS `使用人名称`,
-		eam_asset.`责任部门编码`,
-		eam_asset.dutyDeptName AS `责任部门`,
-		eam_asset.`实物管理部门编码`,
-		eam_asset.`实物管理部门`,
-		eam_asset.addressCode 资产地点编码,
-		eam_asset.addressName 资产地点,
-		eam_asset.base_station_code 综资站点编码,
-		eam_asset.base_station_name 综资站点名称,
-		eam_asset.`对应综资站点状态`,
-		eam_asset.`基站/营业厅/仓库编码`,
-		eam_asset.`基站/营业厅/仓库`,
-		eam_asset.`责任人确认`,
-		eam_asset.`使用人确认`,
-		eam_asset.`是否共享设备`,
-		eam_asset.`是否共建设备`,
-		eam_asset.startDate 启用日期,
-		eam_asset.`合同编号`,
-		eam_asset.`租金`,
-		eam_asset.`起租日期`,
-		eam_asset.`止租日期/报废日期`,
-		eam_asset.`老资产标签号`,
-		eam_asset.`资产使用状态`,
-		eam_asset.`是否机密`,
-		eam_asset.`购置日期`,
-		eam_asset.cost 原值,
-		eam_asset.netValue 净值,
-		eam_asset.netQuota 净额,
-		eam_asset.residualValue 残值,
-		eam_asset.periodDepreciation 本期折旧额,
-		eam_asset.yearDepreciation 本年折旧额,
-		eam_asset.cumulativeDepreciation 累计折旧额,
-		eam_asset.periodImpairment 本期减值准备,
-		eam_asset.yearImpairment 本年减值准备,
-		eam_asset.cumulativeImpairment 累计减值准备,
-		eam_asset.`网络元素编码`,
-		eam_asset.`网络元素名称`,
-		eam_asset.`投资分类编码`,
-		eam_asset.`投资分类名称`,
-		eam_asset.`业务平台编码`,
-		eam_asset.`业务平台名称`,
-		eam_asset.`网络层次编码`,
-		eam_asset.`网络层次名称`,
-		eam_asset.`支撑网设备类型编码`,
-		eam_asset.`支撑网设备类型名称`,
-		eam_asset.`项目编号`,
-		eam_asset.`项目名称`,
-		eam_asset.`项目小类`,
-		eam_asset.`是否抵扣`,
-		eam_asset.`原规格型号`,
-		eam_asset.image
+		eam_base_station_cube.`物理站`,
+		eam_base_station_cube.`地市`,
+		eam_base_station_cube.`区县`,
+		eam_base_station_cube.`网络类型`,
+		eam_base_station_cube.`基站类型`,
+		eam_base_station_cube.`行政属性`,
+		eam_base_station_cube.`覆盖场景`,
+		eam_base_station_cube.`场景`,
+		eam_base_station_cube.`基站产权`,
+		eam_base_station_cube.`1-5月累计通信客户（万）`,
+		eam_base_station_cube.`1-5月累计活跃客户(万)`,
+		eam_base_station_cube.`常驻客户数`,
+		eam_base_station_cube.`价值分层（0.10元]客户数`,
+		eam_base_station_cube.`价值分层（10.30元]客户数`,
+		eam_base_station_cube.`客户价值分层（30.50元]客户数`,
+		eam_base_station_cube.`客户价值分层（50.80元]客户数`,
+		eam_base_station_cube.`客户价值分层（80.100元]客户数`,
+		eam_base_station_cube.`客户价值分层（100.120元]客户数`,
+		eam_base_station_cube.`客户价值分层（120.180元]客户数`,
+		eam_base_station_cube.`价值分层180元以上客户数`,
+		eam_base_station_cube.`1-5月累计语音客户（万）`,
+		eam_base_station_cube.`1-5月累计流量客户（万）`,
+		eam_base_station_cube.`语音业务量（万分钟）`,
+		eam_base_station_cube.`上网流量（万M）`,
+		eam_base_station_cube.`语音收入`,
+		eam_base_station_cube.`流量收入`,
+		eam_base_station_cube.`收入合计`,
+		eam_base_station_cube.`基站折旧`,
+		eam_base_station_cube.`维修费`,
+		eam_base_station_cube.`电费`,
+		eam_base_station_cube.`基站租费`,
+		eam_base_station_cube.`铁塔服务费`,
+		eam_base_station_cube.`成本合计`,
+		eam_base_station_cube.`利润`
 		FROM
-		eam_asset
+		eam_base_station_cube
 	</select>
 	<select id="getAssetAlarm" resultType="java.util.LinkedHashMap" parameterType="Map">
 		SELECT
