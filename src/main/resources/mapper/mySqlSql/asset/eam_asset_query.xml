@@ -294,4 +294,14 @@
 		select count(1) as total  from eam_asset ea where  locate('TD-LTE无线设备', ea.asset_class)
 	</select>
 
+	<select id="getAssetFB" resultType="Map" parameterType="Map">
+		SELECT
+		 cast(sum(ea.cost) AS DECIMAL (19, 2)) as cost,ebs.`场景` as cj,COUNT(ea.asset_id) as total
+		FROM
+		 eam_base_station_cube ebs,
+		 eam_asset ea
+		WHERE
+		 ebs.`物理站` = ea.base_station_name
+		GROUP BY ebs.`场景`
+	</select>
 </mapper>

@@ -141,4 +141,32 @@ public class AssetQueryController extends RO {
         Map<String, Object> resutlList =DbSession.selectOne("eam_asset_query.getBaseStationNum", pJson);
         return SuccessMsg("", resutlList);
     }
+
+    /**
+     * 获取资产类别统计
+     * */
+    @RequestMapping(value = "/getAssetFB", produces = "text/plain;charset=UTF-8")
+    public String getAssetFB(@RequestBody JSONObject pJson) throws UnsupportedEncodingException {
+        List<Map<String, Object>> resutlList =DbSession.selectList("eam_asset_query.getAssetFB", pJson);
+        Map<String, Object> map=new HashMap<>();
+        String cost="",cj="",total="";
+        for(int i=0;i<resutlList.size();i++){
+            cost = cost +"," + resutlList.get(i).get("cost");
+            cj = cj +"," + resutlList.get(i).get("cj");
+            total = total +"," + resutlList.get(i).get("total");
+        }
+        if(!"".equals(cost)){
+            cost = cost.substring(1);
+        }
+        if(!"".equals(cj)){
+            cj = cj.substring(1);
+        }
+        if(!"".equals(total)){
+            total = total.substring(1);
+        }
+        map.put("cost",cost);
+        map.put("cj",cj);
+        map.put("total",total);
+        return SuccessMsg("", map);
+    }
 }
