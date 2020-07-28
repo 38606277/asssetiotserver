@@ -14,6 +14,8 @@ import root.report.db.DbFactory;
 import root.report.service.FunctionService;
 import root.report.service.QueryService;
 import root.report.sys.SysContext;
+import root.report.util.MenuNode;
+import root.report.util.MenuTreeBuilder;
 import root.report.util.Node;
 import root.report.util.TreeBuilder;
 
@@ -501,26 +503,33 @@ public class AuthController extends RO {
         JSONObject obj = JSONObject.parseObject(pJson);
         Map m=new HashMap<>();
         int userId=obj.getInteger("userId");
-        List<Map<String, Object>> dataList=null;
+        List<MenuNode>  result =null;
+
         if(userId==1){
-            m.put("pid", 0);
-            dataList = DbFactory.Open(DbFactory.FORM).selectList("auth.getMenuAll", m);
-            for (int i = 0; i < dataList.size(); i++) {
-                m.put("pid", dataList.get(i).get("func_id"));
-                List<Map<String, Object>> subList = DbFactory.Open(DbFactory.FORM).selectList("auth.getMenuAll", m);
-                dataList.get(i).put("children", subList);
-            }
+            List<MenuNode> nodes= DbFactory.Open(DbFactory.FORM).selectList("auth.getMenuAllNew", m);
+            // 拼装树形json字符串
+             result= new MenuTreeBuilder().buildTree(nodes);
+//            m.put("pid", 0);
+//            dataList = DbFactory.Open(DbFactory.FORM).selectList("auth.getMenuAll", m);
+//            for (int i = 0; i < dataList.size(); i++) {
+//                m.put("pid", dataList.get(i).get("func_id"));
+//                List<Map<String, Object>> subList = DbFactory.Open(DbFactory.FORM).selectList("auth.getMenuAll", m);
+//                dataList.get(i).put("children", subList);
+//            }
         }else {
             m.put("userId", userId);
-            m.put("pid", 0);
-            dataList = DbFactory.Open(DbFactory.FORM).selectList("auth.getMenuByUserId", m);
-            for (int i = 0; i < dataList.size(); i++) {
-                m.put("pid", dataList.get(i).get("func_id"));
-                List<Map<String, Object>> subList = DbFactory.Open(DbFactory.FORM).selectList("auth.getMenuByUserId", m);
-                dataList.get(i).put("children", subList);
-            }
+            List<MenuNode> nodes= DbFactory.Open(DbFactory.FORM).selectList("auth.getMenuByUserIdNew", m);
+            // 拼装树形json字符串
+            result= new MenuTreeBuilder().buildTree(nodes);
+//            m.put("pid", 0);
+//            dataList = DbFactory.Open(DbFactory.FORM).selectList("auth.getMenuByUserId", m);
+//            for (int i = 0; i < dataList.size(); i++) {
+//                m.put("pid", dataList.get(i).get("func_id"));
+//                List<Map<String, Object>> subList = DbFactory.Open(DbFactory.FORM).selectList("auth.getMenuByUserId", m);
+//                dataList.get(i).put("children", subList);
+//            }
         }
-        return SuccessMsg("",dataList);
+        return SuccessMsg("",result);
     }
     //根据数据查询获取数据classId
     @RequestMapping(value="/getClassId",produces = "text/plain;charset=UTF-8")
