@@ -67,14 +67,28 @@
 
 	<select id="listEamGatewayByMap" resultType="Map" parameterType="Map">
 		SELECT
-		*, (
+		e.*, (
 		SELECT
-		count(eam_gateway_asset.asset_id)
+		count(a.asset_id)
 		FROM
-		eam_gateway_asset
+		eam_gateway_asset a
 		WHERE
-		e.gateway_id = eam_gateway_asset.gateway_id
-		) assetCount
+		e.gateway_id = a.gateway_id
+		) assetCount ,
+		(SELECT
+		sum(b.cost)
+		FROM
+		eam_gateway_asset a
+		LEFT JOIN eam_asset b ON a.asset_id = b.asset_id
+		WHERE
+		e.gateway_id = a.gateway_id) cost,
+		(SELECT
+		sum(b.netQuota)
+		FROM
+		eam_gateway_asset a
+		LEFT JOIN eam_asset b ON a.asset_id = b.asset_id
+		WHERE
+		e.gateway_id = a.gateway_id) netQuota
 		FROM
 		eam_gateway e
 		WHERE
@@ -85,12 +99,26 @@
 			SELECT
 			eg.*, (
 			SELECT
-			count(eam_gateway_asset.asset_id)
+			count(a.asset_id)
 			FROM
-			eam_gateway_asset
+			eam_gateway_asset a
 			WHERE
-			eg.gateway_id = eam_gateway_asset.gateway_id
-			) assetCount
+			eg.gateway_id = a.gateway_id
+			) assetCount ,
+			(SELECT
+			sum(b.cost)
+			FROM
+			eam_gateway_asset a
+			LEFT JOIN eam_asset b ON a.asset_id = b.asset_id
+			WHERE
+			eg.gateway_id = a.gateway_id) cost,
+			(SELECT
+			sum(b.netQuota)
+			FROM
+			eam_gateway_asset a
+			LEFT JOIN eam_asset b ON a.asset_id = b.asset_id
+			WHERE
+			eg.gateway_id = a.gateway_id) netQuota
 			FROM
 			eam_asset ea
 			LEFT JOIN eam_gateway_asset ega ON ea.asset_id = ega.asset_id
