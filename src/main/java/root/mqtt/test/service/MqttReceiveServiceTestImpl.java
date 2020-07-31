@@ -1,14 +1,13 @@
-package root.mqtt.service;
+package root.mqtt.test.service;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
-import com.google.gson.JsonObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import root.mqtt.bean.*;
+import root.mqtt.service.MqttReceiveService;
 import root.mqtt.util.HexUtils;
 import root.report.common.DbSession;
-import root.report.db.DbFactory;
 import root.report.service.webchat.HttpRequestUtil;
 import root.report.temperature.http;
 
@@ -21,8 +20,8 @@ import java.util.*;
  * @author cannon
  *
  */
-@Service("mqttReceiveService")
-public class MqttReceiveServiceImpl implements MqttReceiveService{
+@Service("mqttReceiveTestService")
+public class MqttReceiveServiceTestImpl implements MqttReceiveService {
 
 	@Autowired
 	private HttpRequestUtil httpRequestUtil;
@@ -30,8 +29,8 @@ public class MqttReceiveServiceImpl implements MqttReceiveService{
 	@Override
 	public void handlerMqttMessage(String topic, byte[] payload,long timestamp) {
 		// TODO Auto-generated method stub
-	
-		System.out.println("MqttReceiveServiceImpl - topic：" + topic);
+
+		System.out.println("mqttReceiveTestService - topic：" + topic);
 		
 		String[] data  = topic.substring(1).split("/");
 		
@@ -57,13 +56,13 @@ public class MqttReceiveServiceImpl implements MqttReceiveService{
 				map.put("electricity",mqttBtMessage.getElectricity());
 				map.put("signalIntensity",mqttBtMessage.getSignalIntensity());
 
-				int count = DbSession.selectOne("eam_asset_status.queryCountByTagId",map);
+				int count = DbSession.selectOne("eam_asset_status_test.queryCountByTagId",map);
 				if(0 < count){
 					//更新
-					DbSession.update("eam_asset_status.updateEamAssetStatus",map);
+					DbSession.update("eam_asset_status_test.updateEamAssetStatus",map);
 				}else{
 					//添加
-					DbSession.insert("eam_asset_status.addEamAssetStatus",map);
+					DbSession.insert("eam_asset_status_test.addEamAssetStatus",map);
 				}
 				//buildAlarm(String.valueOf(gatewayId),mqttBtMessage);
 			}
@@ -132,13 +131,13 @@ public class MqttReceiveServiceImpl implements MqttReceiveService{
 
 			dataMap.put("receive_time",receiveTime);
 
-			int count = DbSession.selectOne("eam_gateway_status.queryCountByGatewayId",dataMap);
+			int count = DbSession.selectOne("eam_gateway_status_test.queryCountByGatewayId",dataMap);
 			if(0 < count){
 				//更新
-				DbSession.update("eam_gateway_status.updateEamGatewayStatus",dataMap);
+				DbSession.update("eam_gateway_status_test.updateEamGatewayStatus",dataMap);
 			}else{
 				//添加
-				DbSession.insert("eam_gateway_status.addEamGatewayStatus",dataMap);
+				DbSession.insert("eam_gateway_status_test.addEamGatewayStatus",dataMap);
 			}
 
 			System.out.println(mqttUpdateMessage.toString());
@@ -207,49 +206,4 @@ public class MqttReceiveServiceImpl implements MqttReceiveService{
 
 		return label;
 	}
-
-	/**
-	 * 构建报警记录
-	 */
-	private void buildAlarm(String gatewayId,MQTTBtMessage mqttBtMessage){
-		//获取资产数据
-		Map result =DbSession.selectOne("eam_asset.listEamAssetByIotNum",new HashMap<String,Object>(){
-			{
-				put("iot_num",mqttBtMessage.getCode());
-			}
-		});
-		if(result==null || result.size() == 0){
-			return ;
-		}
-
-
-		/**
-		 * 电压警告
-		 */
-		if(mqttBtMessage.getElectricity()< 50){ //电压低
-			HashMap map = new HashMap<String,Object>();
-			map.put("alarm_num","DYD" + System.currentTimeMillis());
-			map.put("asset_id",result.get("asset_id"));
-			map.put("alarm_type","电压低");
-
-			//添加
-			DbSession.insert("eam_alarm.addEamAlarm",map);
-		}
-
-		/**
-		 * 距离信号警告
-		 */
-		if(50 < mqttBtMessage.getSignalIntensity()){
-			HashMap map = new HashMap<String,Object>();
-			map.put("alarm_num","WY" + System.currentTimeMillis());
-			map.put("asset_id",result.get("asset_id"));
-			map.put("alarm_type","位移");
-
-			//添加
-			DbSession.insert("eam_alarm.addEamAlarm",map);
-		}
-	}
-
-
-
 }

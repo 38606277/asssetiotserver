@@ -4,6 +4,7 @@ import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.stereotype.Component;
 import root.mqtt.configure.MyMqttPahoMessageDrivenChannelAdapter;
+import root.mqtt.test.configure.MyMqttPahoMessageDrivenChannelTestAdapter;
 import root.report.db.DbFactory;
 import root.report.service.NLPService;
 
@@ -20,6 +21,9 @@ public class MyApplicationRunner implements ApplicationRunner {
     @Resource
     private MyMqttPahoMessageDrivenChannelAdapter myMqttPahoMessageDrivenChannelAdapter;
 
+    @Resource
+    private MyMqttPahoMessageDrivenChannelTestAdapter myMqttPahoMessageDrivenChannelTestAdapter;
+
     @Override
     public void run(ApplicationArguments var1) throws Exception {
         System.out.println("reportServer启动成功!");
@@ -34,7 +38,17 @@ public class MyApplicationRunner implements ApplicationRunner {
             ex.printStackTrace();
         }
 
-        //初始化网关主题，获取数据库中的网关列表
+        //初始化网关主题
+        initTopic();
+
+        //初始化测试网关主题
+        initTopicTest();
+    }
+
+    /**
+     * 初始化网关主题
+     */
+    private void initTopic(){
         List<Map<String,Object>> eamGatewayList = DbFactory.Open(DbFactory.FORM).selectList("eam_gateway.listEamGateway");
         if(eamGatewayList!=null && 0 < eamGatewayList.size()){
             for(Map<String,Object> map : eamGatewayList){
@@ -43,7 +57,20 @@ public class MyApplicationRunner implements ApplicationRunner {
                 }
             }
         }
+    }
 
+    /**
+     * 初始化测试网关主题
+     */
+    private void initTopicTest(){
+        List<Map<String,Object>> eamGatewayList = DbFactory.Open(DbFactory.FORM).selectList("eam_gateway_test.listEamGateway");
+        if(eamGatewayList!=null && 0 < eamGatewayList.size()){
+            for(Map<String,Object> map : eamGatewayList){
+                if(map.containsKey("gateway_id")){
+                    myMqttPahoMessageDrivenChannelTestAdapter.addTopicByGateway(String.valueOf(map.get("gateway_id")));
+                }
+            }
+        }
     }
 
 

@@ -1,18 +1,16 @@
-package root.mqtt.configure;
+package root.mqtt.test.configure;
 
 import org.springframework.integration.mqtt.core.MqttPahoClientFactory;
 import org.springframework.integration.mqtt.inbound.MqttPahoMessageDrivenChannelAdapter;
-import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
-public class MyMqttPahoMessageDrivenChannelAdapter extends MqttPahoMessageDrivenChannelAdapter{
-	private static final String TAG = "MyMqttPahoMessageDrivenChannelAdapter";
+public class MyMqttPahoMessageDrivenChannelTestAdapter extends MqttPahoMessageDrivenChannelAdapter{
+	private static final String TAG = "MyMqttPahoMessageDrivenChannelTestAdapter";
 	private List<String> topicList = new ArrayList<>();
 
-	public MyMqttPahoMessageDrivenChannelAdapter(String clientId, MqttPahoClientFactory clientFactory, String string) {
+	public MyMqttPahoMessageDrivenChannelTestAdapter(String clientId, MqttPahoClientFactory clientFactory, String string) {
 		super(clientId, clientFactory, string);
 		// TODO Auto-generated constructor stub
 	}

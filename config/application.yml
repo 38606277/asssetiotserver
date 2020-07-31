@@ -26,6 +26,16 @@ mqtt:
   timeout: 10000
   keepalibe: 20
 
+
+mqttTest:
+    username: eam
+    password: Eam#2020
+    host: tcp://132.232.111.110:1883
+    clientinid: eamwj_test
+    topic: /init
+    timeout: 10000
+    keepalibe: 20
+
 fileDirPath: C://eam//images//
 
 durid:

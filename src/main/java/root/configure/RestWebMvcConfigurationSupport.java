@@ -9,6 +9,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.StringHttpMessageConverter;
+import org.springframework.ui.ModelMap;
 import org.springframework.web.multipart.MultipartResolver;
 import org.springframework.web.multipart.commons.CommonsMultipartResolver;
 import org.springframework.web.servlet.config.annotation.*;
@@ -16,6 +17,7 @@ import root.report.interceptor.RestInterceptor;
 
 import java.io.File;
 import java.nio.charset.Charset;
+import java.util.ArrayList;
 import java.util.List;
 
 @Configuration
@@ -27,6 +29,28 @@ public class RestWebMvcConfigurationSupport extends WebMvcConfigurationSupport {
         StringHttpMessageConverter converter = new StringHttpMessageConverter(Charset.forName("UTF-8"));
         converters.add(converter);
         FastJsonHttpMessageConverter4 fastConverter = new FastJsonHttpMessageConverter4();
+
+        //升级最新版本需加=============================================================
+        List<MediaType> supportedMediaTypes = new ArrayList<>();
+        supportedMediaTypes.add(MediaType.APPLICATION_JSON);
+        supportedMediaTypes.add(MediaType.APPLICATION_JSON_UTF8);
+        supportedMediaTypes.add(MediaType.APPLICATION_ATOM_XML);
+        supportedMediaTypes.add(MediaType.APPLICATION_FORM_URLENCODED);
+        supportedMediaTypes.add(MediaType.APPLICATION_OCTET_STREAM);
+        supportedMediaTypes.add(MediaType.APPLICATION_PDF);
+        supportedMediaTypes.add(MediaType.APPLICATION_RSS_XML);
+        supportedMediaTypes.add(MediaType.APPLICATION_XHTML_XML);
+        supportedMediaTypes.add(MediaType.APPLICATION_XML);
+        supportedMediaTypes.add(MediaType.IMAGE_GIF);
+        supportedMediaTypes.add(MediaType.IMAGE_JPEG);
+        supportedMediaTypes.add(MediaType.IMAGE_PNG);
+        supportedMediaTypes.add(MediaType.TEXT_EVENT_STREAM);
+        supportedMediaTypes.add(MediaType.TEXT_HTML);
+        supportedMediaTypes.add(MediaType.TEXT_MARKDOWN);
+        supportedMediaTypes.add(MediaType.TEXT_PLAIN);
+        supportedMediaTypes.add(MediaType.TEXT_XML);
+        fastConverter.setSupportedMediaTypes(supportedMediaTypes);
+
         FastJsonConfig fastConfig =  new FastJsonConfig();
         fastConfig.setCharset(Charset.forName("UTF-8"));
         converter.setWriteAcceptCharset(false);

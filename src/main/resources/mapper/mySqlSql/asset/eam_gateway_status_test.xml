@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="eam_gateway_status_test">
+
+
+	<insert id="addEamGatewayStatus" parameterType="Map">
+		INSERT INTO eam_gateway_status_test (
+		gateway_id,
+		lng,
+		rng,
+		address,
+		adcode,
+		longitudeLBS,
+		latitudeLBS,
+		longitudeGPS,
+		latitudeGPS,
+		wifiMac,
+		baseStationInfo,
+		electricQuantity,
+		runningTime,
+		signalIntensity,
+		satellitesCount,
+		speed,
+		orientation,
+		distancePrecision,
+		uploadInterval,
+		bluetoothInterval,
+		bluetoothWhiteList,
+		bluetoothWhiteListCount,
+		receive_time) VALUES
+		(#{gateway_id},#{lng},#{rng},#{address},#{adcode},#{longitudeLBS},#{latitudeLBS},#{longitudeGPS},#{latitudeGPS},#{wifiMac},#{baseStationInfo},#{electricQuantity},#{runningTime},#{signalIntensity},#{satellitesCount},#{speed},#{orientation},#{distancePrecision},#{uploadInterval},#{bluetoothInterval},#{bluetoothWhiteList},#{bluetoothWhiteListCount},#{receive_time})
+	</insert>
+
+	<select id="queryCountByGatewayId" resultType="int" parameterType="Map">
+		select count(1) from eam_gateway_status_test where gateway_id = #{gateway_id}
+	</select>
+
+	<select id="queryGatewayStatusByGatewayId" resultType="Map" parameterType="Map">
+		select * from eam_gateway_status_test  egs
+		LEFT JOIN sys_area sa on egs.adcode = sa.six_code and sa.level_type = 3
+		where gateway_id = #{gateway_id}
+	</select>
+	<select id="listGatewayStatus" resultType="Map" parameterType="Map">
+		SELECT
+		egs.gateway_id,
+		egs.lng,
+		egs.rng,
+		egs.receive_time,
+		egs.address,
+		egs.uploadInterval
+		FROM
+		eam_gateway_status_test egs
+	</select>
+	<select id="countGatewayStatus" resultType="int" parameterType="Map">
+		SELECT
+		count(1)
+		FROM
+		eam_gateway_status_test egs
+	</select>
+
+
+	<update id="updateEamGatewayStatus" parameterType="Map">
+		UPDATE eam_gateway_status_test
+		SET lng = #{lng},
+		rng = #{rng} ,
+		address = #{address} ,
+		adcode = #{adcode},
+		longitudeLBS = #{longitudeLBS},
+		latitudeLBS = #{latitudeLBS} ,
+		longitudeGPS = #{longitudeGPS} ,
+		latitudeGPS = #{latitudeGPS} ,
+		wifiMac = #{wifiMac} ,
+		baseStationInfo = #{baseStationInfo} ,
+		electricQuantity = #{electricQuantity} ,
+		runningTime = #{runningTime} ,
+		signalIntensity = #{signalIntensity} ,
+		satellitesCount = #{satellitesCount} ,
+		speed = #{speed} ,
+		orientation = #{orientation} ,
+		distancePrecision = #{distancePrecision} ,
+		uploadInterval = #{uploadInterval} ,
+		bluetoothInterval = #{bluetoothInterval} ,
+		bluetoothWhiteList = #{bluetoothWhiteList} ,
+		bluetoothWhiteListCount = #{bluetoothWhiteListCount} ,
+		receive_time = #{receive_time}
+		WHERE
+		gateway_id = #{gateway_id}
+	</update>
+
+</mapper>

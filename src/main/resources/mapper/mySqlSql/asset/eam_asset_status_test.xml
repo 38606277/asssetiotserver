@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="eam_asset_status_test">
+
+	<select id="getGatewayTagList" resultType="Map" parameterType="Map">
+		select * from eam_asset_status_test where gateway_id = #{gateway_id}
+	</select>
+
+
+	<insert id="addEamAssetStatus" parameterType="Map">
+		insert into eam_asset_status_test(gateway_id, tag_id,receive_time,electricity,signalIntensity) values(#{gateway_id}, #{tag_id}, #{receive_time}, #{electricity}, #{signalIntensity})
+	</insert>
+
+	<select id="queryCountByTagId" resultType="int" parameterType="Map">
+		select count(tag_id) from eam_asset_status_test where tag_id = #{tag_id}
+	</select>
+
+	<update id="updateEamAssetStatus" parameterType="Map">
+		update eam_asset_status_test set gateway_id=#{gateway_id} ,tag_id=#{tag_id},receive_time=#{receive_time} , electricity=#{electricity}, signalIntensity=#{signalIntensity} where tag_id=#{tag_id}
+	</update>
+
+	<select id="countTagNoBindGateway" resultType="int" parameterType="Map">
+		SELECT
+		count(1)
+		FROM
+		eam_asset_status_test eas
+		LEFT JOIN eam_asset ea ON eas.tag_id = ea.iot_num
+		WHERE
+		gateway_id = #{gateway_id}
+		AND ea.asset_id IS NOT NULL
+		AND NOT EXISTS ( SELECT 1 FROM eam_gateway_asset g WHERE ea.asset_id = g.asset_id )
+	</select>
+
+
+	<select id="listTagNoBindGateway" resultType="Map" parameterType="Map">
+		SELECT
+		eas.*,
+		ea.*
+		FROM
+		eam_asset_status_test eas
+		LEFT JOIN eam_asset ea ON eas.tag_id = ea.iot_num
+		WHERE
+		gateway_id = #{gateway_id}
+		AND ea.asset_id IS NOT NULL
+		AND NOT EXISTS ( SELECT 1 FROM eam_gateway_asset g WHERE ea.asset_id = g.asset_id )
+		limit #{startIndex},#{perPage}
+	</select>
+
+
+	<select id="listLostTagAlarm" resultType="Map" parameterType="Map">
+		SELECT
+		eas.*,
+		ea.*
+		FROM
+		eam_asset_status_test eas
+		LEFT JOIN eam_asset ea ON eas.tag_id = ea.iot_num
+		WHERE
+		receive_time &lt; ( NOW()- INTERVAL 2 HOUR )
+		AND ea.asset_id IS NOT NULL
+		AND EXISTS ( SELECT 1 FROM eam_gateway_asset ega WHERE ega.asset_id = ea.asset_id )
+		AND NOT EXISTS ( SELECT 1 FROM eam_asset_alarm aa where aa.asset_id = ea.asset_id and ( NOW()- INTERVAL 1 HOUR ) &lt; aa.alarm_time )
+		ORDER BY
+		receive_time DESC
+	</select>
+
+	<select id="listLowVoltageTagAlarm" resultType="Map" parameterType="Map">
+		SELECT
+		eas.*,
+		ea.*
+		FROM
+		eam_asset_status_test eas
+		LEFT JOIN eam_asset ea ON eas.tag_id = ea.iot_num
+		WHERE
+		eas.electricity &lt; '3.2'
+		AND ea.asset_id IS NOT NULL
+		AND EXISTS ( SELECT 1 FROM eam_gateway_asset ega WHERE ega.asset_id = ea.asset_id )
+		AND NOT EXISTS ( SELECT 1 FROM eam_asset_alarm aa where aa.asset_id = ea.asset_id and ( NOW()- INTERVAL 1 HOUR ) &lt; aa.alarm_time )
+		ORDER BY
+		receive_time DESC
+	</select>
+
+
+
+</mapper>
