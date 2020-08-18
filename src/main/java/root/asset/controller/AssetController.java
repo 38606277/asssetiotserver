@@ -13,6 +13,7 @@ import root.report.common.RO;
 import root.report.db.DbFactory;
 import root.report.service.AssetService;
 import root.report.util.ReadExcel;
+import root.report.util.StringUtil;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -83,6 +84,25 @@ public class AssetController extends RO {
             return ExceptionMsg(ex.getMessage());
         }
     }
+
+
+
+    @RequestMapping(value = "/getAssetByTag", produces = "text/plain;charset=UTF-8")
+    public String getAssetByTag(@RequestBody JSONObject pJson){
+        try{
+            HashMap<String,Object> map = DbSession.selectOne("eam_asset.getAssetByTag",pJson);
+            if(map!=null){
+                return  SuccessMsg("",JSON.toJSON(map));
+            }else{
+                return  ErrorMsg("2000","未获取到资产信息");
+            }
+
+
+        }catch (Exception ex){
+            return ExceptionMsg(ex.getMessage());
+        }
+    }
+
 
     /**
      * 绑定物联网标签
@@ -313,84 +333,85 @@ public class AssetController extends RO {
                     column71=null, column72=null, column73=null, column74=null, column75=null, column76=null;
             Date column17=null,column43=null,column46=null,column47=null,column51=null;
             for(Map<String, Object> obj:userList){
-                column1=obj.get("资产编号").toString();
-                column2=obj.get("物联网编号").toString();
-                column3=obj.get("资产标签号").toString();
-                column4=obj.get("资产名称").toString();
-                column5=obj.get("资产种类").toString();
-                column6=obj.get("类别编码").toString();
-                column7=obj.get("资产类别").toString();
-                column8=obj.get("生产厂商").toString();
-                column9=obj.get("供应商").toString();
-                column10=obj.get("规格型号").toString();
-                column11=obj.get("序列号")==null? null:obj.get("序列号").toString();
-                column12=obj.get("应用领域编码")==null? null:obj.get("应用领域编码").toString();
-                column13=obj.get("应用领域名称").toString();
-                column14=obj.get("折旧年限").toString();
-                column15=obj.get("是否重要资产").toString();
-                column16=obj.get("备注").toString();
+
+                column1 =StringUtil.formatNull(obj.get("资产编号"));
+                column2 =StringUtil.formatNull(obj.get("物联网编号"));
+                column3 =StringUtil.formatNull(obj.get("资产标签号"));
+                column4 =StringUtil.formatNull(obj.get("资产名称"));
+                column5 =StringUtil.formatNull(obj.get("资产种类"));
+                column6 =StringUtil.formatNull(obj.get("类别编码"));
+                column7 =StringUtil.formatNull(obj.get("资产类别"));
+                column8 =StringUtil.formatNull(obj.get("生产厂商"));
+                column9 =StringUtil.formatNull(obj.get("供应商"));
+                column10 =StringUtil.formatNull(obj.get("规格型号"));
+                column11 =StringUtil.formatNull(obj.get("序列号")==null? null:obj.get("序列号"));
+                column12 =StringUtil.formatNull(obj.get("应用领域编码")==null? null:obj.get("应用领域编码"));
+                column13 =StringUtil.formatNull(obj.get("应用领域名称"));
+                column14 =StringUtil.formatNull(obj.get("折旧年限"));
+                column15 =StringUtil.formatNull(obj.get("是否重要资产"));
+                column16 =StringUtil.formatNull(obj.get("备注"));
                 column17=dateFormat.parse(obj.get("erp创建时间").equals("")? dateFormat.format(date):obj.get("erp创建时间").toString());
-                column18=obj.get("数量").toString();
-                column19=obj.get("计量单位").toString();
-                column20=obj.get("传输线路资源量").toString();
-                column21=obj.get("传输线路资源量单位").toString();
-                column22=obj.get("资产状态").toString();
-                column23=obj.get("资产子状态").toString();
-                column24=obj.get("责任人编码").toString();
-                column25=obj.get("责任人名称").toString();
-                column26=obj.get("使用人编码").toString();
-                column27=obj.get("使用人名称").toString();
-                column28=obj.get("责任部门编码").toString();
-                column29=obj.get("责任部门").toString();
-                column30=obj.get("实物管理部门编码").toString();
-                column31=obj.get("实物管理部门").toString();
-                column32=obj.get("资产地点编码").toString();
-                column33=obj.get("资产地点").toString();
-                column34=obj.get("综资站点编码").toString();
-                column35=obj.get("综资站点名称").toString();
-                column36=obj.get("对应综资站点状态").toString();
-                column37=obj.get("基站/营业厅/仓库编码").toString();
-                column38=obj.get("基站/营业厅/仓库").toString();
-                column39=obj.get("责任人确认").toString();
-                column40=obj.get("使用人确认").toString();
-                column41=obj.get("是否共享设备").toString();
-                column42=obj.get("是否共建设备").toString();
+                column18 =StringUtil.formatNull(obj.get("数量"));
+                column19 =StringUtil.formatNull(obj.get("计量单位"));
+                column20 =StringUtil.formatNull(obj.get("传输线路资源量"));
+                column21 =StringUtil.formatNull(obj.get("传输线路资源量单位"));
+                column22 =StringUtil.formatNull(obj.get("资产状态"));
+                column23 =StringUtil.formatNull(obj.get("资产子状态"));
+                column24 =StringUtil.formatNull(obj.get("责任人编码"));
+                column25 =StringUtil.formatNull(obj.get("责任人名称"));
+                column26 =StringUtil.formatNull(obj.get("使用人编码"));
+                column27 =StringUtil.formatNull(obj.get("使用人名称"));
+                column28 =StringUtil.formatNull(obj.get("责任部门编码"));
+                column29 =StringUtil.formatNull(obj.get("责任部门"));
+                column30 =StringUtil.formatNull(obj.get("实物管理部门编码"));
+                column31 =StringUtil.formatNull(obj.get("实物管理部门"));
+                column32 =StringUtil.formatNull(obj.get("资产地点编码"));
+                column33 =StringUtil.formatNull(obj.get("资产地点"));
+                column34 =StringUtil.formatNull(obj.get("综资站点编码"));
+                column35 =StringUtil.formatNull(obj.get("综资站点名称"));
+                column36 =StringUtil.formatNull(obj.get("对应综资站点状态"));
+                column37 =StringUtil.formatNull(obj.get("基站/营业厅/仓库编码"));
+                column38 =StringUtil.formatNull(obj.get("基站/营业厅/仓库"));
+                column39 =StringUtil.formatNull(obj.get("责任人确认"));
+                column40 =StringUtil.formatNull(obj.get("使用人确认"));
+                column41 =StringUtil.formatNull(obj.get("是否共享设备"));
+                column42 =StringUtil.formatNull(obj.get("是否共建设备"));
                 column43=dateFormat.parse(obj.get("启用日期").equals("")? dateFormat.format(date):obj.get("启用日期").toString());
-                column44=obj.get("合同编号").toString();
-                column45=obj.get("租金").toString();
+                column44 =StringUtil.formatNull(obj.get("合同编号"));
+                column45 =StringUtil.formatNull(obj.get("租金"));
                 column46=dateFormat.parse(obj.get("起租日期").equals("")? dateFormat.format(date):obj.get("起租日期").toString());
                 column47=dateFormat.parse(obj.get("止租日期/报废日期").equals("")? dateFormat.format(date):obj.get("止租日期/报废日期").toString());
-                column48=obj.get("老资产标签号").toString();
-                column49=obj.get("资产使用状态").toString();
-                column50=obj.get("是否机密").toString();
+                column48 =StringUtil.formatNull(obj.get("老资产标签号"));
+                column49 =StringUtil.formatNull(obj.get("资产使用状态"));
+                column50 =StringUtil.formatNull(obj.get("是否机密"));
                 column51=dateFormat.parse(obj.get("购置日期").equals("")? dateFormat.format(date):obj.get("购置日期").toString());
-                column52=obj.get("原值").toString();
-                column53=obj.get("净值").toString();
-                column54=obj.get("净额").toString();
-                column55=obj.get("残值").toString();
-                column56=obj.get("本期折旧额").toString();
-                column57=obj.get("本年折旧额").toString();
-                column58=obj.get("累计折旧额").toString();
-                column59=obj.get("本期减值准备").toString();
-                column60=obj.get("本年减值准备").toString();
-                column61=obj.get("累计减值准备").toString();
-                column62=obj.get("网络元素编码").toString();
-                column63=obj.get("网络元素名称").toString();
-                column64=obj.get("投资分类编码").toString();
-                column65=obj.get("投资分类名称").toString();
-                column66=obj.get("业务平台编码").toString();
-                column67=obj.get("业务平台名称").toString();
-                column68=obj.get("网络层次编码").toString();
-                column69=obj.get("网络层次名称").toString();
-                column70=obj.get("支撑网设备类型编码").toString();
-                column71=obj.get("支撑网设备类型名称").toString();
-                column72=obj.get("项目编号").toString();
-                column73=obj.get("项目名称").toString();
-                column74=obj.get("项目小类").toString();
-                column75=obj.get("是否抵扣").toString();
-                column76=obj.get("原规格型号").toString();
+                column52 =StringUtil.formatNull(obj.get("原值"));
+                column53 =StringUtil.formatNull(obj.get("净值"));
+                column54 =StringUtil.formatNull(obj.get("净额"));
+                column55 =StringUtil.formatNull(obj.get("残值"));
+                column56 =StringUtil.formatNull(obj.get("本期折旧额"));
+                column57 =StringUtil.formatNull(obj.get("本年折旧额"));
+                column58 =StringUtil.formatNull(obj.get("累计折旧额"));
+                column59 =StringUtil.formatNull(obj.get("本期减值准备"));
+                column60 =StringUtil.formatNull(obj.get("本年减值准备"));
+                column61 =StringUtil.formatNull(obj.get("累计减值准备"));
+                column62 =StringUtil.formatNull(obj.get("网络元素编码"));
+                column63 =StringUtil.formatNull(obj.get("网络元素名称"));
+                column64 =StringUtil.formatNull(obj.get("投资分类编码"));
+                column65 =StringUtil.formatNull(obj.get("投资分类名称"));
+                column66 =StringUtil.formatNull(obj.get("业务平台编码"));
+                column67 =StringUtil.formatNull(obj.get("业务平台名称"));
+                column68 =StringUtil.formatNull(obj.get("网络层次编码"));
+                column69 =StringUtil.formatNull(obj.get("网络层次名称"));
+                column70 =StringUtil.formatNull(obj.get("支撑网设备类型编码"));
+                column71 =StringUtil.formatNull(obj.get("支撑网设备类型名称"));
+                column72 =StringUtil.formatNull(obj.get("项目编号"));
+                column73 =StringUtil.formatNull(obj.get("项目名称"));
+                column74 =StringUtil.formatNull(obj.get("项目小类"));
+                column75 =StringUtil.formatNull(obj.get("是否抵扣"));
+                column76 =StringUtil.formatNull(obj.get("原规格型号"));
 
-               Map mapss=new HashMap();
+                Map mapss=new HashMap();
                 mapss.put("column1",column1);
                 mapss.put("column2",column2);
                 mapss.put("column3",column3);

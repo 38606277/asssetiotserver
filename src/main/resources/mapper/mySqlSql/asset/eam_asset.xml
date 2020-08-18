@@ -183,6 +183,9 @@
 		select e.* from eam_asset e where e.asset_id = #{asset_id}
 	</select>
 
+	<select id="getAssetByTag" resultType="map" parameterType="map">
+		select e.* from eam_asset e where e.asset_tag = #{asset_tag}
+	</select>
 
 	<delete id="rmEamAsset" parameterType="int">
 		delete from eam_asset where asset_id=#{assetId}
