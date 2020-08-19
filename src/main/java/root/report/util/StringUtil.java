@@ -68,6 +68,13 @@ public class StringUtil {
 		return Boolean.FALSE;
 	}
 
+	public static String formatNull(Object object){
+		if(object == null){
+			return "";
+		}
+		return String.valueOf(object);
+	}
+
 	public static void main(String[] args) {
 		System.out.println(getLetterIntValue("ab"));
 		int size = getLetterIntValue("AA")-getLetterIntValue("A")+1;

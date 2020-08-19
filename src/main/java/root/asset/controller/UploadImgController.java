@@ -5,6 +5,7 @@ import com.alibaba.fastjson.JSONObject;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import root.report.util.UUIDUtil;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -20,7 +21,7 @@ public class UploadImgController {
     private String fileDirPath;
 
     @RequestMapping(value="/uploadAssetImg",produces = "text/plain;charset=UTF-8")
-    public String uploadAssetImg(@RequestParam("file") MultipartFile file) {
+    public String uploadAssetImg(@RequestParam("file") MultipartFile file) throws UnsupportedEncodingException {
         JSONObject jsonObject = new JSONObject();
 
         if (file.isEmpty()) {
@@ -29,14 +30,16 @@ public class UploadImgController {
 
             return JSON.toJSONString(jsonObject);
         }
-        String fileName = System.currentTimeMillis() + "_" +  file.getOriginalFilename();
-        File dest = new File(fileDirPath + fileName);
+        String fileName = file.getOriginalFilename();
+        String suffix = fileName.substring(fileName.lastIndexOf("."));
+        String newFileName = System.currentTimeMillis() + "_" + UUIDUtil.getUid()  + suffix;
+        File dest = new File(fileDirPath + newFileName);
         try {
             file.transferTo(dest);
             jsonObject.put("resultCode", "1000");
             jsonObject.put("message", "上传成功");
             jsonObject.put("data", new HashMap<String, String>(){{
-                put("fileName", fileName);
+                put("fileName", newFileName);
             }});
             System.out.println("文件路径:"  + dest.getPath());
         } catch (IOException e) {
