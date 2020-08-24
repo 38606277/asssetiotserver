@@ -169,7 +169,18 @@
 	</delete>
 
 	<update id="updateEamGateway" parameterType="Map">
-		update eam_gateway set address = #{address},lng = #{lng},rng = #{rng},address_id = #{address_id},states = #{states},image = #{image} where gateway_id=#{gateway_id}
+
+		update eam_gateway
+		<trim prefix="set" suffixOverrides=",">
+			<if test="address!=null">address=#{address},</if>
+			<if test="lng!=null">lng=#{lng},</if>
+			<if test="rng!=null">rng=#{rng},</if>
+			<if test="address_id!=null">address_id=#{address_id},</if>
+			<if test="states!=null">states=#{states},</if>
+			<if test="image!=null">image=#{image},</if>
+		</trim>
+		where gateway_id=#{gateway_id}
+
 	</update>
 
 

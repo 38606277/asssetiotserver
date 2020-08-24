@@ -107,7 +107,7 @@ public class MqttReceiveServiceImpl implements MqttReceiveService{
 
 				}
 			}
-
+			//通过经纬度获取地点信息
 			if(lng!=0 && lat!=0 && "".equals(address)){
 				String restApiUrl = "http://restapi.amap.com/v3/geocode/regeo";
 				String params = "location=" + lng + "," + lat + "&key=f741b107dc26ffed2f7e332de0f4172c&poitype=&radius=1000&extensions=base&batch=false&roadlevel=";
@@ -118,7 +118,8 @@ public class MqttReceiveServiceImpl implements MqttReceiveService{
 				if("1".equals(jsonObject.getString("status"))) {//经纬度获取地址信息成功
 					address = jsonObject.getJSONObject("regeocode").getString("formatted_address");
 					adcode = jsonObject.getJSONObject("regeocode").getJSONObject("addressComponent").getString("adcode");
-
+					if("[]".equals(address)){address = "";}
+					if("[]".equals(adcode)){adcode = "";}
 				}
 			}
 
@@ -132,6 +133,7 @@ public class MqttReceiveServiceImpl implements MqttReceiveService{
 
 			dataMap.put("receive_time",receiveTime);
 
+			//判断是否有这条状态
 			int count = DbSession.selectOne("eam_gateway_status.queryCountByGatewayId",dataMap);
 			if(0 < count){
 				//更新
@@ -139,6 +141,17 @@ public class MqttReceiveServiceImpl implements MqttReceiveService{
 			}else{
 				//添加
 				DbSession.insert("eam_gateway_status.addEamGatewayStatus",dataMap);
+			}
+
+			Map<String,Object> gatewayMap = DbSession.selectOne("eam_gateway.getGatewayById",String.valueOf(gatewayId));
+			//自动更新 ， 将最新的状态直接更新至网关实体信息中
+			if(gatewayMap!=null && "1".equals(String.valueOf(gatewayMap.get("isAuto")))){
+				Map<String, Object> areaMap = DbSession.selectOne("sys_area.getAreaBySexCode", adcode);
+				if(areaMap!=null){
+					dataMap.put("address_id",areaMap.get("code"));
+				}
+				//更新网关
+				DbFactory.Open(DbFactory.FORM).update("eam_gateway.updateEamGateway", dataMap);
 			}
 
 			System.out.println(mqttUpdateMessage.toString());
@@ -207,49 +220,5 @@ public class MqttReceiveServiceImpl implements MqttReceiveService{
 
 		return label;
 	}
-
-	/**
-	 * 构建报警记录
-	 */
-	private void buildAlarm(String gatewayId,MQTTBtMessage mqttBtMessage){
-		//获取资产数据
-		Map result =DbSession.selectOne("eam_asset.listEamAssetByIotNum",new HashMap<String,Object>(){
-			{
-				put("iot_num",mqttBtMessage.getCode());
-			}
-		});
-		if(result==null || result.size() == 0){
-			return ;
-		}
-
-
-		/**
-		 * 电压警告
-		 */
-		if(mqttBtMessage.getElectricity()< 50){ //电压低
-			HashMap map = new HashMap<String,Object>();
-			map.put("alarm_num","DYD" + System.currentTimeMillis());
-			map.put("asset_id",result.get("asset_id"));
-			map.put("alarm_type","电压低");
-
-			//添加
-			DbSession.insert("eam_alarm.addEamAlarm",map);
-		}
-
-		/**
-		 * 距离信号警告
-		 */
-		if(50 < mqttBtMessage.getSignalIntensity()){
-			HashMap map = new HashMap<String,Object>();
-			map.put("alarm_num","WY" + System.currentTimeMillis());
-			map.put("asset_id",result.get("asset_id"));
-			map.put("alarm_type","位移");
-
-			//添加
-			DbSession.insert("eam_alarm.addEamAlarm",map);
-		}
-	}
-
-
 
 }

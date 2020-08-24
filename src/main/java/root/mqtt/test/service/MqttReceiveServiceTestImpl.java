@@ -8,6 +8,7 @@ import root.mqtt.bean.*;
 import root.mqtt.service.MqttReceiveService;
 import root.mqtt.util.HexUtils;
 import root.report.common.DbSession;
+import root.report.db.DbFactory;
 import root.report.service.webchat.HttpRequestUtil;
 import root.report.temperature.http;
 
@@ -106,7 +107,7 @@ public class MqttReceiveServiceTestImpl implements MqttReceiveService {
 
 				}
 			}
-
+			//通过经纬度获取地点信息
 			if(lng!=0 && lat!=0 && "".equals(address)){
 				String restApiUrl = "http://restapi.amap.com/v3/geocode/regeo";
 				String params = "location=" + lng + "," + lat + "&key=f741b107dc26ffed2f7e332de0f4172c&poitype=&radius=1000&extensions=base&batch=false&roadlevel=";
@@ -117,7 +118,8 @@ public class MqttReceiveServiceTestImpl implements MqttReceiveService {
 				if("1".equals(jsonObject.getString("status"))) {//经纬度获取地址信息成功
 					address = jsonObject.getJSONObject("regeocode").getString("formatted_address");
 					adcode = jsonObject.getJSONObject("regeocode").getJSONObject("addressComponent").getString("adcode");
-
+					if("[]".equals(address)){address = "";}
+					if("[]".equals(adcode)){adcode = "";}
 				}
 			}
 
@@ -131,6 +133,7 @@ public class MqttReceiveServiceTestImpl implements MqttReceiveService {
 
 			dataMap.put("receive_time",receiveTime);
 
+			//判断是否有这条状态
 			int count = DbSession.selectOne("eam_gateway_status_test.queryCountByGatewayId",dataMap);
 			if(0 < count){
 				//更新
@@ -138,6 +141,17 @@ public class MqttReceiveServiceTestImpl implements MqttReceiveService {
 			}else{
 				//添加
 				DbSession.insert("eam_gateway_status_test.addEamGatewayStatus",dataMap);
+			}
+
+			Map<String,Object> gatewayMap = DbSession.selectOne("eam_gateway_test.getGatewayById",String.valueOf(gatewayId));
+			//自动更新 ， 将最新的状态直接更新至网关实体信息中
+			if(gatewayMap!=null && "1".equals(String.valueOf(gatewayMap.get("isAuto")))){
+				Map<String, Object> areaMap = DbSession.selectOne("sys_area.getAreaBySexCode", adcode);
+				if(areaMap!=null){
+					dataMap.put("address_id",areaMap.get("code"));
+				}
+				//更新网关
+				DbFactory.Open(DbFactory.FORM).update("eam_gateway_test.updateEamGateway", dataMap);
 			}
 
 			System.out.println(mqttUpdateMessage.toString());
