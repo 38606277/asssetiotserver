@@ -37,6 +37,8 @@ mqttTest:
     keepalibe: 20
 
 fileDirPath: C://eam//images//
+thumbnailBoundsSize: 200
+thumbnailFileSize : 10
 
 durid:
   username: admin
