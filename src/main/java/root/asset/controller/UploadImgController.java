@@ -25,15 +25,19 @@ import java.util.List;
 //@RequestMapping(value = "/reportServer/gateway")
 @RequestMapping(value = "/reportServer/uploadAssetImg")
 public class UploadImgController {
+
+    private static final String THUMBNAIL_PREFIX = "thumbnail_";//缩略图前缀
+
     @Value("${fileDirPath}")
     private String fileDirPath;
-
 
     @Value("${thumbnailBoundsSize}")
     private int thumbnailBoundsSize;//缩略图大小 宽高 等比缩放
 
     @Value("${thumbnailFileSize}")
     private int thumbnailFileSize;//缩略图文件大小 单位KB
+
+
 
     @RequestMapping(value="/uploadAssetImg",produces = "text/plain;charset=UTF-8")
     public String uploadAssetImg(@RequestParam("file") MultipartFile file)  {
@@ -80,7 +84,7 @@ public class UploadImgController {
      */
    private String buildThumbnailImage(File sourceFile) throws IOException {
        String sourceFilePath = sourceFile.getPath();
-       String thumbnailFileName = "thumbnail_" + sourceFile.getName();
+       String thumbnailFileName = THUMBNAIL_PREFIX + sourceFile.getName();
        String thumbnailFilePath  = fileDirPath + thumbnailFileName;
 
        String tempFilePath;//缩放后的文件
@@ -119,54 +123,77 @@ public class UploadImgController {
 
     //文件下载相关代码
     @RequestMapping(value = "/downloadAssetImg", produces = "text/plain;charset=UTF-8")
-    public String downloadAssetImg(String fileName, HttpServletRequest request, HttpServletResponse response) throws UnsupportedEncodingException {
-        //String fileName = "123.JPG";
-        System.out.println("the file is : "+fileName);
+    public String downloadAssetImg(String fileName, HttpServletRequest request, HttpServletResponse response) throws IOException {
+
+        if(fileName == null || fileName.length() == 0){
+            System.err.println("downloadAssetImg fileName is empty");
+            return null;
+        }
+
+        if(fileDirPath == null || fileDirPath.length() ==0){
+            System.err.println("downloadAssetImg fileDirPath is empty");
+            return null;
+        }
+
         String fileUrl = fileDirPath + fileName;
-        if (fileDirPath != null&& fileName!= null && 0<fileName.length()) {
-            //当前是从该工程的WEB-INF//File//下获取文件(该目录可以在下面一行代码配置)然后下载到C:\\users\\downloads即本机的默认下载的目录
-           /* String realPath = request.getServletContdownLoadAssetImgext().getRealPath(
-                    "//WEB-INF//");*/
-            /*File file = new File(realPath, fileName);*/
-            File file = new File(fileUrl);
-            if (file.exists()) {
-                response.setContentType("application/vnd.ms-excel;charset=UTF-8");
-                response.setCharacterEncoding("UTF-8");
-                response.setContentType("application/force-download");
-                response.setHeader("Content-Disposition", "attachment;fileName=" +   URLEncoder.encode(fileName,"UTF-8"));
-                byte[] buffer = new byte[1024];
-                FileInputStream fis = null;
-                BufferedInputStream bis = null;
-                try {
-                    fis = new FileInputStream(file);
-                    bis = new BufferedInputStream(fis);
-                    OutputStream os = response.getOutputStream();
-                    int i = bis.read(buffer);
-                    while (i != -1) {
-                        os.write(buffer, 0, i);
-                        i = bis.read(buffer);
-                    }
-                    System.out.println("success");
-                } catch (Exception e) {
-                    e.printStackTrace();
-                } finally {
-                    if (bis != null) {
-                        try {
-                            bis.close();
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        }
-                    }
-                    if (fis != null) {
-                        try {
-                            fis.close();
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        }
-                    }
+        File file = new File(fileUrl);
+        //判断文件是否存在
+        if (!file.exists()) {
+            //不存在
+            if(fileName.startsWith("thumbnail_")){//是否为缩略图
+                //判断原图是否存在
+                String sourceFileUrl = fileDirPath + fileName.substring(THUMBNAIL_PREFIX.length());
+                File sourceFile = new File(sourceFileUrl);
+                if(sourceFile.exists()){//原图存在则创建一个压缩图
+                   String thumbnailImageName = buildThumbnailImage(sourceFile);
+                   file = new File(fileDirPath + thumbnailImageName);
                 }
             }
         }
+        if(file.exists()){
+               //当前是从该工程的WEB-INF//File//下获取文件(该目录可以在下面一行代码配置)然后下载到C:\\users\\downloads即本机的默认下载的目录
+           /* String realPath = request.getServletContdownLoadAssetImgext().getRealPath(
+                    "//WEB-INF//");*/
+               /*File file = new File(realPath, fileName);*/
+
+               response.setContentType("application/vnd.ms-excel;charset=UTF-8");
+               response.setCharacterEncoding("UTF-8");
+               response.setContentType("application/force-download");
+               response.setHeader("Content-Disposition", "attachment;fileName=" +   URLEncoder.encode(fileName,"UTF-8"));
+               byte[] buffer = new byte[1024];
+               FileInputStream fis = null;
+               BufferedInputStream bis = null;
+               try {
+                   fis = new FileInputStream(file);
+                   bis = new BufferedInputStream(fis);
+                   OutputStream os = response.getOutputStream();
+                   int i = bis.read(buffer);
+                   while (i != -1) {
+                       os.write(buffer, 0, i);
+                       i = bis.read(buffer);
+                   }
+                   System.out.println("success");
+               } catch (Exception e) {
+                   e.printStackTrace();
+               } finally {
+                   if (bis != null) {
+                       try {
+                           bis.close();
+                       } catch (IOException e) {
+                           e.printStackTrace();
+                       }
+                   }
+                   if (fis != null) {
+                       try {
+                           fis.close();
+                       } catch (IOException e) {
+                           e.printStackTrace();
+                       }
+                   }
+               }
+
+           }
+
         return null;
     }
 }
