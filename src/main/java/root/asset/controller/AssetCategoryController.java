@@ -72,8 +72,8 @@ public class AssetCategoryController extends RO {
      * @param pJson
      * @return
      */
-    @RequestMapping(value = "/updateByCode", produces = "text/plain;charset=UTF-8")
-    public String updateByCode(@RequestBody JSONObject pJson){
+    @RequestMapping(value = "/updateById", produces = "text/plain;charset=UTF-8")
+    public String updateById(@RequestBody JSONObject pJson){
 
         String code = pJson.getString("code");
         if(StringUtil.isBlank(code)){

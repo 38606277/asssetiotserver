@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="eam_asset_category_extension">
+
+
+    <insert id="add"  parameterType="Map">
+        insert into eam_asset_category_extension(category_id, attribute_name,is_required,scope) values(#{category_id}, #{attribute_name}, #{is_required}, #{scope})
+    </insert>
+
+    <delete id="deleteById" parameterType="Map">
+        delete from eam_asset_category_extension where id = #{id}
+    </delete>
+
+    <update id="updateById" parameterType="Map">
+        update eam_asset_category_extension
+        <trim prefix="set" suffixOverrides=",">
+            <if test="category_id!=null">category_id=#{category_id},</if>
+            <if test="attribute_name!=null">attribute_name=#{attribute_name},</if>
+            <if test="is_required!=null">is_required=#{is_required},</if>
+            <if test="scope!=null">scope=#{scope},</if>
+        </trim>
+        where id=#{id}
+    </update>
+
+    <select id="getById" resultType="Map" parameterType="Map">
+        select *  from eam_asset_category_extension where id=#{id}
+    </select>
+
+    <select id="getByKeyword" resultType="Map" parameterType="Map">
+        select eace.*,eac.name,eac.code from eam_asset_category_extension eace LEFT JOIN eam_asset_category eac on eace.category_id = eac.id
+        where 1=1
+        <if test="keyword != null and keyword!=''">  and (eace.attribute_name like '%${keyword}%') </if>
+    </select>
+
+
+</mapper>
