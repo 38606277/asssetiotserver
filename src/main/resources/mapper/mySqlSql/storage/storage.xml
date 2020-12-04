@@ -61,7 +61,8 @@
 
 
     <select id="listStorageByPage" resultType="Map" parameterType="Map">
-        SELECT s.* FROM `storage` s
+        SELECT s.*,bd.`label` as type_name FROM `storage` s
+        LEFT JOIN base_data bd on  bd.type ='storage_type' and bd.`value` = s.type
         where 1=1
         <if test="num != null and num!=''">  and s.num like '%${num}%' </if>
         <if test="name != null and name!=''">  and s.name like '%${name}%' </if>
@@ -72,7 +73,7 @@
             and s.lease_time &lt;= #{lease_end_date}
         </if>
 
-        <if test="type != null and type!=''">  and s.type like '%${type}%' </if>
+        <if test="type != null and type !=''">  and s.type = #{type} </if>
         <if test="department != null and department!=''">  and s.department like '%${department}%' </if>
         <if test="is_default != null and is_default!=''">  and s.is_default = #{is_default} </if>
         <if test="is_disable != null and is_disable!=''">  and s.is_disable = #{is_disable} </if>
@@ -87,6 +88,7 @@
         <if test="create_end_date != null and create_end_date != '' ">
             and s.create_time &lt;= #{create_end_date}
         </if>
+
         ORDER BY s.create_time desc
         limit #{startIndex},#{perPage}
     </select>
