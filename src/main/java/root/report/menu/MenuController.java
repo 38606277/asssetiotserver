@@ -164,4 +164,39 @@ public class MenuController extends RO {
 		return SuccessMsg("删除成功",order);
 	}
 
+
+
+	/**
+	 * 删除菜单
+	 * @param pJson
+	 * @return
+	 */
+	@RequestMapping(value = "/queryMenu", produces = "text/plain;charset=UTF-8")
+	public String queryMenu(@RequestBody JSONObject pJson)  {
+		Map<String,Object> menu1 = getMenu("/welcome","welcome","smile");
+		Map<String,Object> menu2 = getMenu("/admin","admin","crown");
+		Map<String,Object> menu3 = getMenu("/admin/sub-page","sub-page","smile");
+		ArrayList<Map<String,Object>> arrayList = new ArrayList<>();
+		arrayList.add(menu3);
+		menu2.put("children",arrayList);
+		Map<String,Object> menu4 = getMenu("/list","list.table-list","table");
+		ArrayList<Map<String,Object>> menuList = new ArrayList<>();
+		menuList.add(menu1);
+		menuList.add(menu2);
+		menuList.add(menu4);
+		return SuccessMsg("菜单获取成功",menuList);
+	}
+
+	private Map<String,Object> getMenu(String path,String name,String icon){
+		Map<String,Object> map  = new HashMap<>();
+		map.put("path",path);
+		map.put("name",name);
+		map.put("icon",icon);
+		return map;
+	}
+
+
+
+
+
 }

@@ -9,6 +9,8 @@ import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
 import org.springframework.boot.autoconfigure.mongo.MongoAutoConfiguration;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.FilterType;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.scheduling.annotation.EnableScheduling;
@@ -27,6 +29,10 @@ import javax.sql.DataSource;
 //@PropertySource(value="file:config/application.properties",encoding = "utf-8")
 @EnableScheduling
 @EnableTransactionManagement
+//@ComponentScan(
+//		value="root",//扫描的包
+//		excludeFilters={@ComponentScan.Filter(type = FilterType.REGEX, pattern= {"root.mqtt.*"})}//排除的包
+//)
 public class ReportServerApplication {
 
 	public static void main(String[] args) {

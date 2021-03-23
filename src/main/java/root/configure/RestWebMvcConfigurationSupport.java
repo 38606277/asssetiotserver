@@ -100,6 +100,7 @@ public class RestWebMvcConfigurationSupport extends WebMvcConfigurationSupport {
                                 "/reportServer/css/*",
                                 "/reportServer/js/*",
                                 "/reportServer/upload/*",
+                                "/reportServer/downloadApp/*",
                                 "/reportServer/uploadAssetImg/*",
                                 "/reportServer/DBConnection/test",
                                 "/reportServer/DBConnection/save",
