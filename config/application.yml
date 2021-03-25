@@ -40,6 +40,8 @@ fileDirPath: C://eam//images//
 thumbnailBoundsSize: 200
 thumbnailFileSize : 10
 
+apkDirPath: /Users/cannon/apk/
+
 durid:
   username: admin
   password: admin
