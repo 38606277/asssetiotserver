@@ -5,9 +5,88 @@
 
 	<insert id="addAsset"   useGeneratedKeys="true" keyProperty="id" parameterType="Map">
 		insert into eam_asset
-		 (asset_tag,asset_name,iot_num,image)
+		 (asset_num,
+		iot_num,
+		asset_tag,
+		asset_name,
+		asset_type,
+		class_code,
+		asset_class,
+		productor,
+		supplier,
+		model,
+		序列号,
+		应用领域编码,
+		应用领域名称,
+		lifeInMonth,
+		lifeInYears,
+		是否重要资产,
+		备注,
+		`erp创建时间`,
+		amount,
+		`计量单位`  ,
+		`传输线路资源量`  ,
+		`传输线路资源量单位`  ,
+		`资产状态`  ,
+		`资产子状态`  ,
+		`dutyCode`  ,
+		`dutyName`  ,
+		`userCode`  ,
+		`userName`  ,
+		`责任部门编码`  ,
+		`dutyDeptName`  ,
+		`实物管理部门编码`  ,
+		`实物管理部门`  ,
+		`addressCode`  ,
+		`addressName`  ,
+		`base_station_code`  ,
+		`base_station_name`  ,
+		`对应综资站点状态`  ,
+		`基站/营业厅/仓库编码`  ,
+		`基站/营业厅/仓库`  ,
+		`责任人确认`  ,
+		`使用人确认`  ,
+		`是否共享设备`  ,
+		`是否共建设备`  ,
+		`startDate`  ,
+		`合同编号`  ,
+		`租金`  ,
+		`起租日期`  ,
+		`止租日期/报废日期`  ,
+		`老资产标签号`  ,
+		`资产使用状态`  ,
+		`是否机密`  ,
+		`购置日期`  ,
+		`cost`  ,
+		`netValue`  ,
+		`netQuota`  ,
+		`residualValue`  ,
+		`periodDepreciation`  ,
+		`yearDepreciation`  ,
+		`cumulativeDepreciation`  ,
+		`periodImpairment`  ,
+		`yearImpairment`  ,
+		`cumulativeImpairment`  ,
+		`网络元素编码`  ,
+		`网络元素名称`  ,
+		`投资分类编码`  ,
+		`投资分类名称`  ,
+		`业务平台编码`  ,
+		`业务平台名称`  ,
+		`网络层次编码`  ,
+		`网络层次名称`  ,
+		`支撑网设备类型编码`  ,
+		`支撑网设备类型名称`  ,
+		`项目编号`  ,
+		`项目名称`  ,
+		`项目小类`  ,
+		`是否抵扣`  ,
+		`原规格型号`)
 		values
-		 (#{asset_tag}, #{asset_name}, #{iot_num},#{image})
+		 (#{asset_num},
+		#{iot_num},
+		#{asset_tag},
+		#{asset_name},#{asset_type},#{class_code},#{asset_class},#{productor},#{supplier},#{model},#{序列号},#{应用领域编码},#{应用领域名称},#{lifeInMonth},#{lifeInYears},#{是否重要资产},#{备注},#{erp创建时间},#{amount},#{计量单位},#{传输线路资源量},#{传输线路资源量单位},#{资产状态},#{资产子状态},#{dutyCode},#{dutyName},#{userCode},#{userName},#{责任部门编码},#{dutyDeptName},#{实物管理部门编码},#{实物管理部门},#{addressCode},#{addressName},#{base_station_code},#{base_station_name},#{对应综资站点状态},#{基站/营业厅/仓库编码},#{基站/营业厅/仓库},#{责任人确认},#{使用人确认},#{是否共享设备},#{是否共建设备},#{startDate},#{合同编号},#{租金},#{起租日期},#{止租日期/报废日期},#{老资产标签号},#{资产使用状态},#{是否机密},#{购置日期},#{cost},#{netValue},#{netQuota},#{residualValue},#{periodDepreciation},#{yearDepreciation},#{cumulativeDepreciation},#{periodImpairment},#{yearImpairment},#{cumulativeImpairment},#{网络元素编码},#{网络元素名称},#{投资分类编码},#{投资分类名称},#{业务平台编码},#{业务平台名称},#{网络层次编码},#{网络层次名称},#{支撑网设备类型编码},#{支撑网设备类型名称},#{项目编号},#{项目名称},#{项目小类},#{是否抵扣},#{原规格型号})
 	</insert>
 
 	<insert id="addAssetImport"   useGeneratedKeys="true" keyProperty="id" parameterType="Map">
@@ -301,6 +380,12 @@
 		LEFT JOIN sys_area sa ON sa.`code` = eg.address_id
 		-- where sa.city_code='130400000000'
 		) a
+	</select>
+	<select id="getAssetAddressInfoByAssetTag" resultType="Map" parameterType="map">
+	select ea.asset_tag,eg.address,eg.lng,eg.rng as 'lat' from  eam_asset ea
+	LEFT JOIN eam_gateway_asset ega on ega.asset_id = ea.asset_id
+	LEFT JOIN eam_gateway eg on ega.gateway_id = eg.gateway_id
+	where ea.asset_tag = #{asset_tag}
 	</select>
 
 
