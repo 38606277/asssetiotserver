@@ -97,7 +97,7 @@
 			SELECT
 			eg.*, (
 			SELECT
-			Round(sum(b.cost)/10000,2)
+			count(a.asset_id)
 			FROM
 			eam_gateway_test_asset a
 			WHERE
@@ -124,7 +124,16 @@
 			WHERE
 			1 = 1
 			AND eg.gateway_id IS NOT NULL
-			AND ( ea.asset_num LIKE '%${keyword}%' OR ea.asset_name LIKE '%${keyword}%' OR ea.iot_num LIKE '%${keyword}%' )
+			AND (ea.asset_num like '%${keyword}%'
+			or ea.asset_tag like '%${keyword}%'
+			or ea.asset_name like '%${keyword}%'
+			or ea.iot_num like '%${keyword}%'
+			or ea.dutyName like '%${keyword}%'
+			or ea.dutyDeptName like '%${keyword}%'
+			or ea.addressCode like '%${keyword}%'
+			or ea.addressName like '%${keyword}%'
+			or ea.base_station_code like '%${keyword}%'
+			or ea.base_station_name like '%${keyword}%' )
 			GROUP BY
 			eg.id
 		</if>
